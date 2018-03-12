@@ -7,7 +7,6 @@
 // This is 80 characters - Keep all lines under 80 characters                 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 Edge::Edge() {}
 
 /** constructor with label and weight */
