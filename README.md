@@ -1,2 +1,2 @@
 # DataStructure
-Store all datastructure I've implemented
+Store all data structure I've implemented
