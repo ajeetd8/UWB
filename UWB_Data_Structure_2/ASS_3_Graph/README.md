@@ -21,7 +21,7 @@ The format of the graph files is: an integer indicating the number of edges, fol
 
 Sample graph files: graph0.txt, graph1.txt, graph2.txt
 
-[[https://github.com/kharam1436/DataStructure/blob/master/UWB_Data_Structure_2/ASS_3_Graph/ass3-nodes.png|alt=octocat]]
+![Alt text](../ass3-nodes.png?raw=true "graph")
 
 ### Prerequisites
 
