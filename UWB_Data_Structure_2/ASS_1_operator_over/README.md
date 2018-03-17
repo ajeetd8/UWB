@@ -46,7 +46,7 @@ End with an example of getting some data out of the system or using it for a lit
 The test code is given to you in ass1.cpp.
 
 Result:
-...
+```
 tp1: []
 tp2: [F 10]
 tp1 now as tp2+tp3: [F 10 R 90]
@@ -68,7 +68,7 @@ tp1= tp3+tp4*4 = [R 90 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 
 Size of tp1 is 26
 done
 [R 90 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 R 90 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10 F 10]
-...
+```
 
 
 ## Deployment
