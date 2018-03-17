@@ -24,8 +24,6 @@ Index 0 of a program is defined as the first string in the program (i.e. for pro
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-
 ```
 g++ with supporting stardard 14
 cmake with version higher than 3.9

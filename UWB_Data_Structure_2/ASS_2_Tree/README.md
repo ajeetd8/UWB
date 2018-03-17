@@ -59,8 +59,6 @@ These files should not be modified, so they must be as given in assignment.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-
 ```
 g++ with supporting stardard 14
 cmake with version higher than 3.9
