@@ -39,8 +39,6 @@ cmake CMakeLists.txt
 make
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
-
 ## Running the tests
 
 The test code is given to you in ass1.cpp.
@@ -78,9 +76,6 @@ This is done as a course assignment.
 ## Authors
 
 Haram Kwon
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
 
 ## Acknowledgments
 
