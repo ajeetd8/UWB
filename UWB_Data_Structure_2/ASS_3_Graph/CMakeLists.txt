@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.5)
 project(Ass_3_Graph)
 
 set(CMAKE_CXX_STANDARD 14)
