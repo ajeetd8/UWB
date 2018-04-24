@@ -1,63 +1,20 @@
-*-----------------------------------------------------------
-* Title      :  Project.x68
-* Written by :  Byunggeun Park, Erik J. Maldonado, Haram Kwon
-* Date       :  April.23.2018 ~ May.
-* Description:  CSS 422 Group Project
-*               1. The prgram start at 1000.
-*               2. The program start to read memory from $7000 and disassemble.
-*               3. The program will console out the disassembled output.
-*-----------------------------------------------------------
+*****************************
+*
+* demo_test.X68
+*
+* Created 03/08/2017
+*
+* Test program for CSS 422 Disassembler Project Demo
+*
+*****************************
 
-STACK               equ         $100000
-DISASSEMBLE_FROM    equ         $7000
-CR                  equ         $0d
-LF                  equ         $0a  
+start		EQU	$00009000	* ORG and END address
 
-START:                  ORG                     $1000
-* Setting the stack address.
-        lea             STACK,sp
+* ORG the program so that it straddles the address boundary $00007FFF to $00008000
 
-* From here, he need to write our disassembly code
-        
-        lea             DISASSEMBLE_FROM,a6     a0 = begging of memory.
-LOOP
-        * Read byte by bytes.
-                move.b                      (a6)+,d5
-        addi.l          #1,d5
-        
-        
-        **************************************************************************************************
-        * Terminal Condition
-        **************************************************************************************************
-        
-        * Check whether current reading is odd or not
-        move.l          a6,d6
-        divu            #$02,d6
-        swap            d6
-        cmp.b           #$00,d6
-        bne             LOOP                    Current reading is not node, continue the loop.
-        
-        * If the current reading is odd, check whether there is more reading or not.
-        move.l          (a6),d7        
-        cmp.l           #$FFFFFFFF,d7           
-        beq             DONE                    Terminating the program.
-        bra             loop
+		ORG	start
 
-
-
-        bsr             DONE        Terminating the program
-*Instruction for terminating the program
-DONE
-        SIMHALT
-
-
-
-* From here, the code we are going to disassemble.
-            ORG                     DISASSEMBLE_FROM
-
-** this is a sample code to disassemble.
 NOP
-    move.b      #$01,d6
     RTS
     NOP
     RTS
@@ -591,8 +548,16 @@ label4    CMP.B     $12,D1
     ADDA      D1,A1
     BTST      #1,D1
 
+* Put program code here
 
-        END         START
+    SIMHALT             ; halt simulator
+
+* Put variables and constants here
+
+    END    START        ; last line of source
+
+
+
 
 
 
@@ -601,6 +566,6 @@ label4    CMP.B     $12,D1
 
 
 *~Font name~Courier New~
-*~Font size~12~
+*~Font size~10~
 *~Tab type~1~
-*~Tab size~4~
+*~Tab size~8~
