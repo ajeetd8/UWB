@@ -22,7 +22,7 @@ DONE
 * From here, the code we are going to disassemble.
 DISASSEMBLE:                    ORG         $7000
 
-** this is a sample to disassemble.
+** this is a sample code to disassemble.
 NOP
     RTS
     NOP
