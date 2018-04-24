@@ -19,11 +19,11 @@ START:                  ORG                     $1000
 
 * From here, he need to write our disassembly code
         
-        lea             DISASSEMBLE_FROM,a6     a0 = begging of memory.
+        lea             DISASSEMBLE_FROM,a6     *a6 = begining to read from $7000.
         
 LOOP
         * Read byte by bytes.
-        move.b                      (a6)+,d5
+        move.b          (a6)+,d5
         addi.l          #1,d4
         
         
