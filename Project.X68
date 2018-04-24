@@ -1,11 +1,11 @@
 *-----------------------------------------------------------
 * Title      :  Project.x68
 * Written by :  Byunggeun Park, Erik J. Maldonado, Haram Kwon
-* Date       :  April.23.2018 ~ May.
+* Date       :  April.23.2018 ~ May..2018
 * Description:  CSS 422 Group Project
 *               1. The prgram start at 1000.
 *               2. The program start to read memory from $7000 and disassemble.
-*               3. The program will console out the disassembled output.
+*               3. The program will print out to console the disassembled output.
 *-----------------------------------------------------------
 
 STACK               equ         $100000
@@ -41,6 +41,7 @@ LOOP
         divu            #$02,d6
         swap            d6
         cmp.b           #$00,d6
+
         bne             LOOP                    Current reading is not node, continue the loop.
         
         * If the current reading is odd, check whether there is more reading or not.
@@ -59,7 +60,7 @@ DONE
 **************************************************************************************************
         * From here, the code we are going to disassemble.
 **************************************************************************************************
-            ORG                     DISASSEMBLE_FROM
+        ORG                     DISASSEMBLE_FROM
 
 ** this is a sample code to disassemble.
 NOP
