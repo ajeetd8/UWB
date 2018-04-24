@@ -7,23 +7,45 @@
 *               2. The program start to read memory from $7000 and disassemble.
 *               3. The program will console out the disassembled output.
 *-----------------------------------------------------------
-    
-START:                 ORG              $1000
+
+STACK               equ         $100000
+DISASSEMBLE_FROM    equ         $7000
+CR                  equ         $0d
+LF                  equ         $0a  
+
+START:                  ORG                     $1000
+* Setting the stack address.
+        lea             STACK,sp
+
 * From here, he need to write our disassembly code
 
-        bra             done        Terminating the program
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        bsr             DONE        Terminating the program
 *Instruction for terminating the program
 DONE
-        move.b          #9,d0
-        trap            #15
+        SIMHALT
 
 
 
 * From here, the code we are going to disassemble.
-DISASSEMBLE:                    ORG         $7000
+            ORG                     DISASSEMBLE_FROM
 
 ** this is a sample code to disassemble.
 NOP
+    move.b      #$01,d6
     RTS
     NOP
     RTS
@@ -558,7 +580,6 @@ label4    CMP.B     $12,D1
     BTST      #1,D1
 
 
-        END     DISASSEMBLE
         END         START
 
 
