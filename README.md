@@ -1,3 +1,6 @@
+# Todo
+[Progressive Report 1](http://www.example.com/)
+
 # CSS422_Group_Work
 CSS422 gropu work for Spr.2018
 
@@ -14,8 +17,8 @@ d1 -> Free
 d2 -> Free
 d3 -> Free
 d4 -> Free
-d5 -> Free
-d6 -> Arthematic (Free to use) 
+d5 -> Byte data saving place from memory &7000 ~
+d6 -> Arthematic (Free to use with in the loop) 
 d7 -> End Condition check
 ```
 ## Address Register

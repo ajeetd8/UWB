@@ -20,10 +20,11 @@ START:                  ORG                     $1000
 * From here, he need to write our disassembly code
         
         lea             DISASSEMBLE_FROM,a6     a0 = begging of memory.
+        
 LOOP
         * Read byte by bytes.
                 move.b                      (a6)+,d5
-        addi.l          #1,d5
+        addi.l          #1,d4
         
         
         **************************************************************************************************
@@ -50,9 +51,9 @@ LOOP
 DONE
         SIMHALT
 
-
-
-* From here, the code we are going to disassemble.
+**************************************************************************************************
+        * From here, the code we are going to disassemble.
+**************************************************************************************************
             ORG                     DISASSEMBLE_FROM
 
 ** this is a sample code to disassemble.
