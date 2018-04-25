@@ -20,7 +20,7 @@ START:  org             $1000
         
 LOOP
         * From here, he need to write our disassembly code
-        * Read byte by bytes.
+        * Read word by words.
         move.w          (a6)+,d5
         addi.l         #1,d4
                 
