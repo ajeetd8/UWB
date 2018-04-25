@@ -1,0 +1,1 @@
+start .\EASy68K\SIM68K.exe .\Project.S68
