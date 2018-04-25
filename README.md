@@ -64,20 +64,21 @@ a7 -> Stack Pointer
 
 # Required opcodes and addressing mode
 
-```
 Below are the list of instructions and addressing modes assigned for this project. 
-Effective Addressing Modes:
 
-Data Register Direct
-Address Register Direct
-Address Register Indirect
-Immediate Data
-Address Register Indirect with Post incrementing
-Address Register Indirect with Pre decrementing
-Absolute Long Address
-Absolute Word Address
-Instructions:
+## Effective Addressing Modes:
 
+- Data Register Direct
+- Address Register Direct
+- Address Register Indirect
+- Immediate Data
+- Address Register Indirect with Post incrementing
+- Address Register Indirect with Pre decrementing
+- Absolute Long Address
+- Absolute Word Address
+
+## Instructions:
+```
 NOP
 MOVE
 MOVEA
