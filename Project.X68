@@ -61,7 +61,7 @@ DONE
 *        movem.l a0-a6/d0-d7,-(sp)
 *        rts
 
-*recv_reg:
+*repl_reg:
 *        movem.l a0-a6/d0-d7,(sp)+
 *        rts
 
