@@ -3,7 +3,8 @@
 Due Saturday
 
 # Note
-
+1. Every instruction begins with 'word'
+2. 68k assembly always use even addressing!s
 
 # CSS422_Group_Work
 CSS422 gropu work for Spr.2018
