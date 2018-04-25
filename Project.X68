@@ -22,7 +22,7 @@ LOOP
         * From here, he need to write our disassembly code
         * Read byte by bytes.
         move.b          (a6)+,d5
-        *addi.l          #1,d4
+        *addi.l         #1,d4
                 
         
         
