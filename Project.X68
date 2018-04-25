@@ -26,6 +26,15 @@ LOOP
                 
         
         
+        * Every loop is incrementing by word
+        * We have to find pattern bit by bits, and
+        * Do additional bit increment here (a6)
+        
+        * Console out each loop.
+        
+        
+        
+        
         
         
         
