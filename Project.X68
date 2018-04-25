@@ -14,18 +14,16 @@ CR                  equ         $0d
 LF                  equ         $0a  
 
 START:                  ORG                     $1000
-* Setting the stack address.
-        lea             STACK,sp
-
-* From here, he need to write our disassembly code
-        
-        lea             DISASSEMBLE_FROM,a6     *a6 = begining to read from $7000.
+        * Setting the stack address.
+        lea             STACK,sp 
+        lea             DISASSEMBLE_FROM,a6     move value of DISASSEMLE_FROM
         
 LOOP
+        * From here, he need to write our disassembly code
         * Read byte by bytes.
         move.b          (a6)+,d5
-        addi.l          #1,d4
-        
+        *addi.l          #1,d4
+                
         
         
         
@@ -41,36 +39,35 @@ LOOP
         divu            #$02,d6
         swap            d6
         cmp.b           #$00,d6
-
-        bne             LOOP                    Current reading is not node, continue the loop.
+        bne             LOOP                    Current reading is not odd, continue the loop.
         
         * If the current reading is odd, check whether there is more reading or not.
-        move.l          (a6),d7        
-        cmp.l           #$FFFFFFFF,d7           
+        move.l          (a6),d7
+        cmp.l           #$FFFFFFFF,d7
         beq             DONE                    Terminating the program.
-        bra             loop
+        bra             LOOP
 
 
 
-        bsr             DONE        Terminating the program
+        bsr             DONE                    Terminating the program
 *Instruction for terminating the program
 DONE
         SIMHALT
 
 *free_reg:
-*        movem.l a0-a6/d0-d7,-(sp)
+*        movem.l a0-a6/d0-d7,-(sp)              Move all registers into memory.
 *        rts
 
 *repl_reg:
-*        movem.l a0-a6/d0-d7,(sp)+
+*        movem.l a0-a6/d0-d7,(sp)+              Remove all registers from memory.
 *        rts
 
 **************************************************************************************************
         * From here, the code we are going to disassemble.
 **************************************************************************************************
-        ORG                     DISASSEMBLE_FROM
+        ORG             DISASSEMBLE_FROM        Code after this starts at DISASSEMBLE_FROM
 
-** this is a sample code to disassemble.
+*this is a sample code to disassemble.
 NOP
     move.b      #$01,d6
     RTS
