@@ -2,6 +2,9 @@
 [Progressive Report 1](https://docs.google.com/document/d/1-1W64IIo_uXyICalOz1E2P9-dUlTqSkCL2gHTWVDDNQ/edit#heading=h.vu1ekqi6efad)
 Due Saturday
 
+# Note
+
+
 # CSS422_Group_Work
 CSS422 gropu work for Spr.2018
 
