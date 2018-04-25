@@ -64,12 +64,24 @@ DONE
         SIMHALT
 
 *free_reg:
-*        movem.l a0-a6/d0-d7,-(sp)              Move all registers into memory.
+*        movem.l a0-a5/d0-d7,-(sp)              Move all registers into memory.
 *        rts
 
 *repl_reg:
-*        movem.l a0-a6/d0-d7,(sp)+              Remove all registers from memory.
+*        movem.l a0-a5/d0-d7,(sp)+              Remove all registers from memory.
 *        rts
+
+PROMPT_1.1              dc.b    'Enter starting address with all letters in capital. Range=[',0
+PROMPT_1.2              dc.b    ',',0
+PROMPT_1.3              dc.b    ']',0,CR,LF
+PROMPT_2                dc.b    'Enter ending address with all letters in capital.',0,CR,LF
+PROMPT_3                dc.b    '$',0
+PROMPT_4                dc.b    'Press ENTER to continue...',0,CR,LF
+PROMPT_5                dc.b    'Would you like to disassemble again? (Y/N)',0,CR,LF
+PROMPT_6                dc.b    '>',0,CR,LF
+
+ERROR_1                 dc.b    'INVALID INPUT, try again',0,LF,CR
+
 
 **************************************************************************************************
         * From here, the code we are going to disassemble.
