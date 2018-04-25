@@ -15,8 +15,8 @@ Courier New$font name
 1$auto indent
 0$real tabs
 1$assemble bit field
--8$main top
--8$main left
+177$main top
+-347$main left
 809$main height
 1479$main width
 0$code color

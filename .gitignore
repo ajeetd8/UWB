@@ -1,5 +1,8 @@
 .[oa]
 *~*
-EASy68K\
+EASy68K/
+EASy68K/sim68K.dat
+EASy68K/settings.dat
+*.dat
 *.L68
 *.S68
