@@ -30,9 +30,7 @@ USER_INTERFACE
         move.w          #14,d0
         trap            #15
         * Collect string
-        lea             string,a1
-        move.w          #2,d0
-        trap            #15
+        bsr             collect
         * Convert string to hex
         * bsr             str_to_hex
         * Move address into desassemble_from
@@ -73,7 +71,15 @@ DONE
         SIMHALT
 
 * Subroutines - Alphabetical
-STR_TO_HEX: * Converts string in a1 to hexadecimal and stores it in 
+COLLECT:
+        lea             string,a1
+        move.w          #2,d0
+        trap            #15
+        move.w          d1,str_length
+        rts
+
+STR_TO_HEX: * Converts string in a1 to hexadecimal and stores it in
+        
         rts
 
 FREE_REG: * Empties registers a0-a5 and d0-d7 and puts them on the stack
@@ -93,12 +99,12 @@ PROMPT_3                dc.b    'Press ENTER to continue...',0,CR,LF
 PROMPT_4                dc.b    'Would you like to disassemble again? (Y/N)',0,CR,LF
 PROMPT_5                dc.b    '>',0,CR,LF
 
-
 * Variables - Alphabetical
 ADDRESS                 ds.b    8
 HEX                     ds.b    80
 OPCODE                  ds.b    8
 STRING                  ds.b    8
+STR_LENGTH              ds.b    4
 
 **************************************************************************************************
         * From here, the code we are going to disassemble.
