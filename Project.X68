@@ -21,33 +21,19 @@ START:  org             $1000
 
 * Prompt
 HANDLE_IO         
-        lea             PROMPT_1_1,a1
+        * "Enter starting address with all letters. Range=[,]"
+        lea             prompt_1,a1
         move.w          #13,d0
-        trap            #15
-
-        
-
-        lea             PROMPT_3,a1
+        trap            #15  
+        * "$"
+        lea             prompt_2,a1
         move.w          #14,d0
         trap            #15
-
-        lea             NEWLINE,a1
-        move.w          #13,d0
-        trap            #15
-        
-        lea             PROMPT_2,a1
-        move.w          #13,d0
+        * Collect string
+        lea             string,a1
+        move.w          #2,d0
         trap            #15
 
-        lea             PROMPT_3,a1
-        move.w          #14,d0
-        trap            #15
-
-        lea             NEWLINE,a1
-        move.w          #13,d0
-        trap            #15
-        
-        
 * From here, he need to write our disassembly code
 LOOP    
         * Read word by words.
@@ -93,27 +79,26 @@ LOOP
 DONE
         SIMHALT
 
-*free_reg:
-*        movem.l a0-a5/d0-d7,-(sp)              Move all registers into memory.
-*        rts
+* Subroutines
+FREE_REG:
+        *movem.l a0-a5/d0-d7,-(sp)               Move all registers into memory.
+        rts
 
-*repl_reg:
-*        movem.l a0-a5/d0-d7,(sp)+              Remove all registers from memory.
-*        rts
+REPL_REG:
+        *movem.l a0-a5/d0-d7,(sp)+               Remove all registers from memory.
+        rts
 
 * Constants
 NEWLINE                 dc.b    ' ',0,CR,LF
-
-PROMPT_1_1              dc.b    'Enter starting address with all letters in capital. Range=[,]',0
-PROMPT_2                dc.b    'Enter ending address with all letters in capital.',0,CR,LF
-PROMPT_3                dc.b    '$',0
-PROMPT_4                dc.b    'Press ENTER to continue...',0,CR,LF
-PROMPT_5                dc.b    'Would you like to disassemble again? (Y/N)',0,CR,LF
-PROMPT_6                dc.b    '>',0,CR,LF
-
+PROMPT_1                dc.b    'Enter starting address with all letters in capital. Range=[,]',0
+PROMPT_2                dc.b    '$',0
+PROMPT_3                dc.b    'Press ENTER to continue...',0,CR,LF
+PROMPT_4                dc.b    'Would you like to disassemble again? (Y/N)',0,CR,LF
+PROMPT_5                dc.b    '>',0,CR,LF
 ERROR_1                 dc.b    'INVALID INPUT, try again',0,LF,CR
 
 * Variables
+STRING                  dc.b    8
 
 **************************************************************************************************
         * From here, the code we are going to disassemble.
