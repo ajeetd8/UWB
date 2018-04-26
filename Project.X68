@@ -33,8 +33,7 @@ USER_INTERFACE
         bsr             collect
         * Convert string to hex
         * bsr             str_to_hex
-        * Move address into desassemble_from
-        * lea             a2,disassemble_from
+
 
 * From here, he need to write our disassembly code
 LOOP    
@@ -71,15 +70,11 @@ DONE
         SIMHALT
 
 * Subroutines - Alphabetical
-COLLECT:
+COLLECT: * Collects string from console, stores value in string and length in str_length
         lea             string,a1
         move.w          #2,d0
         trap            #15
         move.w          d1,str_length
-        rts
-
-STR_TO_HEX: * Converts string in a1 to hexadecimal and stores it in
-        
         rts
 
 FREE_REG: * Empties registers a0-a5 and d0-d7 and puts them on the stack
@@ -88,6 +83,22 @@ FREE_REG: * Empties registers a0-a5 and d0-d7 and puts them on the stack
 
 REPL_REG: * Retrieves memory to replace the registers a0-a5 and d0-d7 with their old data
         *movem.l a0-a5/d0-d7,(sp)+
+        rts
+
+STR_TO_HEX: * Converts string in a1 to hexadecimal and stores it in
+        clr             d0
+        clr             d1
+        lea             string, a0
+        move.l          (a0),d1
+        for d0 = #1 to str_length do.s
+                roxl    string
+                bcs     .c_set
+.C_NOT_SET      lsl     binary
+                bra.s   .continue
+.C_SET          lsl     binary
+                add.b   #1,binary
+.CONTINUE
+        endf
         rts
 
 * Constants - Alphabetical
@@ -101,7 +112,7 @@ PROMPT_5                dc.b    '>',0,CR,LF
 
 * Variables - Alphabetical
 ADDRESS                 ds.b    8
-HEX                     ds.b    80
+BINARY                  ds.b    80
 OPCODE                  ds.b    8
 STRING                  ds.b    8
 STR_LENGTH              ds.b    4
