@@ -22,16 +22,10 @@ START:  org             $1000
 * Prompt
 HANDLE_IO         
         lea             PROMPT_1_1,a1
-        move.w          #14,d0
-        trap            #15
-
-        lea             PROMPT_1_2,a1
-        move.w          #14,d0
-        trap            #15
-        
-        lea             PROMPT_1_3,a1
         move.w          #13,d0
         trap            #15
+
+        
 
         lea             PROMPT_3,a1
         move.w          #14,d0
@@ -111,8 +105,6 @@ DONE
 NEWLINE                 dc.b    ' ',0,CR,LF
 
 PROMPT_1_1              dc.b    'Enter starting address with all letters in capital. Range=[,]',0
-PROMPT_1_2              dc.b    ',',0
-PROMPT_1_3              dc.b    ']',0,CR,LF
 PROMPT_2                dc.b    'Enter ending address with all letters in capital.',0,CR,LF
 PROMPT_3                dc.b    '$',0
 PROMPT_4                dc.b    'Press ENTER to continue...',0,CR,LF
