@@ -6,3 +6,4 @@ EASy68K/settings.dat
 *.dat
 *.L68
 *.S68
+.DS_Store
