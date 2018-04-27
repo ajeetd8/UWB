@@ -22,10 +22,12 @@ LOOP
         beq             DONE                    Terminating the program.
         
         * Read word by words.
-        move.w          (a6)+,d5
-        addi.l         #1,d4
-        
         * Every loop is incrementing by word
+        move.w          (a6)+,d5
+
+
+GOTO
+
         * We have to find pattern, bit by bits, and
         * Do additional bit increment here (a6)
         
@@ -44,6 +46,7 @@ LOOP
 DONE
         SIMHALT
     END    START        ; last line of source
+
 
 *~Font name~Courier New~
 *~Font size~10~
