@@ -58,7 +58,7 @@ LOOP
         cmp.b           #$00,d6
         bne             LOOP                    Current reading is not odd, continue the loop.
         
-        * If the current reading is odd, check whether there is more reading or not
+        * If the current reading is even, check whether there is more reading or not
         move.l          (a6),d7
         cmp.l           #$FFFFFFFF,d7
         beq             DONE                    Terminating the program.
@@ -127,6 +127,7 @@ STR_LENGTH              ds.b    4
         MOVE.W      D0,D1
 
         END         START
+
 
 
 
