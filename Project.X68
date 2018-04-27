@@ -25,20 +25,14 @@ USER_INTERFACE
         lea             prompt_1,a1
         move.w          #13,d0
         trap            #15  
-        * "Max input length is 6."
-        lea             prompt_6,a1
-        move.w          #13,d0
-        trap            #15
         * "$"_
         lea             prompt_2,a1
         move.w          #14,d0
         trap            #15
         * Collect string
         bsr             collect
-        * Convert string to hex
+        * Convert string to hex result in d3
         bsr             str_to_hex
-
-
 
 * From here, he need to write our disassembly code
 LOOP    
@@ -79,7 +73,7 @@ COLLECT: * Collects string from console, stores value in string and length in st
         lea             string,a1
         move.w          #2,d0
         trap            #15
-        move.w          d1,str_length
+        move.l          d1,str_length
         rts
 
 FREE_REG: * Empties registers a0-a5 and d0-d7 and puts them on the stack
@@ -90,21 +84,23 @@ REPL_REG: * Retrieves memory to replace the registers a0-a5 and d0-d7 with their
         *movem.l a0-a5/d0-d7,(sp)+
         rts
 
-STR_TO_HEX:
-        lea     string,a1
-        move.w  str_length,d2
-        clr     d1
-        for d0 = #1 to d2 do.s
-                move.b  (a1)+,d1
-                if.b d1 <lt> #$40 then.s
-                        sub.b   #$30,d1
-                        lsl.l   #2,d1
-                endif
-                if.b d1 <gt> #$40 then.s
-                        sub.b   #$37,d1
-                        lsl.l   #2,d1
-                endif
+STR_TO_HEX: * Converts string to hexadecimal stored in variable hex and register d3
+        clr     d0
+        for.b d0 = #1 to d1 do.s
+                move.b  (a1)+,d2
+                if.b d2 <LT> #$40 then.s
+                        sub.b   #$30,d2
+                endi
+                if.b d2 <GT> #$40 then.s
+                        sub.b   #$37,d2
+                endi
+                add.b   d2,d3
+                cmp.b   d0,d1
+                beq     .skip_last
+                lsl.l   #$04,d3
+.SKIP_LAST
         endf
+        move.l  d3,hex
         rts
 
 * Constants - Alphabetical
@@ -115,15 +111,11 @@ PROMPT_2                dc.b    '$',0
 PROMPT_3                dc.b    'Press ENTER to continue...',0,CR,LF
 PROMPT_4                dc.b    'Would you like to disassemble again? (Y/N)',0,CR,LF
 PROMPT_5                dc.b    '>',0,CR,LF
-PROMPT_6                dc.b    'Max input length is 6.',0,CR,LF
 
 * Variables - Alphabetical
-ADDRESS                 ds.b    8
-BINARY                  ds.b    80
-HEX                     ds.b    80
-OPCODE                  ds.b    8
+HEX                     ds.l    1
 STRING                  ds.b    8
-STR_LENGTH              ds.b    4
+STR_LENGTH              ds.w    1
 
 **************************************************************************************************
         * From here, the code we are going to disassemble.
@@ -132,13 +124,8 @@ STR_LENGTH              ds.b    4
 
 *this is a sample code to disassemble.
 
-        MOVE.W      D0,D1
-
-        END         START
-
-
-
-
+        move.w      d0,d1
+        END         start
 
 *~Font name~Courier New~
 *~Font size~12~
