@@ -31,8 +31,9 @@ USER_INTERFACE
         trap            #15
         * Collect string
         bsr             collect
-        * Convert string to hex result in d3
+        * Convert string to hex, result in d3 and hex variable
         bsr             str_to_hex
+        * Bounds checking here
 
 * From here, he need to write our disassembly code
 LOOP    
@@ -86,21 +87,21 @@ REPL_REG: * Retrieves memory to replace the registers a0-a5 and d0-d7 with their
 
 STR_TO_HEX: * Converts string to hexadecimal stored in variable hex and register d3
         clr     d0
-        for.b d0 = #1 to d1 do.s
-                move.b  (a1)+,d2
-                if.b d2 <LT> #$40 then.s
-                        sub.b   #$30,d2
+        for.b d0 = #1 to d1 do.s                For 0 to str_length do:
+                move.b  (a1)+,d2                Move BYTE from data at a1 into d2 then increment
+                if.b d2 <LT> #$40 then.s        If BYTE data in d2 is LT #$40 then:
+                        sub.b   #$30,d2         Subtract #$30 from BYTE data in d2
                 endi
-                if.b d2 <GT> #$40 then.s
-                        sub.b   #$37,d2
+                if.b d2 <GT> #$40 then.s        If BYTE data in d2 is GT #$40 then:
+                        sub.b   #$37,d2         Subtract #$37 from BYTE data in d2
                 endi
-                add.b   d2,d3
-                cmp.b   d0,d1
-                beq     .skip_last
-                lsl.l   #$04,d3
+                add.b   d2,d3                   Add BYTE data in d2 to d3
+                cmp.b   d0,d1                   Compare BYTE data at d1 to d0
+                beq     .skip_last              Branch if d0 = d1 
+                lsl.l   #$04,d3                 Else logical shift left 4 bytes in d3
 .SKIP_LAST
         endf
-        move.l  d3,hex
+        move.l  d3,hex                          Move LONG data from d3 into variable hex
         rts
 
 * Constants - Alphabetical
