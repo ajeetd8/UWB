@@ -34,7 +34,7 @@ ASK     bsr             prompt_user
         bsr             check_bounds
         
         * If input error detected
-        if.b d5 <EQ> #$01 then.s
+        if.b d5 <EQ> #$01 then.s                
                 bra     ask
         endi
         * Else address is valid        
@@ -74,27 +74,46 @@ DONE
         SIMHALT
 
 * Subroutines - Alphabetical
+CLEAR_D: * Clears data registers d0-d5
+        clr.l           d0
+        clr.l           d1
+        clr.l           d2
+        clr.l           d3
+        clr.l           d4
+        clr.l           d5
+        rts
+
 COLLECT: * Collects string and stores value in string and length in str_length
         lea             string,a1
         move.w          #2,d0
         trap            #15
-        move.l          d1,str_length
+        move.w          d1,str_length
         rts
 
 CHECK_BOUNDS:
-        * Branch if 8 is less than str_length
-        cmpi.w          #9,str_length
-        bge             .error_1
+        * Branch if str_length is greater than 8
+        cmp.w           #$08,str_length
+        bgt             .error_1
 
-        * Branch if #$ is greater than d3
-        cmp.l          #$00005000,d3
+        * Branch if hex is less than #$
+.if1    cmp.w           #$04,str_length
+        ble             .else1
+        cmp.l           #$00005000,hex
+        blt             .error_2
+        bra             .if2
+.ELSE1
+        cmp.l           #$5000,hex
+        blt             .error_2
+        
+        * Branch if hex is less than #$
+.if2    cmp.w           #$04,str_length
+        ble             .else2
+        cmp.l           #$00007000,hex
         bgt             .error_2
-
-        * Branch if #$ is less than d3
-        cmp.l          #$00007000,d3
+        bra             .end
+.ELSE2  
+        cmp.l           #$7000,hex
         bgt             .error_2
-
-        * Else branch to .end
         bra             .end
 
 .ERROR_1 * "INVALID INPUT: too long, try again"
@@ -129,7 +148,6 @@ PROMPT_USER: * Collects user input from console
         lea             prompt_2,a1
         move.w          #14,d0
         trap            #15
-
         rts
 
 REPL_REG: * Retrieves memory to replace the registers a0-a5 and d0-d7 with their old data
@@ -140,26 +158,26 @@ REPL_REG: * Retrieves memory to replace the registers a0-a5 and d0-d7 with their
 STR_TO_HEX: * Converts string to hexadecimal stored in variable hex and register d3
         clr     d0
         for.b d0 = #1 to d1 do.s                For 0 to str_length do:
-                move.b  (a1)+,d2                Move BYTE from data at a1 into d2 then increment
+                move.b          (a1)+,d2        Move BYTE from data at a1 into d2 then increment
                 if.b d2 <LT> #$40 then.s        If BYTE data in d2 is LT #$40 then:
-                        sub.b   #$30,d2         Subtract #$30 from BYTE data in d2
+                        sub.b           #$30,d2 Subtract #$30 from BYTE data in d2
                 endi
                 if.b d2 <GT> #$40 then.s        If BYTE data in d2 is GT #$40 then:
-                        sub.b   #$37,d2         Subtract #$37 from BYTE data in d2
+                        sub.b           #$37,d2 Subtract #$37 from BYTE data in d2
                 endi
-                add.b   d2,d3                   Add BYTE data in d2 to d3
-                cmp.b   d0,d1                   Compare BYTE data at d1 to d0
-                beq     .skip_last              Branch if d0 = d1 
-                lsl.l   #$04,d3                 Else logical shift left 4 bytes in d3
+                add.b           d2,d3           Add BYTE data in d2 to d3
+                cmp.b           d0,d1           Compare BYTE data at d1 to d0
+                beq             .skip_last      Branch if d0 = d1 
+                lsl.l           #$04,d3         Else logical shift left 4 bytes in d3
 .SKIP_LAST
         endf
-        move.l  d3,hex                          Move LONG data from d3 into variable hex
-
+        move.l          d3,hex                  Move LONG data from d3 into variable hex
+        bsr             clear_d                   Clear data registers
         rts
 
 * Constants - Alphabetical
-ERROR_1                 dc.b    'INVALID INPUT: too long, try again',0,LF,CR
-ERROR_2                 dc.b    'INVALID INPUT: not within range',0,CR,LF
+ERROR_1                 dc.b    'INVALID INPUT: too long',0
+ERROR_2                 dc.b    'INVALID INPUT: not within range',0
 NEW_LINE                dc.b    ' ',0,CR,LF
 PROMPT_1                dc.b    'Enter starting address with all letters in capital. Range=[,]',0
 PROMPT_2                dc.b    '$',0
