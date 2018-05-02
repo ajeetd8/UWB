@@ -34,10 +34,9 @@ ASK     bsr             prompt_user
         bsr             check_bounds
         
         * If input error detected
-        if.b d5 <EQ> #$01 then.s                
-                bra     ask
-        endi
-        * Else address is valid        
+        cmp.b           #$01,d5
+        beq             ask
+        
 * From here, he need to write our disassembly code
 LOOP    
         * Read word by words.
