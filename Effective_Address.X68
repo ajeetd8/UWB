@@ -66,7 +66,19 @@ LOOP
 
 *Mnemonic: move.b
 MC_MOVE_B
-        bsr             MOVE_B_S
+        bsr             MOVE_B_S                Print out the instruction.
+        bsr             TAB
+        bsr             DEST_SRC_MD             Anaylize and print.
+        bsr             D_ZERO
+        
+        
+        
+        SIMHALT
+        bra             LOOP
+* ----------------------------------------
+** Sub-functions for Mnemonics
+
+DEST_SRC_MD
         * d1 : Dest Register
         * d2 : Dest Mode
         * d3 : Src Mode
@@ -77,7 +89,7 @@ MC_MOVE_B
         bclr            #5,d4
         bclr            #6,d4
         bclr            #7,d4
-        lsr.w           #3,d5
+        ror.w           #3,d5
 
         move.b          d5,d3
         bclr            #3,d3
@@ -85,7 +97,7 @@ MC_MOVE_B
         bclr            #5,d3
         bclr            #6,d3
         bclr            #7,d3
-        lsr.w           #3,d5
+        ror.w           #3,d5
 
         move.b          d5,d2
         bclr            #3,d2
@@ -93,7 +105,7 @@ MC_MOVE_B
         bclr            #5,d2
         bclr            #6,d2
         bclr            #7,d2
-        lsr.w           #3,d5
+        ror.w           #3,d5
 
         move.b          d5,d1
         bclr            #3,d1
@@ -101,11 +113,14 @@ MC_MOVE_B
         bclr            #5,d1
         bclr            #6,d1
         bclr            #7,d1
-        lsr.w           #3,d5
-        
-        
-        SIMHALT
-        bra             LOOP
+        ror.w           #3,d5
+        ror.w           #4,d5
+
+        rts
+
+** Sub_function end here
+* ---------------------------------------
+
 
 * Mnemonic disassembly end here
 *******************************************************************************************
@@ -337,8 +352,37 @@ BYTE_S      LEA     BYTE,A1          * loads Message into address
             TRAP    #15              * Displays meessage
             RTS
 
+* Data register.
+D_ZERO      LEA     D_Zero_MESSAGE,A1
+            MOVE.B  #14,D0
+            TRAP    #15
+            RTS
+D_ONE
+D_TWO
+D_THREE
+D_FOUR
+D_FIVE
+D_SIX
+D_SEVEN
+
+* Address Register.
+A_ZERO
+A_ONE
+A_TWO
+A_THREE
+A_FOUR
+A_FIVE
+A_SIX
+A_SEVEN
+
 * NewLine
 NEWLINE     lea         CRLF,A1
+            move.b      #14,d0
+            trap        #15
+            rts
+
+* Tab
+TAB         lea         TAB_SPACE,a1
             move.b      #14,d0
             trap        #15
             rts
@@ -377,6 +421,11 @@ LSL_MESSAGE             DC.B    'LSL',0
 ROR_MESSAGE             DC.B    'ROR',0
 ROL_MESSAGE             DC.B    'ROL',0
 
+* Data Register
+D_Zero_MESSAGE          DC.B    'D0',0
+
+* Address Register
+
 * Size instruction.
 LONG_WORD               DC.B    '.L',0
 WORD                    DC.B    '.W',0
@@ -385,6 +434,7 @@ BYTE                    DC.B    '.B',0
 
 * New Line
 CRLF                    dc.b    CR,LF,0
+TAB_SPACE               dc.b    '    ',0
 
 
 **************************************************************************************************
@@ -400,6 +450,7 @@ CRLF                    dc.b    CR,LF,0
 DONE
         SIMHALT
     END    START        ; last line of source
+
 
 
 
