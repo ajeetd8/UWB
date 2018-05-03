@@ -86,10 +86,10 @@ MOVEQ
 MOVEM
 ADD
 ADDA
-ADDI
+ADDI            Does not work (sub)
 ADDQ
 SUB
-SUBI
+SUBI            Does not work (sub)
 MULS
 MULU
 DIVU
