@@ -153,6 +153,9 @@ CHECK_BOUNDS: * Bounds checking for valid input
         rts
 
 CHECK_RESPONSE:
+        * Clear data registers
+        bsr             clear_data
+
         * Branch if str_length is greater than 8
         cmpi.w          #$01,str_length
         bgt             .error_1
