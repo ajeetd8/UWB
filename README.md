@@ -1,9 +1,46 @@
 # Todo
-[Progressive Report 1](https://docs.google.com/document/d/1-1W64IIo_uXyICalOz1E2P9-dUlTqSkCL2gHTWVDDNQ/edit#heading=h.vu1ekqi6efad)
+[Progressive Report 2](https://docs.google.com/document/d/1LXAanxkvZFTa6o7rzyygwUS_rW-GSOaBa9M_kWEO9FA/edit)
 Due Saturday
 
+# 68K bug list
+```
+ADDI                Automatically convert to ADD
+SUBI                Automatically convert to SUB
+MOVE.B
+MOVE.L
+MOVEA.L
+MOVE.W
+MOVEA.W
+CLR
+NOP
+RTS
+JSR
+MOVEM
+LEA
+ADDQ
+BCC
+BGT
+BLE
+MOVEQ
+OR
+DIVU
+SUB
+CMP
+AND
+MULS
+MULU
+ADD
+ADDA
+ASR
+ASL
+LSR
+LSL
+ROR
+ROL
+```
 
-## Requirework for each week.
+
+# Requirework for each week.
 
 1. flow-chart
 2. machine code table
@@ -86,10 +123,10 @@ MOVEQ
 MOVEM
 ADD
 ADDA
-ADDI
+ADDI            Does not work (sub)
 ADDQ
 SUB
-SUBI
+SUBI            Does not work (sub)
 MULS
 MULU
 DIVU
