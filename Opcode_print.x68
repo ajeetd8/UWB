@@ -250,40 +250,42 @@ ROL_S       LEA     ROL_MESSAGE,A1  * loads Message into address
 CR      EQU    $0D              * ASCII code for Carriage Return
 LF      EQU    $0A              * ASCII code for Line Feed
 
-ADDI_MESSAGE            DC.B    'ADDI',CR,LF,0
-SUBI_MESSAGE            DC.B    'SUBI',CR,LF,0
-MOVE_B_MESSAGE          DC.B    'MOVE.B',CR,LF,0
-MOVE_L_MESSAGE          DC.B    'MOVE.L',CR,LF,0
-MOVEA_L_MESSAGE         DC.B    'MOVEA.L',CR,LF,0
-MOVE_W_MESSAGE          DC.B    'MOVE.W',CR,LF,0
-MOVEA_W_MESSAGE         DC.B    'MOVEA.W',CR,LF,0
-CLR_MESSAGE             DC.B    'CLR',CR,LF,0
-NOP_MESSAGE             DC.B    'NOP',CR,LF,0
-RTS_MESSAGE             DC.B    'RTS',CR,LF,0
-JSR_MESSAGE             DC.B    'JSR',CR,LF,0
-MOVEM_MESSAGE           DC.B    'MOVEM',CR,LF,0
-LEA_MESSAGE             DC.B    'LEA',CR,LF,0
-ADDQ_MESSAGE            DC.B    'ADDQ',CR,LF,0
-BCC_MESSAGE             DC.B    'BCC',CR,LF,0
-BGT_MESSAGE             DC.B    'BGT',CR,LF,0
-BLE_MESSAGE             DC.B    'BLE',CR,LF,0
-MOVEQ_MESSAGE           DC.B    'MOVEQ',CR,LF,0
-OR_MESSAGE              DC.B    'OR',CR,LF,0
-DIVU_MESSAGE            DC.B    'DIVU',CR,LF,0
-SUB_MESSAGE             DC.B    'SUB',CR,LF,0
-CMP_MESSAGE             DC.B    'CMP',CR,LF,0
-AND_MESSAGE             DC.B    'AND',CR,LF,0
-MULS_MESSAGE            DC.B    'MULS',CR,LF,0
-MULU_MESSAGE            DC.B    'MULU',CR,LF,0
-ADD_MESSAGE             DC.B    'ADD',CR,LF,0
-ADDA_MESSAGE            DC.B    'ADDA',CR,LF,0
-ASR_MESSAGE             DC.B    'ASR',CR,LF,0
-ASL_MESSAGE             DC.B    'ASL',CR,LF,0
-LSR_MESSAGE             DC.B    'LSR',CR,LF,0
-LSL_MESSAGE             DC.B    'LSL',CR,LF,0
-ROR_MESSAGE             DC.B    'ROR',CR,LF,0
-ROL_MESSAGE             DC.B    'ROL',CR,LF,0
-    END    START        ; last line of source
+ADDI_MESSAGE            DC.B    'ADDI',0
+SUBI_MESSAGE            DC.B    'SUBI',0
+MOVE_B_MESSAGE          DC.B    'MOVE.B',0
+MOVE_L_MESSAGE          DC.B    'MOVE.L',0
+MOVEA_L_MESSAGE         DC.B    'MOVEA.L',0
+MOVE_W_MESSAGE          DC.B    'MOVE.W',0
+MOVEA_W_MESSAGE         DC.B    'MOVEA.W',0
+CLR_MESSAGE             DC.B    'CLR',0
+NOP_MESSAGE             DC.B    'NOP',0
+RTS_MESSAGE             DC.B    'RTS',0
+JSR_MESSAGE             DC.B    'JSR',0
+MOVEM_MESSAGE           DC.B    'MOVEM',0
+LEA_MESSAGE             DC.B    'LEA',0
+ADDQ_MESSAGE            DC.B    'ADDQ',0
+BCC_MESSAGE             DC.B    'BCC',0
+BGT_MESSAGE             DC.B    'BGT',0
+BLE_MESSAGE             DC.B    'BLE',0
+MOVEQ_MESSAGE           DC.B    'MOVEQ',0
+OR_MESSAGE              DC.B    'OR',0
+DIVU_MESSAGE            DC.B    'DIVU',0
+SUB_MESSAGE             DC.B    'SUB',0
+CMP_MESSAGE             DC.B    'CMP',0
+AND_MESSAGE             DC.B    'AND',0
+MULS_MESSAGE            DC.B    'MULS',0
+MULU_MESSAGE            DC.B    'MULU',0
+ADD_MESSAGE             DC.B    'ADD',0
+ADDA_MESSAGE            DC.B    'ADDA',0
+ASR_MESSAGE             DC.B    'ASR',0
+ASL_MESSAGE             DC.B    'ASL',0
+LSR_MESSAGE             DC.B    'LSR',0
+LSL_MESSAGE             DC.B    'LSL',0
+ROR_MESSAGE             DC.B    'ROR',0
+ROL_MESSAGE             DC.B    'ROL',0
+    END    START        ; last line of source
+
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
