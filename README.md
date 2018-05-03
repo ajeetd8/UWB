@@ -84,7 +84,7 @@ d2 -> Free
 d3 -> Free
 d4 -> Free
 d5 -> Byte data saving place from memory &7000 ~
-d6 -> Arthematic (Free to use within the loop) 
+d6 -> Arithematic (Free to use within the loop) 
 d7 -> End Condition check
 ```
 ## Address Register

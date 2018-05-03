@@ -27,30 +27,31 @@ LOOP
         
         * If this is not terminal condition.
         * Read word from current memory
-        move.w          (a6)+,d5
+        move.w          (a6)+,d6
         
         *-------------------
         * addi, subi
         * 
-        *cmp.w           #$1000,d5
+        *cmp.w           #$1000,d6
         *blo
 
         * move.b
-        cmp.w           #$2000,d5
+        cmp.w           #$2000,d6
         blo             MC_MOVE_B
 
-        cmp.w           #$3000,d5
-        cmp.w           #$4000,d5
-        cmp.w           #$5000,d5
-        cmp.w           #$6000,d5
-        cmp.w           #$7000,d5
-        cmp.w           #$8000,d5
-        cmp.w           #$9000,d5
-        cmp.w           #$a000,d5
+        cmp.w           #$3000,d6
+        cmp.w           #$4000,d6
+        cmp.w           #$5000,d6
+        blo             MC_CLR_LEA            
+        cmp.w           #$6000,d6
+        cmp.w           #$7000,d6
+        cmp.w           #$8000,d6
+        cmp.w           #$9000,d6
+        cmp.w           #$a000,d6
         
-        cmp.w           #$d000,d5
-        cmp.w           #$e000,d5
-        cmp.w           #$f000,d5
+        cmp.w           #$d000,d6
+        cmp.w           #$e000,d6
+        cmp.w           #$f000,d6
         
         * Read word by words.
         * Every loop is incrementing by word
@@ -66,56 +67,180 @@ LOOP
 
 *Mnemonic: move.b
 MC_MOVE_B
+        move.b          #$01,d7                 mark 01 for byte operation.
         bsr             MOVE_B_S                Print out the instruction.
         bsr             TAB
         bsr             DEST_SRC_MD             Anaylize and print.
         bsr             D_ZERO
+        bsr             NEWLINE
         
         
         
         SIMHALT
         bra             LOOP
+
+* Mnemonic: move.l
+MC_MOVE_L
+        move.b          #$10,d7                 mark 10 for long operation.
+        SIMHALT
+
+* Mnemonic: movea.l
+MC_MOVEA_L
+        SIMHALT
+
+* Mnemonic: move.w
+MC_MOVE_W
+        move.b          #$11,d7                 mark 11 for byte operation.
+        SIMHALT
+
+* Mnemonic: movea.w
+MC_MOVA_W
+        SIMHALT
+
+* Mnemonic: clr, nop, rts, jsr, movem, lea
+MC_CLR_LEA
+        bsr             RTS_S                           * This is test code to see whether this is working or not!!!
+        SIMHALT
+
+* Mnemonic: addq
+MC_ADDQ
+        SIMHALT
+
+* Mnemonic: bcc, bgt, ble
+MC_BCC
+        SIMHALT
+
+* Mnemonic: moveq, or
+MC_MOVEQ
+        SIMHALT
+
+* Mnemonic: or, divu
+MC_OR_DIVU
+        SIMHALT
+
+* Mnemonic: sub
+MC_SUB
+        SIMHALT
+
+* Mnemonic: cmp
+MC_COMP
+        SIMHALT
+
+* Mnemonic: and
+MC_AND_MULU
+        SIMHALT
+
+* Mnemonic: add, adda
+MC_ADD_ADDA
+        SIMHALT
+
+* Mnemonic: asr, asl, lsr, lsl, ror, rol
+MC_ASR_ROL
+        SIMHALT
+
 * ----------------------------------------
 ** Sub-functions for Mnemonics
 
-DEST_SRC_MD
-        * d1 : Dest Register
-        * d2 : Dest Mode
-        * d3 : Src Mode
-        * d4 : Src Register
-        move.b          d5,d4
+*** subfunction for move.b, move.l, move.w
+DEST_SRC_MD                                     * Dest to source & mode
+        * d0 : Destination Value 
+        * d1 : Source Value
+        * d2 : Dest Register
+        * d3 : Dest Mode
+        * d4 : Src Mode
+        * d5 : Src Register
+
+***********************************************
+* initialize d2 ~ d5        
+        move.b          d6,d5
+        bclr            #3,d5
+        bclr            #4,d5
+        bclr            #5,d5
+        bclr            #6,d5
+        bclr            #7,d5
+        ror.w           #3,d6
+        
+        move.b          d6,d4
         bclr            #3,d4
         bclr            #4,d4
         bclr            #5,d4
         bclr            #6,d4
         bclr            #7,d4
-        ror.w           #3,d5
+        ror.w           #3,d6
 
-        move.b          d5,d3
+        move.b          d6,d3
         bclr            #3,d3
         bclr            #4,d3
         bclr            #5,d3
         bclr            #6,d3
         bclr            #7,d3
-        ror.w           #3,d5
+        ror.w           #3,d6
 
-        move.b          d5,d2
+        move.b          d6,d2
         bclr            #3,d2
         bclr            #4,d2
         bclr            #5,d2
         bclr            #6,d2
         bclr            #7,d2
-        ror.w           #3,d5
+        ror.w           #3,d6
+        ror.w           #4,d6
+**********************************************
 
-        move.b          d5,d1
-        bclr            #3,d1
-        bclr            #4,d1
-        bclr            #5,d1
-        bclr            #6,d1
-        bclr            #7,d1
-        ror.w           #3,d5
-        ror.w           #4,d5
+***********************************************
+* Check Whether there is following memory address or not. (Source)
+        cmp.b           #%0111,d4
+        bne             DSM_SRC_N_SRC_FOLLOW         No following instruction for source
 
+        * check whether following is word size
+        cmp.b           #%0000,d5               (xxx).W
+        beq             DSM_SRC_LOAD_WORD
+        cmp.b           #$0001,d5               (xxx).L
+        beq             DSM_SRC_LOAD_LONG
+        cmp.b           #%0100,d5               #<data>
+        bne             DSM_SRC_N_SRC_FOLLOW    No following instruction.
+        cmp.b           #$01,d7                 #<data>.b
+        beq             DSM_SRC_LOAD_WORD
+        cmp.b           #$11,d7                 #<data>.w
+        beq             DSM_SRC_LOAD_WORD
+        cmp.b           #$10,d7                 #<data>.l
+        beq             DSM_SRC_LOAD_LONG
+
+        bra            DSM_SRC_N_LONG          DEST_SRC_MD, NOT WORD
+
+DSM_SRC_LOAD_WORD
+        ** Load word size to d1
+        move.w          (a6)+,d1
+        bra             DSM_SRC_N_SRC_FOLLOW    Destination Trace
+
+DSM_SRC_LOAD_LONG
+        ** Load long size to d1
+        move.l          (a6)+,d1
+        bra             DSM_SRC_N_SRC_FOLLOW    Destination Trace
+
+DSM_SRC_N_LONG
+        * Error message
+        
+DSM_SRC_N_SRC_FOLLOW      * No following instruction for source (Check destination.)
+
+***********************************************
+* Check Whether there is following memory address or not. (Destination)
+        cmp.b           #%0111,d3
+        bne             DSM_DST_NE      DEST_SRC_MD, NOT EQUAL, DESTINATION
+
+        cmp.b           #%0000,d2
+        beq             DSM_DST_LOAD_WORD
+        cmp.b           #%0001,d2
+        beq             DSM_DST_LOAD_LONG
+
+DSM_DST_LOAD_WORD
+        move.w          (a6)+,d0
+        bra             DSM_DST_LOAD_LONG
+
+DSM_DST_LOAD_LONG
+        move.l          (a6)+,d0
+        bra             DSM_DST_NE
+
+DSM_DST_NE     * No following instruction for destination.
         rts
 
 ** Sub_function end here
@@ -422,9 +547,24 @@ ROR_MESSAGE             DC.B    'ROR',0
 ROL_MESSAGE             DC.B    'ROL',0
 
 * Data Register
-D_Zero_MESSAGE          DC.B    'D0',0
+D_ZERO_MESSAGE          DC.B    'D0',0
+D_ONE_MESSAGE           DC.B    'D1',0
+D_TWO_MESSAGE           DC.B    'D2',0
+D_THREE_MESSAGE         DC.B    'D3',0
+D_FOUR_MESSAGE          DC.B    'D4',0
+D_FIVE_MESSAGE          DC.B    'D5',0
+D_SIX_MESSAGE           DC.B    'D6',0
+D_SEVEN_MESSAGE         DC.B    'D7',0
 
 * Address Register
+A_ZERO_MESSAGE          DC.B    'A0',0
+A_ONE_MESSAGE           DC.B    'A1',0
+A_TWO_MESSAGE           DC.B    'A2',0
+A_THREE_MESSAGE         DC.B    'A3',0
+A_FOUR_MESSAGE          DC.B    'A4',0
+A_FIVE_MESSAGE          DC.B    'A5',0
+A_SIX_MESSAGE           DC.B    'A6',0
+A_SEVEN_MESSAGE         DC.B    'A7',0
 
 * Size instruction.
 LONG_WORD               DC.B    '.L',0
@@ -445,11 +585,15 @@ TAB_SPACE               dc.b    '    ',0
 *this is a sample code to disassemble.
 
         move.b          d1,d1
+        rts
    
 *Instruction for terminating the program
 DONE
         SIMHALT
     END    START        ; last line of source
+
+
+
 
 
 
