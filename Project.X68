@@ -34,7 +34,6 @@ INITIAL_PROMPT
         * Else if address is valid load into a6 
         lea             hex,a0
         move.l          (a0),a6
-        bra             test
         * Clear data registers
         bsr             clear_data
 
@@ -271,38 +270,6 @@ STR_LENGTH              ds.w    1
 **************************************************************************************************
         * From here, the code we are going to disassemble.
 **************************************************************************************************
-TEST    org             DISASSEMBLE_FROM
-
-        nop
-        nop
-        nop
-        nop
-        nop
-
-        nop
-        nop
-        nop
-        nop
-        nop
-
-        nop
-        nop
-        nop
-        nop
-        nop
-
-        nop
-        nop
-        nop
-        nop
-        nop
-
-        nop
-        nop
-        nop
-        nop
-        nop
-        bra     loop
 
 THE_END
         END         start
