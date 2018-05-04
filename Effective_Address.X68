@@ -6,55 +6,110 @@
 * expected to merge to Project.X68
 *-----------------------------------------------------------
 
-STACK                   equ         $100000
-DISASSEMBLE_FROM        equ         $7000
-CR                      equ         $0d
-LF                      equ         $0a  
+* Const variable we need to invoke
+STACK                   equ             $100000
+DISASSEMBLE_FROM        equ             $7000
+BS                      equ             $08   Backspace
+HT                      equ             $09   Tab (horizontal 5 characters)
+LF                      equ             $0A   New line (line feed)
+VT                      equ             $0B   Vertical tab (4 lines)
+FF                      equ             $0C   Form Feed (Always end printing with a Form Feed.)
+CR                      equ             $0D   Carriage Return
+
+* Local variable we will invoke
+LOOP_COUNT              ds.b            $1
 
 START:  org             $1000
-        * Setting the stack address.
-        lea             STACK,sp 
-        lea             DISASSEMBLE_FROM,a6     move value of DISASSEMLE_FROM
+                * Setting the stack address.
+                lea             STACK,sp 
+                lea             DISASSEMBLE_FROM,a6     move value of DISASSEMLE_FROM
 * From here, he need to write our disassembly code
 
 *****************************************************************************************
+* Loop 20 times, and get the user enter.
+        move.b          #$00,LOOP_COUNT
 * Iteration loop start from here
 LOOP
         * Check for the terminal Condition.
         move.l          (a6),d7
         cmp.l           #$FFFFFFFF,d7           Terminal condition check
         beq             DONE                    Terminating the program.
+
+
+        * Check cycle(20) condition.
+        cmp.b           #20,LOOP_COUNT
+        bge             HALT
+
+        ** Add 1 to the cycle
+        move.b          LOOP_COUNT,d7
+        addi.b          #1,d7
+        move.b          d7,LOOP_COUNT
+
         
-        * If this is not terminal condition.
-        * Read word from current memory
-        move.w          (a6)+,d6
+        * Show current pc
+        bsr             ADDRESS_OUT
+
+        move.w         (a6)+,d7
         
         *-------------------
         * addi, subi
-        * 
-        *cmp.w           #$1000,d6
+        *cmp.w           #$1000,(a6)
         *blo
 
         * move.b
-        cmp.w           #$2000,d6
+        cmp.w           #$2000,D7
         blo             MC_MOVE_B
 
-        cmp.w           #$3000,d6
-        cmp.w           #$4000,d6
-        cmp.w           #$5000,d6
-        blo             MC_CLR_LEA            
-        cmp.w           #$6000,d6
-        cmp.w           #$7000,d6
-        cmp.w           #$8000,d6
-        cmp.w           #$9000,d6
-        cmp.w           #$a000,d6
+        * move.l, movea.l
+        cmp.w           #$3000,D7
+        blo             MC_MOVE_L_MOVEA_L
+
+        * move.w, movea.w
+        cmp.w           #$4000,D7
+        blo             MC_MOVE_W_MOVEA_W
+
+        * clr, nop, rts, jsr, movem, lea
+        cmp.w           #$5000,D7
+        blo             MC_CLR_LEA
+
+        * addq      
+        cmp.w           #$6000,D7
+        blo             MC_ADDQ
+
+        * bcc
+        cmp.w           #$7000,D7
+        blo             MC_BCC
+
+        * moveq
+        cmp.w           #$8000,D7
+        blo             MC_MOVEQ
+
+        * or, divu
+        cmp.w           #$9000,D7
+        blo             MC_OR_DIVU
+
+        * sub
+        cmp.w           #$a000,D7
+        blo             MC_SUB
+
+        * cmp
+        cmp.w           #$c000,D7
+        blo             MC_COMP
         
-        cmp.w           #$d000,d6
-        cmp.w           #$e000,d6
-        cmp.w           #$f000,d6
-        
-        * Read word by words.
-        * Every loop is incrementing by word
+        * and, muls, mulu
+        cmp.w           #$d000,D7
+        blo             MC_AND_MULU
+
+        * add, adda
+        cmp.w           #$e000,D7
+        blo             MC_ADD_ADDA
+
+        * asr, asl, lsr, lsl, ror, rol
+        cmp.w           #$f000,D7
+        blo             MC_ASR_ROL
+
+        * Invalid input, show message
+        bsr             INVALID_S
         
         
         bra             LOOP
@@ -62,81 +117,123 @@ LOOP
 * Iteration end here
 *******************************************************************************************
 
+
+*******************************************************************************************
+* Halting the simulator
+HALT
+        move.b          #$00,LOOP_COUNT         Clear the Loop count
+        
+        * Getting the 'Enter' Key from the user
+        * Once you get the enter, clear the screen
+        * go back to the routine
+
+
+        SIMHALT
+        *bra             LOOP
+*******************************************************************************************
+
+
 *******************************************************************************************
 * Mnemonic disassmbly start here
 
 *Mnemonic: move.b
 MC_MOVE_B
         move.b          #$01,d7                 mark 01 for byte operation.
-        bsr             MOVE_B_S                Print out the instruction.
+        
         bsr             TAB
-        bsr             DEST_SRC_MD             Anaylize and print.
-        bsr             D_ZERO
-        bsr             NEWLINE
-        
-        
-        
-        SIMHALT
+        bsr             MOVE_B_S                Print out the instruction.
+        bsr             NEWLINE                 Newline
+        *bsr             DEST_SRC_MD             Anaylize and print.
+        *bsr             D_ZERO
+        *bsr             NEWLINE
         bra             LOOP
 
-* Mnemonic: move.l
-MC_MOVE_L
+* Mnemonic: move.l, movea.l
+MC_MOVE_L_MOVEA_L
         move.b          #$10,d7                 mark 10 for long operation.
-        SIMHALT
-
-* Mnemonic: movea.l
-MC_MOVEA_L
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: move.w
-MC_MOVE_W
+MC_MOVE_W_MOVEA_W
         move.b          #$11,d7                 mark 11 for byte operation.
-        SIMHALT
-
-* Mnemonic: movea.w
-MC_MOVA_W
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: clr, nop, rts, jsr, movem, lea
 MC_CLR_LEA
+        
+        bsr             TAB
         bsr             RTS_S                           * This is test code to see whether this is working or not!!!
-        SIMHALT
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: addq
 MC_ADDQ
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: bcc, bgt, ble
 MC_BCC
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: moveq, or
 MC_MOVEQ
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: or, divu
 MC_OR_DIVU
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: sub
 MC_SUB
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: cmp
 MC_COMP
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: and
 MC_AND_MULU
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: add, adda
 MC_ADD_ADDA
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * Mnemonic: asr, asl, lsr, lsl, ror, rol
 MC_ASR_ROL
-        SIMHALT
+        
+        bsr             TAB
+        bsr             NEWLINE                 Newline
+        bra             LOOP
 
 * ----------------------------------------
 ** Sub-functions for Mnemonics
@@ -247,6 +344,63 @@ DSM_DST_NE     * No following instruction for destination.
 * ---------------------------------------
 
 
+* -------------------------------------------------------------------
+* Address out instruction
+*********************************************
+* Read 8 character from the address.
+* for(int i =0; i<8; i++), and i = d0
+ADDRESS_OUT
+    clr         d0
+    move.l      a6,d5
+ADDRESS_OUT_LOOP_1
+    cmp.b       #$08,d0                 i=8 Break statement
+    bge         ADDRESS_OUT_EXIT_1
+    addi.b      #$01,d0                 i++
+    
+    * Getting only one character
+    move.b      d5,d4
+    bclr        #4,d4
+    bclr        #5,d4
+    bclr        #6,d4
+    bclr        #7,d4
+    
+    * Getting next character
+    ror.l       #4,d5
+    
+    * Save the Character at stack
+    movem.w     d4,-(sp)
+    
+    bra         ADDRESS_OUT_LOOP_1
+*********************************************
+ADDRESS_OUT_EXIT_1  
+    
+    clr         d7
+ADDRESS_OUT_LOOP_2
+    cmp.b       #$08,d7
+    bge         ADDRESS_OUT_EXIT_2
+    addi.b      #$01,d7
+    clr.l       d0
+    movem.w     (sp)+,d4
+    move.b      d4,d1
+    addi.b      #$30,d1
+    
+    cmp.b       #$3a,d1
+    blo         ADDRESS_OUT_OUT
+    addi.b      #7,d1
+    
+ADDRESS_OUT_OUT    
+    move.b      #6,d0
+    trap        #15
+
+    
+    bra         ADDRESS_OUT_LOOP_2
+    
+ADDRESS_OUT_EXIT_2
+    rts
+
+* Address out instruction
+* -------------------------------------------------------------------
+
 * Mnemonic disassembly end here
 *******************************************************************************************
 
@@ -257,41 +411,8 @@ DSM_DST_NE     * No following instruction for destination.
 * This is to minimize the typing
 * Predefined strin instructions
 ****************************************************************************
-            BSR    ADDI_S
-            BSR    SUBI_S
-            BSR    MOVE_B_S
-            BSR    MOVE_L_S
-            BSR    MOVEA_L_S
-            BSR    MOVE_W_S
-            BSR    MOVEA_W_S
-            BSR    CLR_S
-            BSR    NOP_S
-            BSR    RTS_S
-            BSR    JSR_S
-            BSR    MOVEM_S
-            BSR    LEA_S           
-            BSR    ADDQ_S
-            BSR    BCC_S
-            BSR    BGT_S
-            BSR    BLE_S          
-            BSR    MOVEQ_S        
-            BSR    OR_S
-            BSR    DIVU_S           
-            BSR    SUB_S 
-            BSR    CMP_S    
-            BSR    AND_S
 
-            BSR    MULS_S           
-            BSR    MULU_S            
-            BSR    ADD_S
-            BSR    ADDA_S
-            BSR    ASR_S
-            BSR    ASL_S
-            BSR    LSR_S
-            BSR    LSL_S
-            BSR    ROR_S
-            BSR    ROL_S 
-          SIMHALT             ; halt simulator
+
 
 * Assembly instruction.     
 ADDI_S      LEA     ADDI_MESSAGE,A1  * loads Message into address
@@ -478,27 +599,72 @@ BYTE_S      LEA     BYTE,A1          * loads Message into address
             RTS
 
 * Data register.
-D_ZERO      LEA     D_Zero_MESSAGE,A1
-            MOVE.B  #14,D0
-            TRAP    #15
-            RTS
-D_ONE
-D_TWO
-D_THREE
-D_FOUR
-D_FIVE
-D_SIX
-D_SEVEN
+D_ZERO          LEA     D_ZERO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_ONE           LEA     D_ONE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_TWO           LEA     D_TWO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_THREE         LEA     D_THREE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_FOUR          LEA     D_FOUR_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_FIVE          LEA     D_FIVE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_SIX           LEA     D_SIX_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_SEVEN         LEA     D_SEVEN_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
 
 * Address Register.
-A_ZERO
-A_ONE
-A_TWO
-A_THREE
-A_FOUR
-A_FIVE
-A_SIX
-A_SEVEN
+A_ZERO          LEA     A_ZERO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_ONE           LEA     A_ONE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_TWO           LEA     A_TWO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_THREE         LEA     A_THREE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FOUR          LEA     A_FOUR_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FIVE          LEA     A_FIVE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SIX           LEA     A_SIX_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SEVEN         LEA     A_SEVEN_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
 
 * NewLine
 NEWLINE     lea         CRLF,A1
@@ -511,6 +677,12 @@ TAB         lea         TAB_SPACE,a1
             move.b      #14,d0
             trap        #15
             rts
+
+* INVALID MESSAGE
+INVALID_S       lea     INVALID_INSTRUCTION_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
 
 ADDI_MESSAGE            DC.B    'ADDI',0
 SUBI_MESSAGE            DC.B    'SUBI',0
@@ -571,10 +743,12 @@ LONG_WORD               DC.B    '.L',0
 WORD                    DC.B    '.W',0
 BYTE                    DC.B    '.B',0
 
+* Invalid Insturction.
+INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',CR,LF,0
 
 * New Line
 CRLF                    dc.b    CR,LF,0
-TAB_SPACE               dc.b    '    ',0
+TAB_SPACE               dc.b    HT,0
 
 
 **************************************************************************************************
@@ -584,16 +758,35 @@ TAB_SPACE               dc.b    '    ',0
 
 *this is a sample code to disassemble.
 
-        move.b          d1,d1
+        move.b          d1,d0
         rts
-   
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
+        rts
 *Instruction for terminating the program
 DONE
         SIMHALT
     END    START        ; last line of source
-
-
-
 
 
 

@@ -83,7 +83,7 @@ d1 -> Free
 d2 -> Free
 d3 -> Free
 d4 -> Free
-d5 -> Byte data saving place from memory &7000 ~
+d5 -> Byte data saving place from memory &7000 ~, (Free to use with in subroutine)
 d6 -> Arithematic (Free to use within the loop) 
 d7 -> End Condition check
 ```
@@ -96,7 +96,7 @@ a3 -> Free
 a4 -> Free
 a5 -> Free
 a6 -> Reading address (from $7000)
-a7 -> Stack Pointer
+a7 -> Stack Pointer (Free to use in subroutine)
 ```
 
 # Required opcodes and addressing mode
