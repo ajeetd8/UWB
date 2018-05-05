@@ -16,15 +16,11 @@ VT                      equ             $0B   Vertical tab (4 lines)
 FF                      equ             $0C   Form Feed (Always end printing with a Form Feed.)
 CR                      equ             $0D   Carriage Return
 
-* Local variable we will invoke
-LOOP_COUNT              ds.b            $1
-
 START:  org             $1000
                 * Setting the stack address.
                 lea             STACK,sp 
                 lea             DISASSEMBLE_FROM,a6     move value of DISASSEMLE_FROM
 * From here, he need to write our disassembly code
-
 *****************************************************************************************
 * Loop 20 times, and get the user enter.
         move.b          #$00,LOOP_COUNT
@@ -49,7 +45,16 @@ LOOP
         * Show current pc
         bsr             ADDRESS_OUT
 
-        move.w         (a6)+,d7
+        * Load initial instruction
+        move.w          (a6)+,INITIAL_INSTRUCTION
+
+        * Show Initial Instruction
+        bsr             TAB
+        move.w          INITIAL_INSTRUCTION,WORD_OUT
+        bsr             WORD_OUT_S
+
+        * Save Initial instruction to d7 register
+        move.w          INITIAL_INSTRUCTION,d7
         
         *-------------------
         * addi, subi
@@ -127,9 +132,21 @@ HALT
         * Once you get the enter, clear the screen
         * go back to the routine
 
+        bsr             PRESS_ENTER_S
+        bsr             WAIT_ENTER
 
-        SIMHALT
-        *bra             LOOP
+        bsr CLEAR_SCREEN
+        bra             LOOP
+
+* ----------------------------------
+WAIT_ENTER
+        move.b          #5,d0
+        trap            #15
+        
+        cmp.b           #$0d,d1
+        bne             WAIT_ENTER
+        rts
+* ----------------------------------
 *******************************************************************************************
 
 
@@ -166,11 +183,38 @@ MC_MOVE_W_MOVEA_W
 
 * Mnemonic: clr, nop, rts, jsr, movem, lea
 MC_CLR_LEA
-        
+        * Check for 'NOP' instruction.
+        cmp.w           #$4e71,INITIAL_INSTRUCTION
+        bne             NOT_NOP
         bsr             TAB
-        bsr             RTS_S                           * This is test code to see whether this is working or not!!!
-        bsr             NEWLINE                 Newline
+        bsr             NOP_S
+        bsr             NEWLINE
         bra             LOOP
+NOT_NOP
+        * Check 'RTS' instruction.
+        cmp.w           #$4e75,INITIAL_INSTRUCTION
+        bne             NOT_RTS
+        bsr             TAB
+        bsr             RTS_S
+        bsr             NEWLINE
+        bra             LOOP
+NOT_RTS
+        * Check 'CLR' instruction
+        cmp.b           #$42,INITIAL_INSTRUCTION
+        bne             NOT_CLR
+        bsr             TAB
+
+        bsr             NEWLINE
+        bra             LOOP
+        ** todo: work here
+NOT_CLR
+        * Check 'JSR' instruction
+NOT_JSR
+        * Check 'movem' instruction
+NOT_MOVEM
+        * Check 'LEA' instruction
+NOT_LEA
+        * Show error
 
 * Mnemonic: addq
 MC_ADDQ
@@ -398,7 +442,66 @@ ADDRESS_OUT_OUT
 ADDRESS_OUT_EXIT_2
     rts
 
-* Address out instruction
+* Address out instruction end
+
+
+* -------------------------------------------------------------------
+* a5 word size out
+* Read 4 character from the address.
+* for(int i =0; i<4; i++), and i = d0
+WORD_OUT_S
+    clr         d0
+    movea.w     WORD_OUT,a5
+    move.l      a5,d5
+WORD_OUT_LOOP_1
+    cmp.b       #$04,d0                 i=8 Break statement
+    bge         WORD_OUT_EXIT_1
+    addi.b      #$01,d0                 i++
+    
+    * Getting only one character
+    move.b      d5,d4
+    bclr        #4,d4
+    bclr        #5,d4
+    bclr        #6,d4
+    bclr        #7,d4
+    
+    * Getting next character
+    ror.l       #4,d5
+    
+    * Save the Character at stack
+    movem.w     d4,-(sp)
+    
+    bra         WORD_OUT_LOOP_1
+*********************************************
+WORD_OUT_EXIT_1  
+    
+    clr         d7
+WORD_OUT_LOOP_2
+    cmp.b       #$04,d7
+    bge         WORD_OUT_EXIT_2
+    addi.b      #$01,d7
+    clr.l       d0
+    movem.w     (sp)+,d4
+    move.b      d4,d1
+    addi.b      #$30,d1
+    
+    cmp.b       #$3a,d1
+    blo         WORD_OUT_OUT
+    addi.b      #7,d1
+    
+WORD_OUT_OUT    
+    move.b      #6,d0
+    trap        #15
+
+    
+    bra         WORD_OUT_LOOP_2
+    
+WORD_OUT_EXIT_2
+    rts
+
+
+
+* a5 word size out end
 * -------------------------------------------------------------------
 
 * Mnemonic disassembly end here
@@ -684,6 +787,21 @@ INVALID_S       lea     INVALID_INSTRUCTION_MESSAGE,a1
                 trap    #15
                 rts
 
+* Press Enter Message
+PRESS_ENTER_S
+                lea     PRESS_ENTER_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+
+* Clear the screen
+CLEAR_SCREEN
+                move.w  #$ff00,d1
+                move.b  #11,d0
+                trap    #15
+                rts
+
 ADDI_MESSAGE            DC.B    'ADDI',0
 SUBI_MESSAGE            DC.B    'SUBI',0
 MOVE_B_MESSAGE          DC.B    'MOVE.B',0
@@ -746,10 +864,20 @@ BYTE                    DC.B    '.B',0
 * Invalid Insturction.
 INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',CR,LF,0
 
-* New Line
+* Press Enter continue
+PRESS_ENTER_MESSAGE             DC.B    'Press Enter to Continue',0
+
+* New Line, and tab
 CRLF                    dc.b    CR,LF,0
 TAB_SPACE               dc.b    HT,0
 
+**************************************************************************************************
+        * Local variable invoked
+* Local variable which will be invoked
+INITIAL_INSTRUCTION     ds.w            $1      Initial instruction variable
+LOOP_COUNT              ds.b            $1      Loop count variable for main function
+WORD_OUT                ds.w            $1      Word out reserved variable
+**************************************************************************************************
 
 **************************************************************************************************
         * From here, the code we are going to disassemble.
@@ -758,35 +886,38 @@ TAB_SPACE               dc.b    HT,0
 
 *this is a sample code to disassemble.
 
-        move.b          d1,d0
         rts
+        nop
         rts
+        nop
         rts
+        nop
         rts
+        nop
         rts
+        nop
         rts
+        nop
         rts
+        nop
         rts
+        nop
         rts
+        nop
         rts
+        nop
+        clr     d0
         rts
+        nop
         rts
-        rts
-        rts
-        rts
-        rts
-        rts
-        rts
-        rts
-        rts
-        rts
-        rts
-        rts
-        rts
+        nop
+ 
 *Instruction for terminating the program
 DONE
         SIMHALT
     END    START        ; last line of source
+
+
 
 
 
