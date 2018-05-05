@@ -135,7 +135,7 @@ HALT
         bsr             PRESS_ENTER_S
         bsr             WAIT_ENTER
 
-        bsr CLEAR_SCREEN
+        bsr             CLEAR_SCREEN
         bra             LOOP
 
 * ----------------------------------
@@ -147,6 +147,20 @@ WAIT_ENTER
         bne             WAIT_ENTER
         rts
 * ----------------------------------
+*******************************************************************************************
+
+
+*******************************************************************************************
+* Instruction read finished, show continue message?
+
+
+
+
+
+
+
+
+* Instruction read finished, show continue message?
 *******************************************************************************************
 
 
@@ -281,111 +295,6 @@ MC_ASR_ROL
 
 * ----------------------------------------
 ** Sub-functions for Mnemonics
-
-*** subfunction for move.b, move.l, move.w
-DEST_SRC_MD                                     * Dest to source & mode
-        * d0 : Destination Value 
-        * d1 : Source Value
-        * d2 : Dest Register
-        * d3 : Dest Mode
-        * d4 : Src Mode
-        * d5 : Src Register
-
-***********************************************
-* initialize d2 ~ d5        
-        move.b          d6,d5
-        bclr            #3,d5
-        bclr            #4,d5
-        bclr            #5,d5
-        bclr            #6,d5
-        bclr            #7,d5
-        ror.w           #3,d6
-        
-        move.b          d6,d4
-        bclr            #3,d4
-        bclr            #4,d4
-        bclr            #5,d4
-        bclr            #6,d4
-        bclr            #7,d4
-        ror.w           #3,d6
-
-        move.b          d6,d3
-        bclr            #3,d3
-        bclr            #4,d3
-        bclr            #5,d3
-        bclr            #6,d3
-        bclr            #7,d3
-        ror.w           #3,d6
-
-        move.b          d6,d2
-        bclr            #3,d2
-        bclr            #4,d2
-        bclr            #5,d2
-        bclr            #6,d2
-        bclr            #7,d2
-        ror.w           #3,d6
-        ror.w           #4,d6
-**********************************************
-
-***********************************************
-* Check Whether there is following memory address or not. (Source)
-        cmp.b           #%0111,d4
-        bne             DSM_SRC_N_SRC_FOLLOW         No following instruction for source
-
-        * check whether following is word size
-        cmp.b           #%0000,d5               (xxx).W
-        beq             DSM_SRC_LOAD_WORD
-        cmp.b           #$0001,d5               (xxx).L
-        beq             DSM_SRC_LOAD_LONG
-        cmp.b           #%0100,d5               #<data>
-        bne             DSM_SRC_N_SRC_FOLLOW    No following instruction.
-        cmp.b           #$01,d7                 #<data>.b
-        beq             DSM_SRC_LOAD_WORD
-        cmp.b           #$11,d7                 #<data>.w
-        beq             DSM_SRC_LOAD_WORD
-        cmp.b           #$10,d7                 #<data>.l
-        beq             DSM_SRC_LOAD_LONG
-
-        bra            DSM_SRC_N_LONG          DEST_SRC_MD, NOT WORD
-
-DSM_SRC_LOAD_WORD
-        ** Load word size to d1
-        move.w          (a6)+,d1
-        bra             DSM_SRC_N_SRC_FOLLOW    Destination Trace
-
-DSM_SRC_LOAD_LONG
-        ** Load long size to d1
-        move.l          (a6)+,d1
-        bra             DSM_SRC_N_SRC_FOLLOW    Destination Trace
-
-DSM_SRC_N_LONG
-        * Error message
-        
-DSM_SRC_N_SRC_FOLLOW      * No following instruction for source (Check destination.)
-
-***********************************************
-* Check Whether there is following memory address or not. (Destination)
-        cmp.b           #%0111,d3
-        bne             DSM_DST_NE      DEST_SRC_MD, NOT EQUAL, DESTINATION
-
-        cmp.b           #%0000,d2
-        beq             DSM_DST_LOAD_WORD
-        cmp.b           #%0001,d2
-        beq             DSM_DST_LOAD_LONG
-
-DSM_DST_LOAD_WORD
-        move.w          (a6)+,d0
-        bra             DSM_DST_LOAD_LONG
-
-DSM_DST_LOAD_LONG
-        move.l          (a6)+,d0
-        bra             DSM_DST_NE
-
-DSM_DST_NE     * No following instruction for destination.
-        rts
-
-** Sub_function end here
-* ---------------------------------------
 
 
 * -------------------------------------------------------------------
@@ -770,16 +679,22 @@ A_SEVEN         LEA     A_SEVEN_MESSAGE,A1
                 RTS
 
 * NewLine
-NEWLINE     lea         CRLF,A1
-            move.b      #14,d0
-            trap        #15
-            rts
+NEWLINE         lea             CRLF,A1
+                move.b          #14,d0
+                trap            #15
+                rts
 
 * Tab
-TAB         lea         TAB_SPACE,a1
-            move.b      #14,d0
-            trap        #15
-            rts
+TAB             lea             TAB_SPACE,a1
+                move.b          #14,d0
+                trap            #15
+                rts
+
+* Space
+SPACE_S         lea            SPACE,a1
+                move.b          #14,d0
+                trap            #15
+                rts
 
 * INVALID MESSAGE
 INVALID_S       lea     INVALID_INSTRUCTION_MESSAGE,a1
@@ -867,9 +782,10 @@ INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',CR,LF,0
 * Press Enter continue
 PRESS_ENTER_MESSAGE             DC.B    'Press Enter to Continue',0
 
-* New Line, and tab
+* New Line, and tab, Space
 CRLF                    dc.b    CR,LF,0
 TAB_SPACE               dc.b    HT,0
+SPACE                   dc.b    ' ',0
 
 **************************************************************************************************
         * Local variable invoked
