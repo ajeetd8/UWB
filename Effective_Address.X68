@@ -421,7 +421,7 @@ WORD_OUT_EXIT_2
 
 ******************************************************************************
 * This is to minimize the typing
-* Predefined strin instructions
+* Pre-defined string instructions
 ****************************************************************************
 
 
@@ -788,7 +788,7 @@ TAB_SPACE               dc.b    HT,0
 SPACE                   dc.b    ' ',0
 
 **************************************************************************************************
-        * Local variable invoked
+* Local variable invoked
 * Local variable which will be invoked
 INITIAL_INSTRUCTION     ds.w            $1      Initial instruction variable
 LOOP_COUNT              ds.b            $1      Loop count variable for main function
@@ -832,6 +832,7 @@ WORD_OUT                ds.w            $1      Word out reserved variable
 DONE
         SIMHALT
     END    START        ; last line of source
+
 
 
 
