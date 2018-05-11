@@ -1,7 +1,18 @@
 # Todo
-[Progressive Report 2](https://docs.google.com/document/d/1LXAanxkvZFTa6o7rzyygwUS_rW-GSOaBa9M_kWEO9FA/edit)
+[Progressive Report 3]()
 Due Saturday
 
+# Function with usage
+## Current PC of input code Out (a6)
+```
+bsr     ADDRESS_OUT
+```
+
+## Show word data
+```
+move.w      #<data>.w, WORD_OUT
+bsr         WORD_OUT_S
+```
 # 68K bug list
 ```
 ADDI                Automatically convert to ADD
