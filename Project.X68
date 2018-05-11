@@ -231,13 +231,13 @@ STR_TO_HEX: * Converts string to hexadecimal stored in variable hex and register
                 * Branch if already subtracted
                 cmpi.b          #$01,d5
                 beq             sth_skip_subi
-                * If BYTE in d2 is greater than #$40 then subtract #$37
-                if.b d2 <GT> #$40 then.s
-                        subi.b          #$37,d2
-                endi
                 * If BYTE in d2 is less than #$40 then subract #$30
                 if.b d2 <LT> #$40 then.s
                         subi.b          #$30,d2
+                endi
+                * If BYTE in d2 is greater than #$40 then subtract #$37
+                if.b d2 <GT> #$40 then.s
+                        subi.b          #$37,d2
                 endi
 STH_SKIP_SUBI
                 * Add BYTE to d3 and lsl, skip lsl when str_length and d0 are equal     
