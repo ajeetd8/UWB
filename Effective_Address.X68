@@ -31,6 +31,9 @@ START:  org             $1000
         move.b          #$00,MAIN_LOOP_COUNT
 * Iteration loop start from here
 MAIN_LOOP
+        * Clear three bit instructions
+        bsr             CLEAR_THREE_BIT_S
+
         * Check for the terminal Condition.
         move.l          (a6),d7
         cmp.l           #$FFFFFFFF,d7           Terminal condition check
@@ -63,7 +66,7 @@ MAIN_LOOP
         
         *-------------------
         * addi, subi
-        cmp.w           #$1000,(a6)
+        cmp.w           #$1000,D7
         blo             MC_ADDI_SUBI
 
         * move.b
@@ -102,6 +105,10 @@ MAIN_LOOP
         cmp.w           #$a000,D7
         blo             MC_SUB
 
+        * Invalid input, show message
+        cmp.w          #$b000,d7
+        blo             INVALID_S             
+
         * cmp
         cmp.w           #$c000,D7
         blo             MC_COMP
@@ -117,9 +124,6 @@ MAIN_LOOP
         * asr, asl, lsr, lsl, ror, rol
         cmp.w           #$f000,D7
         blo             MC_ASR_ROL
-
-        * Invalid input, show message
-        bsr             INVALID_S
         
         
         bra             MAIN_LOOP
@@ -147,6 +151,8 @@ HALT
 WAIT_ENTER
         move.b          #5,d0
         trap            #15
+
+
         
         cmp.b           #$0d,d1
         bne             WAIT_ENTER
@@ -174,13 +180,20 @@ WAIT_ENTER
 
 * Addi Subi
 MC_ADDI_SUBI
+        bsr             TAB
+        bsr             ADDI_S
+        bsr             NEWLINE
+
+
 
         bra             MAIN_LOOP
 
 *Mnemonic: move.b
 MC_MOVE_B
-        move.b          #$01,d7                 mark 01 for byte operation.
-        
+        bsr SIZE_BYTE
+        bsr INITIAL_FOUR_EA_LOAD
+        bsr ADDRESS_OPERAND_DESTINATION_OUT
+
         bsr             TAB
         bsr             MOVE_B_S                Print out the instruction.
         bsr             NEWLINE                 Newline
@@ -191,7 +204,6 @@ MC_MOVE_B
 
 * Mnemonic: move.l, movea.l
 MC_MOVE_L_MOVEA_L
-        move.b          #$10,d7                 mark 10 for long operation.
         
         bsr             TAB
         bsr             NEWLINE                 Newline
@@ -199,7 +211,7 @@ MC_MOVE_L_MOVEA_L
 
 * Mnemonic: move.w
 MC_MOVE_W_MOVEA_W
-        move.b          #$11,d7                 mark 11 for byte operation.
+        *move.b          #$11,d7                 mark 11 for byte operation.
         
         bsr             TAB
         bsr             NEWLINE                 Newline
@@ -226,7 +238,44 @@ NOT_RTS
         * Check 'CLR' instruction
         cmp.b           #$42,INITIAL_INSTRUCTION
         bne             NOT_CLR
+
+        bsr             INITIAL_TWO_EA_LOAD_SIZE
+
+****Putting size into the destined size
+        cmp.b           #0,SIZE
+        bne             CLR_NOT_BYTE
+        bsr             SIZE_BYTE
+        bra             CLR_SIZE_VALID
+CLR_NOT_BYTE
+        cmp.b           #1,SIZE
+        bne             CLR_NOT_WORD
+        bsr             SIZE_WORD
+        bra             CLR_SIZE_VALID
+CLR_NOT_WORD
+        cmp.b           #2,SIZE
+        bne             CLR_NOT_LONG
+        bsr             SIZE_LONG
+        bra             CLR_SIZE_VALID
+CLR_NOT_LONG                            ** Invalid size instruction.
+        bsr             INVALID_S
+
+CLR_SIZE_VALID
+
+        bsr             ADDRESS_OPERAND_DESTINATION_OUT
+        ** Compare the size with instruction.
+        *** Dn
+
+        *** An
+        *** (An)
+        *** +(An)
+        *** (An)-
+        *** (xxx).W
+        *** (xxx).L
+
+
         bsr             TAB
+
+        *SIMHALT
 
         bsr             NEWLINE
         bra             MAIN_LOOP
@@ -303,8 +352,53 @@ MC_ASR_ROL
         bsr             NEWLINE                 Newline
         bra             MAIN_LOOP
 
-* ----------------------------------------
+** ----------------------------------------
 ** Sub-functions for Mnemonics
+
+*** Clear unnecessary bit --------------------------
+**** Left only three bit ****
+THREE_BIT_ONLY
+                movem.l         d7,-(sp)
+                move.b          CONVERSOIN_RESERVED,d7
+                bclr            #$07,d7
+                bclr            #$06,d7
+                bclr            #$05,d7
+                bclr            #$04,d7
+                bclr            #$03,d7
+                move.b          d7,CONVERSOIN_RESERVED
+                movem.l         (sp)+,d7
+                rts
+
+**** Left only two bit ****
+TWO_BIT_ONLY
+                movem.l         d7,-(sp)
+                move.b          CONVERSOIN_RESERVED,d7
+                bclr            #$07,d7
+                bclr            #$06,d7
+                bclr            #$05,d7
+                bclr            #$04,d7
+                bclr            #$03,d7
+                bclr            #$02,d7
+                move.b          d7,CONVERSOIN_RESERVED
+                movem.l         (sp)+,d7
+                rts
+
+**** Left only One bit ****
+ONE_BIT_ONLY
+                movem.l         d7,-(sp)
+                move.b          CONVERSOIN_RESERVED,d7
+                bclr            #$07,d7
+                bclr            #$06,d7
+                bclr            #$05,d7
+                bclr            #$04,d7
+                bclr            #$03,d7
+                bclr            #$02,d7
+                bclr            #$01,d7
+                move.b          d7,CONVERSOIN_RESERVED
+                movem.l         (sp)+,d7
+                rts
+** Sub-functions for Mnemonics
+** ----------------------------------------
 
 
 * -------------------------------------------------------------------
@@ -621,72 +715,114 @@ BYTE_S      LEA     BYTE_MESSAGE,A1          * loads Message into address
             RTS
 
 * Data register.
-D_ZERO          LEA     D_ZERO_MESSAGE,A1
+D_ZERO_S        LEA     D_ZERO_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-D_ONE           LEA     D_ONE_MESSAGE,A1
+D_ONE_S         LEA     D_ONE_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-D_TWO           LEA     D_TWO_MESSAGE,A1
+D_TWO_S         LEA     D_TWO_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-D_THREE         LEA     D_THREE_MESSAGE,A1
+D_THREE_S       LEA     D_THREE_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-D_FOUR          LEA     D_FOUR_MESSAGE,A1
+D_FOUR_S        LEA     D_FOUR_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-D_FIVE          LEA     D_FIVE_MESSAGE,A1
+D_FIVE_S        LEA     D_FIVE_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-D_SIX           LEA     D_SIX_MESSAGE,A1
+D_SIX_S         LEA     D_SIX_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-D_SEVEN         LEA     D_SEVEN_MESSAGE,A1
+D_SEVEN_S       LEA     D_SEVEN_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
 
 * Address Register.
-A_ZERO          LEA     A_ZERO_MESSAGE,A1
+A_ZERO_S        LEA     A_ZERO_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-A_ONE           LEA     A_ONE_MESSAGE,A1
+A_ONE_S         LEA     A_ONE_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-A_TWO           LEA     A_TWO_MESSAGE,A1
+A_TWO_S         LEA     A_TWO_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-A_THREE         LEA     A_THREE_MESSAGE,A1
+A_THREE_S       LEA     A_THREE_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-A_FOUR          LEA     A_FOUR_MESSAGE,A1
+A_FOUR_S        LEA     A_FOUR_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-A_FIVE          LEA     A_FIVE_MESSAGE,A1
+A_FIVE_S        LEA     A_FIVE_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-A_SIX           LEA     A_SIX_MESSAGE,A1
+A_SIX_S         LEA     A_SIX_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
-A_SEVEN         LEA     A_SEVEN_MESSAGE,A1
+A_SEVEN_S       LEA     A_SEVEN_MESSAGE,A1
                 MOVE.B  #14,D0
                 TRAP    #15
                 RTS
+
+* Address Register with paranthesis.
+A_ZERO_P_S      LEA     A_ZERO_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_ONE_P_S       LEA     A_ONE_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_TWO_P_S       LEA     A_TWO_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_THREE_P_S     LEA     A_THREE_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FOUR_P_S      LEA     A_FOUR_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FIVE_P_S      LEA     A_FIVE_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SIX_P_S       LEA     A_SIX_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SEVEN_P_S     LEA     A_SEVEN_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+PLUS_S          LEA     PLUS_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+MINUS_S         LEA     MINUS_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
 
 * NewLine
 NEWLINE         lea             CRLF,A1
@@ -710,7 +846,7 @@ SPACE_S         lea            SPACE,a1
 INVALID_S       lea     INVALID_INSTRUCTION_MESSAGE,a1
                 move.b  #14,d0
                 trap    #15
-                rts
+                bra     MAIN_LOOP
 
 * Press Enter Message
 PRESS_ENTER_S
@@ -726,6 +862,210 @@ CLEAR_SCREEN
                 move.b  #11,d0
                 trap    #15
                 rts
+* Set 'SIZE'
+SIZE_BYTE
+        move.b          #BYTE,SIZE
+        rts
+SIZE_WORD
+        move.b          #WORD,SIZE
+        rts
+SIZE_LONG
+        move.b          #LONG,SIZE
+        rts
+
+ADDRESS_OPERAND_DESTINATION_OUT
+AODO_Source
+        cmp.b   #7,SRC_MODE
+        bne     AODO_DST     * No source Data memory value
+AODO_SOURCE_WORD
+        * Word compare
+        cmp.b   #0,SRC_REGISTER
+        bne     AODO_SOURCE_LONG        * not word size
+        move.w  (a6),SRC_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        bra     AODO_DST
+AODO_SOURCE_LONG                        * down here, check long size
+        cmp.b   #1,SRC_REGISTER
+        bne     AODO_SOURCE_DATA        * not Long size
+        move.l  (a6), SRC_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        bra     AODO_DST
+
+***DATA check
+AODO_SOURCE_DATA                        * down here, check #<data>
+        cmp.b   #4,SRC_REGISTER
+        bne     INVALID_S               * Here is the code we don't need to disassemble
+
+AODO_SOURCE_DATA_BYTE
+        * byte compare
+        cmp.b   #BYTE,SIZE
+        bne     AODO_SOURCE_DATA_WORD
+        move.w  (a6),SRC_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        bra     AODO_DST
+
+AODO_SOURCE_DATA_WORD
+        cmp.b   #WORD,SIZE
+        bne     AODO_SOURCE_DATA_LONG
+        move.w  (a6),SRC_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        bra     AODO_DST
+
+AODO_SOURCE_DATA_LONG
+        cmp.b   #LONG,SIZE
+        bne     INVALID_S
+        move.l  (a6), SRC_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        bra     AODO_DST 
+
+
+AODO_DST                 * Address extension for source is not required
+        cmp.b   #7,DEST_MODE
+        bne     AODO_FINAL_RTS
+
+AODO_DST_WORD
+        * Word compare
+        cmp.b   #0,DEST_REGISTER
+        bne     AODO_DST_LONG        * not word size
+        move.w  (a6),DST_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        bra     AODO_FINAL_RTS
+AODO_DST_LONG                        * down here, check long size
+        cmp.b   #1,DEST_REGISTER
+        bne     AODO_DST_DATA        * not Long size
+        move.l  (a6), DST_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        bra     AODO_FINAL_RTS
+
+***DATA check
+AODO_DST_DATA                        * down here, check #<data>
+        cmp.b   #4,DEST_REGISTER
+        bne     INVALID_S               * Here is the code we don't need to disassemble
+
+AODO_DST_DATA_BYTE
+        * byte compare
+        cmp.b   #BYTE,SIZE
+        bne     AODO_DST_DATA_WORD
+        move.w  (a6),DST_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        bra     AODO_FINAL_RTS
+
+AODO_DST_DATA_WORD
+        cmp.b   #WORD,SIZE
+        bne     AODO_DST_DATA_LONG
+        move.w  (a6),DST_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        bra     AODO_FINAL_RTS
+
+AODO_DST_DATA_LONG
+        cmp.b   #LONG,SIZE
+        bne     INVALID_S
+        move.l  (a6), DST_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        move.w  (a6)+,WORD_OUT
+        bsr     WORD_OUT_S
+        bra     AODO_FINAL_RTS 
+* Address extension is not required
+AODO_FINAL_RTS
+        rts
+
+* -----------------------------------------------
+***************************************************
+
+
+
+* Load four EA (last four) from Initial instruction.
+INITIAL_FOUR_EA_LOAD
+        movem.w         d7,-(sp)
+
+        bsr             INITIAL_TWO_EA_LOAD             *Load last two
+
+        ror.w           #6,d7
+        move.b          d7,CONVERSOIN_RESERVED
+        bsr             THREE_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,DEST_MODE
+
+        ror.w           #3,d7
+        move.b          d7,CONVERSOIN_RESERVED
+        bsr             THREE_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,DEST_REGISTER
+
+        movem.w         (sp)+,d7
+
+        rts
+
+INITIAL_TWO_EA_LOAD_SIZE
+
+        movem.w         d7,-(sp)
+
+        bsr INITIAL_TWO_EA_LOAD
+        move.w          INITIAL_INSTRUCTION,d7
+        ror.b           #6,d7
+        move.b          d7,CONVERSOIN_RESERVED
+        bsr             TWO_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,SIZE
+
+        movem.w         (sp)+,d7       
+
+        rts
+
+* Load two Ea(last two) from Initial instruction
+INITIAL_TWO_EA_LOAD
+        movem.w         d7,-(sp)
+
+        move.w          INITIAL_INSTRUCTION,d7
+        move.b          d7,CONVERSOIN_RESERVED
+        bsr             THREE_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,SRC_REGISTER
+
+        ror.w           #3,d7
+        move.b          76,CONVERSOIN_RESERVED
+        bsr             THREE_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,SRC_MODE
+
+        movem.w         (sp)+,d7          
+
+        rts
+
+
+
+
+
+* Clear 3 bit instructoins
+CLEAR_THREE_BIT_S
+        clr.b   EA_MODE
+        *clr.b   OP_MODE
+        *clr.b   EA_REGISTER
+        clr.b   DEST_REGISTER
+        clr.b   DEST_MODE
+        clr.b   SRC_MODE
+        clr.b   SRC_REGISTER
+        clr.b   REGISTER
+        clr.b   COUNT_REGISTER
+        rts
+
+* Clear 2 bit instruction
+        clr.b   SIZE
+
+*EXIT
+EXIT_PROGRAM
+        SIMHALT
 
 ADDI_MESSAGE            DC.B    'ADDI',0
 SUBI_MESSAGE            DC.B    'SUBI',0
@@ -781,6 +1121,20 @@ A_FIVE_MESSAGE          DC.B    'A5',0
 A_SIX_MESSAGE           DC.B    'A6',0
 A_SEVEN_MESSAGE         DC.B    'A7',0
 
+* Address with Paranthesis Register
+A_ZERO_P_MESSAGE          DC.B    '(A0)',0
+A_ONE_P_MESSAGE           DC.B    '(A1)',0
+A_TWO_P_MESSAGE           DC.B    '(A2)',0
+A_THREE_P_MESSAGE         DC.B    '(A3)',0
+A_FOUR_P_MESSAGE          DC.B    '(A4)',0
+A_FIVE_P_MESSAGE          DC.B    '(A5)',0
+A_SIX_P_MESSAGE           DC.B    '(A6)',0
+A_SEVEN_P_MESSAGE         DC.B    '(A7)',0
+
+* Plus and minus sign
+PLUS_MESSAGE            dc.b    '+',0
+MINUS_MESSAGE           dc.b    '-',0
+
 * Size instruction.
 LONG_MESSAGE            DC.B    '.L',0
 WORD_MESSAGE            DC.B    '.W',0
@@ -805,10 +1159,13 @@ READ_FROM               ds.l            $1      Variable to save read From
 READ_TO                 ds.l            $1      Varaible to save read To
 Current_Read            ds.l            $1      Varaible to save current read
 
+* Bit Conversion reserved Area
+CONVERSOIN_RESERVED     ds.b            $1
+
 ** 3 bit instruction saving place
 EA_MODE                 ds.b            $1
-OP_MODE                 ds.b            $1
-EA_REGISTER             ds.b            $1
+*OP_MODE                 ds.b            $1
+*EA_REGISTER             ds.b            $1
 DEST_REGISTER           ds.b            $1
 DEST_MODE               ds.b            $1
 SRC_MODE                ds.b            $1
@@ -816,7 +1173,14 @@ SRC_REGISTER            ds.b            $1
 REGISTER                ds.b            $1
 COUNT_REGISTER          ds.b            $1
 
+* Long data saving place for src and dst
+SRC_NUMBER_DATA         ds.l            $1
+DST_NUMBER_DATA         ds.l            $1
+
 ** 2 bit instructoin savin place
+*** 01 -- BYTE operation
+*** 11 -- word operation
+*** 10 -- long operation
 SIZE                    ds.b            $1
 
 
@@ -834,40 +1198,16 @@ MAIN_LOOP_COUNT         ds.b            $1      Loop count variable for main fun
 
 *this is a sample code to disassemble.
 
-        rts
-        nop
-        rts
-        nop
-        rts
-        nop
-        rts
-        nop
-        rts
-        nop
-        rts
-        nop
-        rts
-        nop
-        rts
-        nop
-        rts
-        nop
-        rts
-        nop
-        clr.b           d0
-        clr.w           d0
-        clr.l           d0
-        clr             d0
-        clr             $00008000
-        rts
-        nop
-        rts
-        nop
+        clr $10000
+        *move.b          #$12,$123456
  
 *Instruction for terminating the program
 DONE
         SIMHALT
     END    START        ; last line of source
+
+
+
 
 
 
