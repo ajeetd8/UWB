@@ -1,6 +1,7 @@
 **************************************************************************************************
 * Global Variable
 WORD_OUT                ds.w            $1      Word out reserved variable
+BYTE_OUT                ds.b            $1      Byte out reserved variable
 READ_FROM               ds.l            $1      Variable to save read From
 READ_TO                 ds.l            $1      Varaible to save read To
 Current_Read            ds.l            $1      Varaible to save current read

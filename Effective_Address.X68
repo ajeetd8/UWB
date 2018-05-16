@@ -143,6 +143,10 @@ MC_MOVE_B
         bsr             TAB
         bsr             MOVE_S                Print out the instruction.
         bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
         bsr             NEWLINE                 Newline
         bra             MAIN_LOOP
 
@@ -382,8 +386,7 @@ ADDRESS_OUT_EXIT_2
 WORD_OUT_S
     movem.w     d0-d7/a0-a5,-(sp)
     clr         d0
-    movea.w     WORD_OUT,a5
-    move.l      a5,d5
+    move.w     WORD_OUT,D5
 WORD_OUT_LOOP_1
     cmp.b       #$04,d0                 i=8 Break statement
     bge         WORD_OUT_EXIT_1
@@ -430,10 +433,71 @@ WORD_OUT_EXIT_2
         movem.w     (sp)+,d0-d7/a0-a5
         rts
 
-
-
-* a5 word size out end
+* > word size out end
 * -------------------------------------------------------------------
+
+*********************************************************************
+* > Byte size out instructoin
+* -------------------------------------------------------------------
+* a5 word size out
+* Read 2 character from the address.
+* for(int i =0; i<2; i++), and i = d0
+BYTE_OUT_S
+    movem.w     d0-d7/a0-a5,-(sp)
+    clr         d0
+    move.b     BYTE_OUT,d5
+BYTE_OUT_LOOP_1
+    cmp.b       #$02,d0
+    bge         BYTE_OUT_EXIT_1
+    addi.b      #$01,d0
+
+    * Getting only one character
+    move.b      d5,d4
+    bclr        #4,d4
+    bclr        #5,d4
+    bclr        #6,d4
+    bclr        #7,d4
+    
+    * Getting next character
+    ror.l       #4,d5
+
+    * Save the Character at stack
+    movem.w     d4,-(sp)
+
+    bra         BYTE_OUT_LOOP_1
+*  - - - - - - - - - - - - - - - - -
+BYTE_OUT_EXIT_1
+    clr         d7
+BYTE_OUT_LOOP_2
+    cmp.b       #$02,d7
+    bge         BYTE_OUT_EXIT_2
+    addi.b      #$01,d7
+    clr.l       d0
+    movem.w     (sp)+,d4
+    move.b      d4,d1
+    addi.b      #$30,d1
+    
+    cmp.b       #$3a,d1
+    blo         BYTE_OUT_OUT
+    addi.b      #7,d1
+
+BYTE_OUT_OUT
+    move.b      #6,d0
+    trap        #15
+
+    bra         BYTE_OUT_LOOP_2
+
+BYTE_OUT_EXIT_2
+        movem.w     (sp)+,d0-d7/a0-a5
+        rts
+
+        
+* > Byte size out instructoin
+*********************************************************************
+
+
+
+
 
 * Mnemonic disassembly end here
 *******************************************************************************************
@@ -447,7 +511,8 @@ WORD_OUT_EXIT_2
 ****************************************************************************
 
         **Printing save instructoin with bsr
-        INCLUDE         'Opcode_print.x68',0
+        INCLUDE         'Opcode_print.x68',
+        
 
         ** Read Opcode from Initial Instruction.
         INCLUDE         'Instruction_OPCODE_DECODE.x68',0

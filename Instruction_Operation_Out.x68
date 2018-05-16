@@ -1,5 +1,6 @@
+***************************************************************
+* -> Initial two ea out mode
 INITIAL_TWO_EA_LOAD_OUT
-
 ITELO_Dn
     cmp.b       #0,SRC_MODE
     bne         ITELO_AN
@@ -262,10 +263,18 @@ ITELO_ADR_WLD_WORD
     bne         ITELO_ADR_WLD_LONG
     bsr         DOLLAR_S
 
+    cmp.w       #$8000,SRC_NUMBER_DATA
+    bcs         ITELO_AWW_OUT
+ITELO_AWW_FFFF
+    move.w      #$ffff,WORD_OUT
+    bsr         WORD_OUT_S
+ITELO_AWW_OUT
     move.w      SRC_NUMBER_DATA,WORD_OUT
     bsr         WORD_OUT_S
 
     bra         ITELO_FINAL
+
+
 ITELO_ADR_WLD_LONG
     cmp.b       #1,SRC_REGISTER
     bne         ITELO_ADR_WLD_DATA
@@ -273,8 +282,12 @@ ITELO_ADR_WLD_LONG
 
     movem.l     d0,-(sp)
 
+    cmp.w       #$0000,SRC_NUMBER_DATA
+    beq         ITELO_ADR_WLD_L_NPRCD
+ITELO_ADR_WLD_L_PRCD
     move.w      SRC_NUMBER_DATA,WORD_OUT
     bsr         WORD_OUT_S
+ITELO_ADR_WLD_L_NPRCD
     move.l      SRC_NUMBER_DATA,d0
     move.w      d0,WORD_OUT
     bsr         WORD_OUT_S
@@ -288,20 +301,78 @@ ITELO_ADR_WLD_DATA
     bsr         HASH_S
     bsr         DOLLAR_S
 
-    movem.l     d0,-(sp)
-
 ITELO_AWD_WORD
     ** WORD SIZE
-    
+    cmp.b       #WORD,SIZE
+    bne         ITELO_AWD_LONG
+    move.w      SRC_NUMBER_DATA,WORD_OUT
+    bsr         WORD_OUT
+    bra         ITELO_FINAL
 ITELO_AWD_LONG
     ** LONG SIZE
-ITELO_AWD_BYTE
-    ** BYTE SIZE
+    cmp.b       #LONG,SIZE
+    bne         ITELO_AWD_BYTE
+
+    movem.l     d0,-(sp)
+
+    move.w      SRC_NUMBER_DATA,WORD_OUT
+    bsr         WORD_OUT_S
+    move.l      SRC_NUMBER_DATA,d0
+    move.w      d0,WORD_OUT
+    bsr         WORD_OUT_S
 
     movem.l     (sp)+,d0
+
+    bra         ITELO_FINAL
+
+ITELO_AWD_BYTE
+    ** BYTE SIZE
+    cmp.b       #BYTE,SIZE
+    bne         ITELO_INVALID
+
+    movem.w     d0,-(sp)
+
+    move.w      SRC_NUMBER_DATA,d0
+    move.b      d0,BYTE_OUT
+    bsr         BYTE_OUT_S
+
+    movem.w     (sp)+,d0
+
     bra         ITELO_FINAL
 
 ITELO_INVALID
     bra         INVALID_S
 ITELO_FINAL
     rts
+
+* -> Initial two ea out mode
+***************************************************************
+
+***************************************************************
+* -> Initial four ea out mode
+INITIAL_FOUR_EA_LOAD_OUT
+    movem.l     d0-d2,-(sp)
+
+    move.b      DEST_REGISTER,d0
+    move.b      DEST_MODE,d1
+    move.l      DST_NUMBER_DATA,d2
+
+    bsr         INITIAL_TWO_EA_LOAD_OUT             * Source out
+
+    bsr         COMMA_S
+
+    move.b      DEST_REGISTER,SRC_REGISTER          * Destination out
+    move.b      DEST_MODE,SRC_MODE
+    move.l      DST_NUMBER_DATA,SRC_NUMBER_DATA
+    bsr         INITIAL_TWO_EA_LOAD_OUT
+
+    move.b      d0,DEST_REGISTER
+    move.b      d1,DEST_MODE
+    move.l      d2,DST_NUMBER_DATA
+
+    movem.l     (sp)+,d0-d2
+
+    rts
+
+* -> Initial four ea out mode
+***************************************************************
