@@ -287,6 +287,16 @@ MINUS_S         LEA     MINUS_MESSAGE,a1
                 trap    #15
                 rts
 
+DOLLAR_S        LEA     DOLLAR_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+HASH_S          LEA     HASH_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
 * NewLine
 NEWLINE         lea             CRLF,A1
                 move.b          #14,d0
@@ -425,6 +435,10 @@ MINUS_MESSAGE           dc.b    '-',0
 LONG_MESSAGE            DC.B    '.L',0
 WORD_MESSAGE            DC.B    '.W',0
 BYTE_MESSAGE            DC.B    '.B',0
+
+* Special character
+DOLLAR_MESSAGE          DC.B    '$',0
+HASH_MESSAGE            DC.B    '#',0
 
 * Invalid Insturction.
 INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',CR,LF,0

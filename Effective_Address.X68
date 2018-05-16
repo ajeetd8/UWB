@@ -136,28 +136,26 @@ MC_ADDI_SUBI
 
 *Mnemonic: move.b
 MC_MOVE_B
-        bsr SIZE_BYTE
-        bsr INITIAL_FOUR_EA_LOAD
-        bsr ADDRESS_OPERAND_DESTINATION_OUT
+        bsr             SIZE_BYTE
+        bsr             INITIAL_FOUR_EA_LOAD
+        bsr             ADDRESS_READ_DECISION_LOAD
 
         bsr             TAB
         bsr             MOVE_S                Print out the instruction.
         bsr             SIZE_TAG_S
         bsr             NEWLINE                 Newline
-        *bsr             DEST_SRC_MD             Anaylize and print.
-        *bsr             D_ZERO
-        *bsr             NEWLINE
         bra             MAIN_LOOP
 
 * Mnemonic: move.l, movea.l
 MC_MOVE_L_MOVEA_L
-        
+        bsr             SIZE_LONG
         bsr             TAB
         bsr             NEWLINE                 Newline
         bra             MAIN_LOOP
 
 * Mnemonic: move.w
 MC_MOVE_W_MOVEA_W
+        bsr             SIZE_WORD
         *move.b          #$11,d7                 mark 11 for byte operation.
         
         bsr             TAB
@@ -188,13 +186,13 @@ MCL_CLR
         bne             NOT_CLR
         bsr             INITIAL_TWO_EA_LOAD_SIZE
         bsr             SIZE_CONVERT_TYPE_ONE
-        bsr             ADDRESS_OPERAND_DESTINATION_OUT
+        bsr             ADDRESS_READ_DECISION_LOAD
         bsr             TAB
         bsr             CLR_S
         bsr             SIZE_TAG_S
         bsr             TAB
 
-
+        bsr             INITIAL_TWO_EA_LOAD_OUT
 
         bsr             NEWLINE
         bra             MAIN_LOOP
@@ -382,6 +380,7 @@ ADDRESS_OUT_EXIT_2
 * Read 4 character from the address.
 * for(int i =0; i<4; i++), and i = d0
 WORD_OUT_S
+    movem.w     d0-d7/a0-a5,-(sp)
     clr         d0
     movea.w     WORD_OUT,a5
     move.l      a5,d5
@@ -406,7 +405,6 @@ WORD_OUT_LOOP_1
     bra         WORD_OUT_LOOP_1
 *********************************************
 WORD_OUT_EXIT_1  
-    
     clr         d7
 WORD_OUT_LOOP_2
     cmp.b       #$04,d7
@@ -429,7 +427,8 @@ WORD_OUT_OUT
     bra         WORD_OUT_LOOP_2
     
 WORD_OUT_EXIT_2
-    rts
+        movem.w     (sp)+,d0-d7/a0-a5
+        rts
 
 
 
@@ -447,12 +446,17 @@ WORD_OUT_EXIT_2
 * Pre-defined string instructions
 ****************************************************************************
 
-
+        **Printing save instructoin with bsr
         INCLUDE         'Opcode_print.x68',0
 
+        ** Read Opcode from Initial Instruction.
+        INCLUDE         'Instruction_OPCODE_DECODE.x68',0
+
+        ** Decide whether to read more address or not.
         INCLUDE         'Address_Read_Decision_Load.x68',0
 
-        INCLUDE         'Instruction_OPCODE_DECODE.x68',0
+        ** Based on mode setting, print out the instruction.
+        INCLUDE         'Instruction_Operation_Out.x68',0
 
 ***************************************************************
 * Load instruction to print out
