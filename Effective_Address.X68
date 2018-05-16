@@ -6,20 +6,7 @@
 * expected to merge to Project.X68
 *-----------------------------------------------------------
 
-* Const variable we need to invoke
-STACK                   equ             $100000
-DISASSEMBLE_FROM        equ             $7000
-BS                      equ             $08         Backspace
-HT                      equ             $09         Tab (horizontal 5 characters)
-LF                      equ             $0A         New line (line feed)
-VT                      equ             $0B         Vertical tab (4 lines)
-FF                      equ             $0C         Form Feed (Always end printing with a Form Feed.)
-CR                      equ             $0D         Carriage Return
-
-** Size variable for size.
-LONG                    equ             $11
-WORD                    equ             $10
-BYTE                    equ             $01
+        INCLUDE         'Const_Variable_Setting.x68',0
 
 START:  org             $1000
                 * Setting the stack address.
@@ -33,11 +20,12 @@ START:  org             $1000
 MAIN_LOOP
         * Clear three bit instructions
         bsr             CLEAR_THREE_BIT_S
+        bsr             CLEAR_TWO_BIT_S
 
         * Check for the terminal Condition.
         move.l          (a6),d7
         cmp.l           #$FFFFFFFF,d7           Terminal condition check
-        beq             DONE                    Terminating the program.
+        beq             EXIT_PROGRAM            Terminating the program.
 
 
         * Check cycle(20) condition.
@@ -49,7 +37,7 @@ MAIN_LOOP
         addi.b          #1,d7
         move.b          d7,MAIN_LOOP_COUNT
 
-        
+        *TODO: DELETE THIS LATER
         * Show current pc
         bsr             ADDRESS_OUT
 
@@ -57,9 +45,9 @@ MAIN_LOOP
         move.w          (a6)+,INITIAL_INSTRUCTION
 
         * Show Initial Instruction
-        bsr             TAB
-        move.w          INITIAL_INSTRUCTION,WORD_OUT
-        bsr             WORD_OUT_S
+        *bsr             TAB
+        *move.w          INITIAL_INSTRUCTION,WORD_OUT
+        *bsr             WORD_OUT_S
 
         * Save Initial instruction to d7 register
         move.w          INITIAL_INSTRUCTION,d7
@@ -132,47 +120,7 @@ MAIN_LOOP
 *******************************************************************************************
 
 
-*******************************************************************************************
-* Halting the simulator
-HALT
-        move.b          #$00,MAIN_LOOP_COUNT         Clear the Loop count
-        
-        * Getting the 'Enter' Key from the user
-        * Once you get the enter, clear the screen
-        * go back to the routine
-
-        bsr             PRESS_ENTER_S
-        bsr             WAIT_ENTER
-
-        bsr             CLEAR_SCREEN
-        bra             MAIN_LOOP
-
-* ----------------------------------
-WAIT_ENTER
-        move.b          #5,d0
-        trap            #15
-
-
-        
-        cmp.b           #$0d,d1
-        bne             WAIT_ENTER
-        rts
-* ----------------------------------
-*******************************************************************************************
-
-
-*******************************************************************************************
-* Instruction read finished, show continue message?
-
-
-
-
-
-
-
-
-* Instruction read finished, show continue message?
-*******************************************************************************************
+        INCLUDE         'Halt_Continue_Message.x68',0
 
 
 *******************************************************************************************
@@ -183,8 +131,6 @@ MC_ADDI_SUBI
         bsr             TAB
         bsr             ADDI_S
         bsr             NEWLINE
-
-
 
         bra             MAIN_LOOP
 
@@ -219,63 +165,33 @@ MC_MOVE_W_MOVEA_W
 
 * Mnemonic: clr, nop, rts, jsr, movem, lea
 MC_CLR_LEA
+MCL_NOP
         * Check for 'NOP' instruction.
         cmp.w           #$4e71,INITIAL_INSTRUCTION
-        bne             NOT_NOP
+        bne             MCL_RTS
         bsr             TAB
         bsr             NOP_S
         bsr             NEWLINE
         bra             MAIN_LOOP
-NOT_NOP
+MCL_RTS
         * Check 'RTS' instruction.
         cmp.w           #$4e75,INITIAL_INSTRUCTION
-        bne             NOT_RTS
+        bne             MCL_CLR
         bsr             TAB
         bsr             RTS_S
         bsr             NEWLINE
         bra             MAIN_LOOP
-NOT_RTS
+MCL_CLR
         * Check 'CLR' instruction
         cmp.b           #$42,INITIAL_INSTRUCTION
         bne             NOT_CLR
-
         bsr             INITIAL_TWO_EA_LOAD_SIZE
-
-****Putting size into the destined size
-        cmp.b           #0,SIZE
-        bne             CLR_NOT_BYTE
-        bsr             SIZE_BYTE
-        bra             CLR_SIZE_VALID
-CLR_NOT_BYTE
-        cmp.b           #1,SIZE
-        bne             CLR_NOT_WORD
-        bsr             SIZE_WORD
-        bra             CLR_SIZE_VALID
-CLR_NOT_WORD
-        cmp.b           #2,SIZE
-        bne             CLR_NOT_LONG
-        bsr             SIZE_LONG
-        bra             CLR_SIZE_VALID
-CLR_NOT_LONG                            ** Invalid size instruction.
-        bsr             INVALID_S
-
-CLR_SIZE_VALID
-
+        bsr             SIZE_CONVERT_TYPE_ONE
         bsr             ADDRESS_OPERAND_DESTINATION_OUT
-        ** Compare the size with instruction.
-        *** Dn
-
-        *** An
-        *** (An)
-        *** +(An)
-        *** (An)-
-        *** (xxx).W
-        *** (xxx).L
-
-
         bsr             TAB
-
-        *SIMHALT
+        bsr             CLR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
 
         bsr             NEWLINE
         bra             MAIN_LOOP
@@ -529,339 +445,8 @@ WORD_OUT_EXIT_2
 ****************************************************************************
 
 
+        INCLUDE 'Opcode_print.x68',0
 
-* Assembly instruction.     
-ADDI_S      LEA     ADDI_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-SUBI_S      LEA     SUBI_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-MOVE_B_S    LEA     MOVE_B_MESSAGE,A1 * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-MOVE_L_S    LEA     MOVE_L_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-            
-MOVEA_L_S   LEA     MOVEA_L_MESSAGE,A1 * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-            
-MOVE_W_S    LEA     MOVE_W_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-MOVEA_W_S   LEA     MOVEA_W_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-        
-CLR_S       LEA     CLR_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-NOP_S       LEA     NOP_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-RTS_S       LEA     RTS_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-JSR_S       LEA     JSR_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-MOVEM_S     LEA     MOVEM_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-LEA_S       LEA     LEA_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-ADDQ_S      LEA     ADDQ_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-BCC_S       LEA     BCC_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-BGT_S       LEA     BGT_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-BLE_S       LEA     BLE_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-        
-            RTS
-
-MOVEQ_S     LEA     MOVEQ_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0            * Moves the number 14 into data register D0
-            TRAP    #15               * Displays meessage
-            RTS
- 
-OR_S        LEA     OR_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-DIVU_S      LEA     DIVU_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-SUB_S       LEA     SUB_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-CMP_S       LEA     CMP_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-AND_S       LEA     AND_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-MULS_S      LEA     MULS_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-MULU_S      LEA     MULU_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-        
-            RTS
-
-ADD_S       LEA     ADD_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-ADDA_S      LEA     ADDA_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-ASR_S       LEA     ASR_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-ASL_S       LEA     ASL_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-LSR_S       LEA     LSR_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-LSL_S       LEA     LSL_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-ROR_S       LEA     ROR_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-ROL_S       LEA     ROL_MESSAGE,A1   * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-* Size instruction.
-LONGWORD_S  LEA     LONG_MESSAGE,A1     * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-WORD_S      LEA     WORD_MESSAGE,A1          * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-BYTE_S      LEA     BYTE_MESSAGE,A1          * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-* Data register.
-D_ZERO_S        LEA     D_ZERO_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-D_ONE_S         LEA     D_ONE_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-D_TWO_S         LEA     D_TWO_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-D_THREE_S       LEA     D_THREE_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-D_FOUR_S        LEA     D_FOUR_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-D_FIVE_S        LEA     D_FIVE_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-D_SIX_S         LEA     D_SIX_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-D_SEVEN_S       LEA     D_SEVEN_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-
-* Address Register.
-A_ZERO_S        LEA     A_ZERO_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_ONE_S         LEA     A_ONE_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_TWO_S         LEA     A_TWO_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_THREE_S       LEA     A_THREE_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_FOUR_S        LEA     A_FOUR_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_FIVE_S        LEA     A_FIVE_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_SIX_S         LEA     A_SIX_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_SEVEN_S       LEA     A_SEVEN_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-
-* Address Register with paranthesis.
-A_ZERO_P_S      LEA     A_ZERO_P_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_ONE_P_S       LEA     A_ONE_P_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_TWO_P_S       LEA     A_TWO_P_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_THREE_P_S     LEA     A_THREE_P_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_FOUR_P_S      LEA     A_FOUR_P_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_FIVE_P_S      LEA     A_FIVE_P_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_SIX_P_S       LEA     A_SIX_P_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-A_SEVEN_P_S     LEA     A_SEVEN_P_MESSAGE,A1
-                MOVE.B  #14,D0
-                TRAP    #15
-                RTS
-PLUS_S          LEA     PLUS_MESSAGE,a1
-                move.b  #14,d0
-                trap    #15
-                rts
-MINUS_S         LEA     MINUS_MESSAGE,a1
-                move.b  #14,d0
-                trap    #15
-                rts
-
-* NewLine
-NEWLINE         lea             CRLF,A1
-                move.b          #14,d0
-                trap            #15
-                rts
-
-* Tab
-TAB             lea             TAB_SPACE,a1
-                move.b          #14,d0
-                trap            #15
-                rts
-
-* Space
-SPACE_S         lea            SPACE,a1
-                move.b          #14,d0
-                trap            #15
-                rts
-
-* INVALID MESSAGE
-INVALID_S       lea     INVALID_INSTRUCTION_MESSAGE,a1
-                move.b  #14,d0
-                trap    #15
-                bra     MAIN_LOOP
-
-* Press Enter Message
-PRESS_ENTER_S
-                lea     PRESS_ENTER_MESSAGE,a1
-                move.b  #14,d0
-                trap    #15
-                rts
-
-
-* Clear the screen
-CLEAR_SCREEN
-                move.w  #$ff00,d1
-                move.b  #11,d0
-                trap    #15
-                rts
 * Set 'SIZE'
 SIZE_BYTE
         move.b          #BYTE,SIZE
@@ -883,16 +468,19 @@ AODO_SOURCE_WORD
         bne     AODO_SOURCE_LONG        * not word size
         move.w  (a6),SRC_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        * TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_DST
 AODO_SOURCE_LONG                        * down here, check long size
         cmp.b   #1,SRC_REGISTER
         bne     AODO_SOURCE_DATA        * not Long size
         move.l  (a6), SRC_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        * TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_DST
 
 ***DATA check
@@ -906,7 +494,8 @@ AODO_SOURCE_DATA_BYTE
         bne     AODO_SOURCE_DATA_WORD
         move.w  (a6),SRC_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        * TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_DST
 
 AODO_SOURCE_DATA_WORD
@@ -914,7 +503,8 @@ AODO_SOURCE_DATA_WORD
         bne     AODO_SOURCE_DATA_LONG
         move.w  (a6),SRC_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_DST
 
 AODO_SOURCE_DATA_LONG
@@ -922,9 +512,11 @@ AODO_SOURCE_DATA_LONG
         bne     INVALID_S
         move.l  (a6), SRC_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_DST 
 
 
@@ -938,16 +530,19 @@ AODO_DST_WORD
         bne     AODO_DST_LONG        * not word size
         move.w  (a6),DST_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_FINAL_RTS
 AODO_DST_LONG                        * down here, check long size
         cmp.b   #1,DEST_REGISTER
         bne     AODO_DST_DATA        * not Long size
         move.l  (a6), DST_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_FINAL_RTS
 
 ***DATA check
@@ -961,7 +556,8 @@ AODO_DST_DATA_BYTE
         bne     AODO_DST_DATA_WORD
         move.w  (a6),DST_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_FINAL_RTS
 
 AODO_DST_DATA_WORD
@@ -969,7 +565,8 @@ AODO_DST_DATA_WORD
         bne     AODO_DST_DATA_LONG
         move.w  (a6),DST_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_FINAL_RTS
 
 AODO_DST_DATA_LONG
@@ -977,9 +574,11 @@ AODO_DST_DATA_LONG
         bne     INVALID_S
         move.l  (a6), DST_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_FINAL_RTS 
 * Address extension is not required
 AODO_FINAL_RTS
@@ -988,64 +587,35 @@ AODO_FINAL_RTS
 * -----------------------------------------------
 ***************************************************
 
+        INCLUDE 'Instruction_OPCODE_DECODE.x68',0
 
+***************************************************************
+* Load instruction to print out
 
-* Load four EA (last four) from Initial instruction.
-INITIAL_FOUR_EA_LOAD
-        movem.w         d7,-(sp)
+**> Loaed instruction to print out
+***************************************************************
 
-        bsr             INITIAL_TWO_EA_LOAD             *Load last two
-
-        ror.w           #6,d7
-        move.b          d7,CONVERSOIN_RESERVED
-        bsr             THREE_BIT_ONLY
-        move.b          CONVERSOIN_RESERVED,DEST_MODE
-
-        ror.w           #3,d7
-        move.b          d7,CONVERSOIN_RESERVED
-        bsr             THREE_BIT_ONLY
-        move.b          CONVERSOIN_RESERVED,DEST_REGISTER
-
-        movem.w         (sp)+,d7
-
+* Size converting operation
+SIZE_CONVERT_TYPE_ONE
+****Putting size into the destined size
+SCTO_BYTE
+        cmp.b           #0,SIZE
+        bne             SCTO_WORD
+        bsr             SIZE_BYTE
         rts
-
-INITIAL_TWO_EA_LOAD_SIZE
-
-        movem.w         d7,-(sp)
-
-        bsr INITIAL_TWO_EA_LOAD
-        move.w          INITIAL_INSTRUCTION,d7
-        ror.b           #6,d7
-        move.b          d7,CONVERSOIN_RESERVED
-        bsr             TWO_BIT_ONLY
-        move.b          CONVERSOIN_RESERVED,SIZE
-
-        movem.w         (sp)+,d7       
-
+SCTO_WORD
+        cmp.b           #1,SIZE
+        bne             SCTO_LONG
+        bsr             SIZE_WORD
         rts
-
-* Load two Ea(last two) from Initial instruction
-INITIAL_TWO_EA_LOAD
-        movem.w         d7,-(sp)
-
-        move.w          INITIAL_INSTRUCTION,d7
-        move.b          d7,CONVERSOIN_RESERVED
-        bsr             THREE_BIT_ONLY
-        move.b          CONVERSOIN_RESERVED,SRC_REGISTER
-
-        ror.w           #3,d7
-        move.b          76,CONVERSOIN_RESERVED
-        bsr             THREE_BIT_ONLY
-        move.b          CONVERSOIN_RESERVED,SRC_MODE
-
-        movem.w         (sp)+,d7          
-
+SCTO_LONG
+        cmp.b           #2,SIZE
+        bne             SCTO_INVALID
+        bsr             SIZE_LONG
         rts
-
-
-
-
+SCTO_INVALID                           ** Invalid size instruction.
+        bra             INVALID_S
+        rts
 
 * Clear 3 bit instructoins
 CLEAR_THREE_BIT_S
@@ -1061,163 +631,22 @@ CLEAR_THREE_BIT_S
         rts
 
 * Clear 2 bit instruction
+CLEAR_TWO_BIT_S
         clr.b   SIZE
+        rts
 
 *EXIT
 EXIT_PROGRAM
         SIMHALT
 
-ADDI_MESSAGE            DC.B    'ADDI',0
-SUBI_MESSAGE            DC.B    'SUBI',0
-MOVE_B_MESSAGE          DC.B    'MOVE.B',0
-MOVE_L_MESSAGE          DC.B    'MOVE.L',0
-MOVEA_L_MESSAGE         DC.B    'MOVEA.L',0
-MOVE_W_MESSAGE          DC.B    'MOVE.W',0
-MOVEA_W_MESSAGE         DC.B    'MOVEA.W',0
-CLR_MESSAGE             DC.B    'CLR',0
-NOP_MESSAGE             DC.B    'NOP',0
-RTS_MESSAGE             DC.B    'RTS',0
-JSR_MESSAGE             DC.B    'JSR',0
-MOVEM_MESSAGE           DC.B    'MOVEM',0
-LEA_MESSAGE             DC.B    'LEA',0
-ADDQ_MESSAGE            DC.B    'ADDQ',0
-BCC_MESSAGE             DC.B    'BCC',0
-BGT_MESSAGE             DC.B    'BGT',0
-BLE_MESSAGE             DC.B    'BLE',0
-MOVEQ_MESSAGE           DC.B    'MOVEQ',0
-OR_MESSAGE              DC.B    'OR',0
-DIVU_MESSAGE            DC.B    'DIVU',0
-SUB_MESSAGE             DC.B    'SUB',0
-CMP_MESSAGE             DC.B    'CMP',0
-AND_MESSAGE             DC.B    'AND',0
-MULS_MESSAGE            DC.B    'MULS',0
-MULU_MESSAGE            DC.B    'MULU',0
-ADD_MESSAGE             DC.B    'ADD',0
-ADDA_MESSAGE            DC.B    'ADDA',0
-ASR_MESSAGE             DC.B    'ASR',0
-ASL_MESSAGE             DC.B    'ASL',0
-LSR_MESSAGE             DC.B    'LSR',0
-LSL_MESSAGE             DC.B    'LSL',0
-ROR_MESSAGE             DC.B    'ROR',0
-ROL_MESSAGE             DC.B    'ROL',0
 
-* Data Register
-D_ZERO_MESSAGE          DC.B    'D0',0
-D_ONE_MESSAGE           DC.B    'D1',0
-D_TWO_MESSAGE           DC.B    'D2',0
-D_THREE_MESSAGE         DC.B    'D3',0
-D_FOUR_MESSAGE          DC.B    'D4',0
-D_FIVE_MESSAGE          DC.B    'D5',0
-D_SIX_MESSAGE           DC.B    'D6',0
-D_SEVEN_MESSAGE         DC.B    'D7',0
+        INCLUDE 'Variable.x68',0
 
-* Address Register
-A_ZERO_MESSAGE          DC.B    'A0',0
-A_ONE_MESSAGE           DC.B    'A1',0
-A_TWO_MESSAGE           DC.B    'A2',0
-A_THREE_MESSAGE         DC.B    'A3',0
-A_FOUR_MESSAGE          DC.B    'A4',0
-A_FIVE_MESSAGE          DC.B    'A5',0
-A_SIX_MESSAGE           DC.B    'A6',0
-A_SEVEN_MESSAGE         DC.B    'A7',0
-
-* Address with Paranthesis Register
-A_ZERO_P_MESSAGE          DC.B    '(A0)',0
-A_ONE_P_MESSAGE           DC.B    '(A1)',0
-A_TWO_P_MESSAGE           DC.B    '(A2)',0
-A_THREE_P_MESSAGE         DC.B    '(A3)',0
-A_FOUR_P_MESSAGE          DC.B    '(A4)',0
-A_FIVE_P_MESSAGE          DC.B    '(A5)',0
-A_SIX_P_MESSAGE           DC.B    '(A6)',0
-A_SEVEN_P_MESSAGE         DC.B    '(A7)',0
-
-* Plus and minus sign
-PLUS_MESSAGE            dc.b    '+',0
-MINUS_MESSAGE           dc.b    '-',0
-
-* Size instruction.
-LONG_MESSAGE            DC.B    '.L',0
-WORD_MESSAGE            DC.B    '.W',0
-BYTE_MESSAGE            DC.B    '.B',0
-
-* Invalid Insturction.
-INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',CR,LF,0
-
-* Press Enter continue
-PRESS_ENTER_MESSAGE             DC.B    'Press Enter to Continue',0
-
-* New Line, and tab, Space
-CRLF                    dc.b    CR,LF,0
-TAB_SPACE               dc.b    HT,0
-SPACE                   dc.b    ' ',0
+        *TODO: Delete this later
+        INCLUDE 'Test_Code.x68',0
 
 
-**************************************************************************************************
-* Global Variable
-WORD_OUT                ds.w            $1      Word out reserved variable
-READ_FROM               ds.l            $1      Variable to save read From
-READ_TO                 ds.l            $1      Varaible to save read To
-Current_Read            ds.l            $1      Varaible to save current read
-
-* Bit Conversion reserved Area
-CONVERSOIN_RESERVED     ds.b            $1
-
-** 3 bit instruction saving place
-EA_MODE                 ds.b            $1
-*OP_MODE                 ds.b            $1
-*EA_REGISTER             ds.b            $1
-DEST_REGISTER           ds.b            $1
-DEST_MODE               ds.b            $1
-SRC_MODE                ds.b            $1
-SRC_REGISTER            ds.b            $1
-REGISTER                ds.b            $1
-COUNT_REGISTER          ds.b            $1
-
-* Long data saving place for src and dst
-SRC_NUMBER_DATA         ds.l            $1
-DST_NUMBER_DATA         ds.l            $1
-
-** 2 bit instructoin savin place
-*** 01 -- BYTE operation
-*** 11 -- word operation
-*** 10 -- long operation
-SIZE                    ds.b            $1
-
-
-* Local variable invoked
-* Local variable which will be invoked
-INITIAL_INSTRUCTION     ds.w            $1      Initial instruction variable
-MAIN_LOOP_COUNT         ds.b            $1      Loop count variable for main function
-
-**************************************************************************************************
-
-**************************************************************************************************
-        * From here, the code we are going to disassemble.
-**************************************************************************************************
-        org             DISASSEMBLE_FROM        Code after this starts at DISASSEMBLE_FROM
-
-*this is a sample code to disassemble.
-
-        clr $10000
-        *move.b          #$12,$123456
- 
-*Instruction for terminating the program
-DONE
-        SIMHALT
     END    START        ; last line of source
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
