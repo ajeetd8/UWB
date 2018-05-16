@@ -9,6 +9,6 @@ FF                      equ             $0C         Form Feed (Always end printi
 CR                      equ             $0D         Carriage Return
 
 ** Size variable for size.
-LONG                    equ             $11
-WORD                    equ             $10
+LONG                    equ             $10
+WORD                    equ             $11
 BYTE                    equ             $01
