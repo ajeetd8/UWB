@@ -49,7 +49,7 @@ MAIN_LOOP
         addi.b          #1,d7
         move.b          d7,MAIN_LOOP_COUNT
 
-        
+        *TODO: DELETE THIS LATER
         * Show current pc
         bsr             ADDRESS_OUT
 
@@ -57,9 +57,9 @@ MAIN_LOOP
         move.w          (a6)+,INITIAL_INSTRUCTION
 
         * Show Initial Instruction
-        bsr             TAB
-        move.w          INITIAL_INSTRUCTION,WORD_OUT
-        bsr             WORD_OUT_S
+        *bsr             TAB
+        *move.w          INITIAL_INSTRUCTION,WORD_OUT
+        *bsr             WORD_OUT_S
 
         * Save Initial instruction to d7 register
         move.w          INITIAL_INSTRUCTION,d7
@@ -219,63 +219,33 @@ MC_MOVE_W_MOVEA_W
 
 * Mnemonic: clr, nop, rts, jsr, movem, lea
 MC_CLR_LEA
+MCL_NOP
         * Check for 'NOP' instruction.
         cmp.w           #$4e71,INITIAL_INSTRUCTION
-        bne             NOT_NOP
+        bne             MCL_RTS
         bsr             TAB
         bsr             NOP_S
         bsr             NEWLINE
         bra             MAIN_LOOP
-NOT_NOP
+MCL_RTS
         * Check 'RTS' instruction.
         cmp.w           #$4e75,INITIAL_INSTRUCTION
-        bne             NOT_RTS
+        bne             MCL_CLR
         bsr             TAB
         bsr             RTS_S
         bsr             NEWLINE
         bra             MAIN_LOOP
-NOT_RTS
+MCL_CLR
         * Check 'CLR' instruction
         cmp.b           #$42,INITIAL_INSTRUCTION
         bne             NOT_CLR
-
         bsr             INITIAL_TWO_EA_LOAD_SIZE
-
-****Putting size into the destined size
-        cmp.b           #0,SIZE
-        bne             CLR_NOT_BYTE
-        bsr             SIZE_BYTE
-        bra             CLR_SIZE_VALID
-CLR_NOT_BYTE
-        cmp.b           #1,SIZE
-        bne             CLR_NOT_WORD
-        bsr             SIZE_WORD
-        bra             CLR_SIZE_VALID
-CLR_NOT_WORD
-        cmp.b           #2,SIZE
-        bne             CLR_NOT_LONG
-        bsr             SIZE_LONG
-        bra             CLR_SIZE_VALID
-CLR_NOT_LONG                            ** Invalid size instruction.
-        bsr             INVALID_S
-
-CLR_SIZE_VALID
-
+        bsr             SIZE_CONVERT_TYPE_ONE
         bsr             ADDRESS_OPERAND_DESTINATION_OUT
-        ** Compare the size with instruction.
-        *** Dn
-
-        *** An
-        *** (An)
-        *** +(An)
-        *** (An)-
-        *** (xxx).W
-        *** (xxx).L
-
-
         bsr             TAB
-
-        *SIMHALT
+        bsr             CLR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
 
         bsr             NEWLINE
         bra             MAIN_LOOP
@@ -699,7 +669,7 @@ ROL_S       LEA     ROL_MESSAGE,A1   * loads Message into address
             RTS
 
 * Size instruction.
-LONGWORD_S  LEA     LONG_MESSAGE,A1     * loads Message into address
+LONG_S  LEA     LONG_MESSAGE,A1     * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
             RTS
@@ -883,16 +853,19 @@ AODO_SOURCE_WORD
         bne     AODO_SOURCE_LONG        * not word size
         move.w  (a6),SRC_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        * TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_DST
 AODO_SOURCE_LONG                        * down here, check long size
         cmp.b   #1,SRC_REGISTER
         bne     AODO_SOURCE_DATA        * not Long size
         move.l  (a6), SRC_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        * TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_DST
 
 ***DATA check
@@ -906,7 +879,8 @@ AODO_SOURCE_DATA_BYTE
         bne     AODO_SOURCE_DATA_WORD
         move.w  (a6),SRC_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        * TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_DST
 
 AODO_SOURCE_DATA_WORD
@@ -914,7 +888,8 @@ AODO_SOURCE_DATA_WORD
         bne     AODO_SOURCE_DATA_LONG
         move.w  (a6),SRC_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_DST
 
 AODO_SOURCE_DATA_LONG
@@ -922,9 +897,11 @@ AODO_SOURCE_DATA_LONG
         bne     INVALID_S
         move.l  (a6), SRC_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_DST 
 
 
@@ -938,16 +915,19 @@ AODO_DST_WORD
         bne     AODO_DST_LONG        * not word size
         move.w  (a6),DST_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_FINAL_RTS
 AODO_DST_LONG                        * down here, check long size
         cmp.b   #1,DEST_REGISTER
         bne     AODO_DST_DATA        * not Long size
         move.l  (a6), DST_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_FINAL_RTS
 
 ***DATA check
@@ -961,7 +941,8 @@ AODO_DST_DATA_BYTE
         bne     AODO_DST_DATA_WORD
         move.w  (a6),DST_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_FINAL_RTS
 
 AODO_DST_DATA_WORD
@@ -969,7 +950,8 @@ AODO_DST_DATA_WORD
         bne     AODO_DST_DATA_LONG
         move.w  (a6),DST_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_FINAL_RTS
 
 AODO_DST_DATA_LONG
@@ -977,9 +959,11 @@ AODO_DST_DATA_LONG
         bne     INVALID_S
         move.l  (a6), DST_NUMBER_DATA
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         move.w  (a6)+,WORD_OUT
-        bsr     WORD_OUT_S
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
         bra     AODO_FINAL_RTS 
 * Address extension is not required
 AODO_FINAL_RTS
@@ -988,8 +972,8 @@ AODO_FINAL_RTS
 * -----------------------------------------------
 ***************************************************
 
-
-
+*******************************************************
+* Effective address part
 * Load four EA (last four) from Initial instruction.
 INITIAL_FOUR_EA_LOAD
         movem.w         d7,-(sp)
@@ -1042,7 +1026,56 @@ INITIAL_TWO_EA_LOAD
         movem.w         (sp)+,d7          
 
         rts
+* Effective address load end here
+***************************************************************
+*--Size tag instructoin
+SIZE_TAG_S
+STS_DOT_BYTE_OUT
+        cmp.b           #BYTE,SIZE
+        bne             STS_DOT_WORD_OUT
+        bsr             BYTE_S
+        rts
+STS_DOT_WORD_OUT
+        cmp.b           #WORD,SIZE
+        bne             STS_DOT_LONG_OUT
+        bsr             WORD_S
+        rts
+STS_DOT_LONG_OUT
+        cmp.b           #LONG,SIZE
+        bne             STS_DOT_WORD_OUT
+        bsr             LONG_S
+        rts
+STS_INVALID_SIZE
+        bra             INVALID_S
+*--> Size tag instruction end
 
+***************************************************************
+* Loaed instruction to print out
+
+**> Loaed instruction to print out
+***************************************************************
+
+* Size converting operation
+SIZE_CONVERT_TYPE_ONE
+****Putting size into the destined size
+SCTO_BYTE
+        cmp.b           #0,SIZE
+        bne             SCTO_WORD
+        bsr             SIZE_BYTE
+        rts
+SCTO_WORD
+        cmp.b           #1,SIZE
+        bne             SCTO_LONG
+        bsr             SIZE_WORD
+        rts
+SCTO_LONG
+        cmp.b           #2,SIZE
+        bne             SCTO_INVALID
+        bsr             SIZE_LONG
+        rts
+SCTO_INVALID                           ** Invalid size instruction.
+        bra             INVALID_S
+        rts
 
 
 
@@ -1199,26 +1232,12 @@ MAIN_LOOP_COUNT         ds.b            $1      Loop count variable for main fun
 *this is a sample code to disassemble.
 
         clr $10000
-        *move.b          #$12,$123456
+        move.b          #$12,$123456
  
 *Instruction for terminating the program
 DONE
         SIMHALT
     END    START        ; last line of source
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 *~Font name~Courier New~
