@@ -136,27 +136,30 @@ MC_ADDI_SUBI
 
 *Mnemonic: move.b
 MC_MOVE_B
-        bsr SIZE_BYTE
-        bsr INITIAL_FOUR_EA_LOAD
-        bsr ADDRESS_OPERAND_DESTINATION_OUT
+        bsr             SIZE_BYTE
+        bsr             INITIAL_FOUR_EA_LOAD
+        bsr             ADDRESS_READ_DECISION_LOAD
 
         bsr             TAB
-        bsr             MOVE_B_S                Print out the instruction.
+        bsr             MOVE_S                Print out the instruction.
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
         bsr             NEWLINE                 Newline
-        *bsr             DEST_SRC_MD             Anaylize and print.
-        *bsr             D_ZERO
-        *bsr             NEWLINE
         bra             MAIN_LOOP
 
 * Mnemonic: move.l, movea.l
 MC_MOVE_L_MOVEA_L
-        
+        bsr             SIZE_LONG
         bsr             TAB
         bsr             NEWLINE                 Newline
         bra             MAIN_LOOP
 
 * Mnemonic: move.w
 MC_MOVE_W_MOVEA_W
+        bsr             SIZE_WORD
         *move.b          #$11,d7                 mark 11 for byte operation.
         
         bsr             TAB
@@ -187,11 +190,13 @@ MCL_CLR
         bne             NOT_CLR
         bsr             INITIAL_TWO_EA_LOAD_SIZE
         bsr             SIZE_CONVERT_TYPE_ONE
-        bsr             ADDRESS_OPERAND_DESTINATION_OUT
+        bsr             ADDRESS_READ_DECISION_LOAD
         bsr             TAB
         bsr             CLR_S
         bsr             SIZE_TAG_S
         bsr             TAB
+
+        bsr             INITIAL_TWO_EA_LOAD_OUT
 
         bsr             NEWLINE
         bra             MAIN_LOOP
@@ -379,9 +384,9 @@ ADDRESS_OUT_EXIT_2
 * Read 4 character from the address.
 * for(int i =0; i<4; i++), and i = d0
 WORD_OUT_S
+    movem.w     d0-d7/a0-a5,-(sp)
     clr         d0
-    movea.w     WORD_OUT,a5
-    move.l      a5,d5
+    move.w     WORD_OUT,D5
 WORD_OUT_LOOP_1
     cmp.b       #$04,d0                 i=8 Break statement
     bge         WORD_OUT_EXIT_1
@@ -403,7 +408,6 @@ WORD_OUT_LOOP_1
     bra         WORD_OUT_LOOP_1
 *********************************************
 WORD_OUT_EXIT_1  
-    
     clr         d7
 WORD_OUT_LOOP_2
     cmp.b       #$04,d7
@@ -426,12 +430,74 @@ WORD_OUT_OUT
     bra         WORD_OUT_LOOP_2
     
 WORD_OUT_EXIT_2
-    rts
+        movem.w     (sp)+,d0-d7/a0-a5
+        rts
 
-
-
-* a5 word size out end
+* > word size out end
 * -------------------------------------------------------------------
+
+*********************************************************************
+* > Byte size out instructoin
+* -------------------------------------------------------------------
+* a5 word size out
+* Read 2 character from the address.
+* for(int i =0; i<2; i++), and i = d0
+BYTE_OUT_S
+    movem.w     d0-d7/a0-a5,-(sp)
+    clr         d0
+    move.b     BYTE_OUT,d5
+BYTE_OUT_LOOP_1
+    cmp.b       #$02,d0
+    bge         BYTE_OUT_EXIT_1
+    addi.b      #$01,d0
+
+    * Getting only one character
+    move.b      d5,d4
+    bclr        #4,d4
+    bclr        #5,d4
+    bclr        #6,d4
+    bclr        #7,d4
+    
+    * Getting next character
+    ror.l       #4,d5
+
+    * Save the Character at stack
+    movem.w     d4,-(sp)
+
+    bra         BYTE_OUT_LOOP_1
+*  - - - - - - - - - - - - - - - - -
+BYTE_OUT_EXIT_1
+    clr         d7
+BYTE_OUT_LOOP_2
+    cmp.b       #$02,d7
+    bge         BYTE_OUT_EXIT_2
+    addi.b      #$01,d7
+    clr.l       d0
+    movem.w     (sp)+,d4
+    move.b      d4,d1
+    addi.b      #$30,d1
+    
+    cmp.b       #$3a,d1
+    blo         BYTE_OUT_OUT
+    addi.b      #7,d1
+
+BYTE_OUT_OUT
+    move.b      #6,d0
+    trap        #15
+
+    bra         BYTE_OUT_LOOP_2
+
+BYTE_OUT_EXIT_2
+        movem.w     (sp)+,d0-d7/a0-a5
+        rts
+
+        
+* > Byte size out instructoin
+*********************************************************************
+
+
+
+
 
 * Mnemonic disassembly end here
 *******************************************************************************************
@@ -444,150 +510,18 @@ WORD_OUT_EXIT_2
 * Pre-defined string instructions
 ****************************************************************************
 
+        **Printing save instructoin with bsr
+        INCLUDE         'Opcode_print.x68',
+        
 
-        INCLUDE 'Opcode_print.x68',0
+        ** Read Opcode from Initial Instruction.
+        INCLUDE         'Instruction_OPCODE_DECODE.x68',0
 
-* Set 'SIZE'
-SIZE_BYTE
-        move.b          #BYTE,SIZE
-        rts
-SIZE_WORD
-        move.b          #WORD,SIZE
-        rts
-SIZE_LONG
-        move.b          #LONG,SIZE
-        rts
+        ** Decide whether to read more address or not.
+        INCLUDE         'Address_Read_Decision_Load.x68',0
 
-ADDRESS_OPERAND_DESTINATION_OUT
-AODO_Source
-        cmp.b   #7,SRC_MODE
-        bne     AODO_DST     * No source Data memory value
-AODO_SOURCE_WORD
-        * Word compare
-        cmp.b   #0,SRC_REGISTER
-        bne     AODO_SOURCE_LONG        * not word size
-        move.w  (a6),SRC_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
-        * TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        bra     AODO_DST
-AODO_SOURCE_LONG                        * down here, check long size
-        cmp.b   #1,SRC_REGISTER
-        bne     AODO_SOURCE_DATA        * not Long size
-        move.l  (a6), SRC_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
-        * TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        bra     AODO_DST
-
-***DATA check
-AODO_SOURCE_DATA                        * down here, check #<data>
-        cmp.b   #4,SRC_REGISTER
-        bne     INVALID_S               * Here is the code we don't need to disassemble
-
-AODO_SOURCE_DATA_BYTE
-        * byte compare
-        cmp.b   #BYTE,SIZE
-        bne     AODO_SOURCE_DATA_WORD
-        move.w  (a6),SRC_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
-        * TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        bra     AODO_DST
-
-AODO_SOURCE_DATA_WORD
-        cmp.b   #WORD,SIZE
-        bne     AODO_SOURCE_DATA_LONG
-        move.w  (a6),SRC_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        bra     AODO_DST
-
-AODO_SOURCE_DATA_LONG
-        cmp.b   #LONG,SIZE
-        bne     INVALID_S
-        move.l  (a6), SRC_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        bra     AODO_DST 
-
-
-AODO_DST                 * Address extension for source is not required
-        cmp.b   #7,DEST_MODE
-        bne     AODO_FINAL_RTS
-
-AODO_DST_WORD
-        * Word compare
-        cmp.b   #0,DEST_REGISTER
-        bne     AODO_DST_LONG        * not word size
-        move.w  (a6),DST_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        bra     AODO_FINAL_RTS
-AODO_DST_LONG                        * down here, check long size
-        cmp.b   #1,DEST_REGISTER
-        bne     AODO_DST_DATA        * not Long size
-        move.l  (a6), DST_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        bra     AODO_FINAL_RTS
-
-***DATA check
-AODO_DST_DATA                        * down here, check #<data>
-        cmp.b   #4,DEST_REGISTER
-        bne     INVALID_S               * Here is the code we don't need to disassemble
-
-AODO_DST_DATA_BYTE
-        * byte compare
-        cmp.b   #BYTE,SIZE
-        bne     AODO_DST_DATA_WORD
-        move.w  (a6),DST_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        bra     AODO_FINAL_RTS
-
-AODO_DST_DATA_WORD
-        cmp.b   #WORD,SIZE
-        bne     AODO_DST_DATA_LONG
-        move.w  (a6),DST_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        bra     AODO_FINAL_RTS
-
-AODO_DST_DATA_LONG
-        cmp.b   #LONG,SIZE
-        bne     INVALID_S
-        move.l  (a6), DST_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        move.w  (a6)+,WORD_OUT
-        *TODO: DELETE THIS
-        *bsr     WORD_OUT_S
-        bra     AODO_FINAL_RTS 
-* Address extension is not required
-AODO_FINAL_RTS
-        rts
-
-* -----------------------------------------------
-***************************************************
-
-        INCLUDE 'Instruction_OPCODE_DECODE.x68',0
+        ** Based on mode setting, print out the instruction.
+        INCLUDE         'Instruction_Operation_Out.x68',0
 
 ***************************************************************
 * Load instruction to print out
@@ -595,45 +529,7 @@ AODO_FINAL_RTS
 **> Loaed instruction to print out
 ***************************************************************
 
-* Size converting operation
-SIZE_CONVERT_TYPE_ONE
-****Putting size into the destined size
-SCTO_BYTE
-        cmp.b           #0,SIZE
-        bne             SCTO_WORD
-        bsr             SIZE_BYTE
-        rts
-SCTO_WORD
-        cmp.b           #1,SIZE
-        bne             SCTO_LONG
-        bsr             SIZE_WORD
-        rts
-SCTO_LONG
-        cmp.b           #2,SIZE
-        bne             SCTO_INVALID
-        bsr             SIZE_LONG
-        rts
-SCTO_INVALID                           ** Invalid size instruction.
-        bra             INVALID_S
-        rts
-
-* Clear 3 bit instructoins
-CLEAR_THREE_BIT_S
-        clr.b   EA_MODE
-        *clr.b   OP_MODE
-        *clr.b   EA_REGISTER
-        clr.b   DEST_REGISTER
-        clr.b   DEST_MODE
-        clr.b   SRC_MODE
-        clr.b   SRC_REGISTER
-        clr.b   REGISTER
-        clr.b   COUNT_REGISTER
-        rts
-
-* Clear 2 bit instruction
-CLEAR_TWO_BIT_S
-        clr.b   SIZE
-        rts
+        INCLUDE 'Size_Converting.x68',0
 
 *EXIT
 EXIT_PROGRAM

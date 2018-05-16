@@ -1,11 +1,11 @@
- /**
+ **
    * SIZE_TAG_S
    * Assembler Code
    * ADDI_S
    * SUBI_S
    * MOVE
    *
-   */
+   *
 
 
 * Assembly instruction.     
@@ -19,27 +19,12 @@ SUBI_S      LEA     SUBI_MESSAGE,A1  * loads Message into address
             TRAP    #15              * Displays meessage
             RTS
 
-MOVE_B_S    LEA     MOVE_B_MESSAGE,A1 * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-MOVE_L_S    LEA     MOVE_L_MESSAGE,A1  * loads Message into address
+MOVE_S    LEA     MOVE_MESSAGE,A1 * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
             RTS
             
-MOVEA_L_S   LEA     MOVEA_L_MESSAGE,A1 * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-            
-MOVE_W_S    LEA     MOVE_W_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-            RTS
-
-MOVEA_W_S   LEA     MOVEA_W_MESSAGE,A1  * loads Message into address
+MOVEA_S     LEA     MOVEA_MESSAGE,A1 * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
             RTS
@@ -302,6 +287,21 @@ MINUS_S         LEA     MINUS_MESSAGE,a1
                 trap    #15
                 rts
 
+DOLLAR_S        LEA     DOLLAR_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+HASH_S          LEA     HASH_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+COMMA_S         LEA     COMMA_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
 * NewLine
 NEWLINE         lea             CRLF,A1
                 move.b          #14,d0
@@ -373,11 +373,8 @@ STS_INVALID_SIZE
 
 ADDI_MESSAGE            DC.B    'ADDI',0
 SUBI_MESSAGE            DC.B    'SUBI',0
-MOVE_B_MESSAGE          DC.B    'MOVE.B',0
-MOVE_L_MESSAGE          DC.B    'MOVE.L',0
-MOVEA_L_MESSAGE         DC.B    'MOVEA.L',0
-MOVE_W_MESSAGE          DC.B    'MOVE.W',0
-MOVEA_W_MESSAGE         DC.B    'MOVEA.W',0
+MOVE_MESSAGE            DC.B    'MOVE',0
+MOVEA_MESSAGE           DC.B    'MOVEA',0
 CLR_MESSAGE             DC.B    'CLR',0
 NOP_MESSAGE             DC.B    'NOP',0
 RTS_MESSAGE             DC.B    'RTS',0
@@ -444,6 +441,11 @@ LONG_MESSAGE            DC.B    '.L',0
 WORD_MESSAGE            DC.B    '.W',0
 BYTE_MESSAGE            DC.B    '.B',0
 
+* Special character
+DOLLAR_MESSAGE          DC.B    '$',0
+HASH_MESSAGE            DC.B    '#',0
+COMMA_MESSAGE           DC.B    ',',0
+
 * Invalid Insturction.
 INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',CR,LF,0
 
@@ -454,3 +456,7 @@ PRESS_ENTER_MESSAGE             DC.B    'Press Enter to Continue',0
 CRLF                    dc.b    CR,LF,0
 TAB_SPACE               dc.b    HT,0
 SPACE                   dc.b    ' ',0
+*~Font name~Courier New~
+*~Font size~10~
+*~Tab type~1~
+*~Tab size~4~

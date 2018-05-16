@@ -11,7 +11,9 @@
 ** ???? | ???? | size(2) | Src Mode(3) | Src Register(3)
 *
 *
-* Description: 
+* Description: Bit clear instructions
+* 1) CLEAR_THREE_BIT_S
+* 2) CLEAR_TWO_BIT_S
 
 
 *******************************************************
@@ -61,7 +63,7 @@ INITIAL_TWO_EA_LOAD
         move.b          CONVERSOIN_RESERVED,SRC_REGISTER
 
         ror.w           #3,d7
-        move.b          76,CONVERSOIN_RESERVED
+        move.b          d7,CONVERSOIN_RESERVED
         bsr             THREE_BIT_ONLY
         move.b          CONVERSOIN_RESERVED,SRC_MODE
 
@@ -70,3 +72,34 @@ INITIAL_TWO_EA_LOAD
         rts
 * Effective address load end here
 ***************************************************************
+
+***************************************************************
+* Clear 3 bit instructoins
+*-> BIT CLEAR START HERE
+CLEAR_ALL_BIT_S
+    bsr     CLEAR_THREE_BIT_S
+    bsr     CLEAR_TWO_BIT_S
+    rts
+
+CLEAR_THREE_BIT_S
+        *clr.b   EA_MODE
+        *clr.b   OP_MODE
+        *clr.b   EA_REGISTER
+        clr.b   DEST_REGISTER
+        clr.b   DEST_MODE
+        clr.b   SRC_MODE
+        clr.b   SRC_REGISTER
+        clr.b   REGISTER
+        clr.b   COUNT_REGISTER
+        rts
+
+* Clear 2 bit instruction
+CLEAR_TWO_BIT_S
+        clr.b   SIZE
+        rts
+*-> BIT CLEAR END HERE
+***************************************************************
+*~Font name~Courier New~
+*~Font size~10~
+*~Tab type~1~
+*~Tab size~4~

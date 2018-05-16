@@ -1,6 +1,7 @@
 **************************************************************************************************
 * Global Variable
 WORD_OUT                ds.w            $1      Word out reserved variable
+BYTE_OUT                ds.b            $1      Byte out reserved variable
 READ_FROM               ds.l            $1      Variable to save read From
 READ_TO                 ds.l            $1      Varaible to save read To
 Current_Read            ds.l            $1      Varaible to save current read
@@ -9,13 +10,14 @@ Current_Read            ds.l            $1      Varaible to save current read
 CONVERSOIN_RESERVED     ds.b            $1
 
 ** 3 bit instruction saving place
-EA_MODE                 ds.b            $1
+*EA_MODE                 ds.b            $1
 *OP_MODE                 ds.b            $1
 *EA_REGISTER             ds.b            $1
 DEST_REGISTER           ds.b            $1
 DEST_MODE               ds.b            $1
 SRC_MODE                ds.b            $1
 SRC_REGISTER            ds.b            $1
+
 REGISTER                ds.b            $1
 COUNT_REGISTER          ds.b            $1
 
