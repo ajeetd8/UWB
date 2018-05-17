@@ -128,10 +128,36 @@ MAIN_LOOP
 
 * Addi Subi
 MC_ADDI_SUBI
-        bsr             TAB
-        bsr             ADDI_S
-        bsr             NEWLINE
+MAS_SUBI
+        cmp.b           #$5,INITIAL_INSTRUCTION
+        bne             MAS_ADDI MAS_ADDI
 
+        bsr             INITIAL_TWO_EA_LOAD_SIZE
+        bsr             SIZE_CONVERT_TYPE_ONE
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             TAB
+
+        bsr             SUBI_S
+        bra             MAS_OPERAND
+MAS_ADDI
+        cmp.b           #$5,INITIAL_INSTRUCTION
+        bne             MAS_INVALID
+
+        bsr             INITIAL_TWO_EA_LOAD_SIZE
+        bsr             SIZE_CONVERT_TYPE_ONE
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             TAB
+
+        bsr             ADDI_S
+        bra             MAS_OPERAND
+MAS_INVALID
+        bra             INVALID_S
+MAS_OPERAND
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             NEWLINE
         bra             MAIN_LOOP
 
 *Mnemonic: move.b
@@ -153,18 +179,45 @@ MC_MOVE_B
 * Mnemonic: move.l, movea.l
 MC_MOVE_L_MOVEA_L
         bsr             SIZE_LONG
+        bsr             INITIAL_FOUR_EA_LOAD
+        bsr             ADDRESS_READ_DECISION_LOAD
         bsr             TAB
+
+MMLML_MOVEA_OUT
+        cmp.b           #1,DEST_MODE
+        bne             MMLML_MOVE_OUT
+        bsr             MOVEA_S
+        bra             MMLML_MOVE_OPERAND
+MMLML_MOVE_OUT
+        bsr             MOVE_S
+MMLML_MOVE_OPERAND
+        bsr             SIZE_TAG_S
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
         bsr             NEWLINE                 Newline
         bra             MAIN_LOOP
+
 
 * Mnemonic: move.w
 MC_MOVE_W_MOVEA_W
         bsr             SIZE_WORD
-        *move.b          #$11,d7                 mark 11 for byte operation.
-        
+        bsr             INITIAL_FOUR_EA_LOAD
+        bsr             ADDRESS_READ_DECISION_LOAD
         bsr             TAB
+
+MMLMW_MOVEA_OUT
+        cmp.b           #1,DEST_MODE
+        bne             MMLMW_MOVE_OUT
+        bsr             MOVEA_S
+        bra             MMLMW_MOVE_OPERAND
+MMLMW_MOVE_OUT
+        bsr             MOVE_S
+MMLMW_MOVE_OPERAND
+        bsr             SIZE_TAG_S
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
         bsr             NEWLINE                 Newline
-        bra             MAIN_LOOP
+        bra             MAIN_LOOP        
 
 * Mnemonic: clr, nop, rts, jsr, movem, lea
 MC_CLR_LEA
@@ -187,7 +240,7 @@ MCL_RTS
 MCL_CLR
         * Check 'CLR' instruction
         cmp.b           #$42,INITIAL_INSTRUCTION
-        bne             NOT_CLR
+        bne             MCL_JSR
         bsr             INITIAL_TWO_EA_LOAD_SIZE
         bsr             SIZE_CONVERT_TYPE_ONE
         bsr             ADDRESS_READ_DECISION_LOAD
@@ -197,13 +250,29 @@ MCL_CLR
         bsr             TAB
 
         bsr             INITIAL_TWO_EA_LOAD_OUT
-
         bsr             NEWLINE
         bra             MAIN_LOOP
         ** todo: work here
-NOT_CLR
+MCL_JSR
         * Check 'JSR' instruction
-NOT_JSR
+        cmp.b           #$4e,INITIAL_INSTRUCTION
+        bne             MCL_LEA
+        bsr             INITIAL_TWO_EA_LOAD_SIZE
+        cmp.b           #2,SIZE
+        bne             INVALID_S
+
+        bsr             ADDRESS_READ_DECISION_LOAD
+
+        bsr             TAB
+        bsr             JSR_S
+
+        bsr             TAB
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+
+        bsr             NEWLINE
+
+        bra             MAIN_LOOP
+MCL_LEA
         * Check 'movem' instruction
 NOT_MOVEM
         * Check 'LEA' instruction
@@ -543,6 +612,7 @@ EXIT_PROGRAM
 
 
     END    START        ; last line of source
+
 
 
 

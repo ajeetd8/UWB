@@ -17,6 +17,17 @@
         move.b          #$23,d5
         move.b          #$11,(a5)
         move.b          $7fff,-(a3)
+
+        movea.l          $8000,a0
+        movea.w          $7fff,a0
+
+        addi.b          #$01,d0
+
+        JSR             $7044
+
+        *bra             HERE
+
+HERE
  
         SIMHALT
 *~Font name~Courier New~
