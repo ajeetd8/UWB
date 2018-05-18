@@ -254,7 +254,7 @@ ITELO_A7_P_M
 
 
 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-* WORD, LONG, DATA
+* WORD, LONG, DATA, (XXX).W (XXX).L #<data>
 ITELO_ADR_WLD
     cmp.b       #7,SRC_MODE
     bne         ITELO_INVALID
@@ -306,7 +306,7 @@ ITELO_AWD_WORD
     cmp.b       #WORD,SIZE
     bne         ITELO_AWD_LONG
     move.w      SRC_NUMBER_DATA,WORD_OUT
-    bsr         WORD_OUT
+    bsr         WORD_OUT_S
     bra         ITELO_FINAL
 ITELO_AWD_LONG
     ** LONG SIZE
