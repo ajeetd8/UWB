@@ -263,7 +263,9 @@
         rts
 
         * jsr permutations
-        jsr             $7044
+        jsr             (a5)
+        jsr             $7ffe
+        jsr             $ffff7ffe
 
         *   various EA modes
         MOVEM       D0-D7,-(A7)                     ;test1
@@ -292,20 +294,41 @@
         MOVEM.L     (A0)+,D0/D1/D2/A4/A3/A0/A1      ;test17
 
         * lea.l permutations
-        lea             $7000,a0
+        lea.l           (a5),a0
+        lea.l           $7ffe,a0
+        lea.l           $ffff7ffe,a0
 
         * addq.b permutations
-
         * addq.w permutations
-
         * addq.l permutations
 
-        divu            $8000,d0
+        * divu.w permutations
+        divu.w            d0,d0
+        divu.w            (a0),d0
+        divu.w            (a0)+,d0
+        divu.w            -(a0),d0
+        divu.w            $7ffe,d0
+        divu.w            $ffff7ffe,d0
+        divu.w            #$7ffe,d0
 
-        muls            $8000,d0
-
-        mulu            $8000,d0
-
+        * muls.w permutations
+        muls.w            d0,d0
+        muls.w            (a0),d0
+        muls.w            (a0)+,d0
+        muls.w            -(a0),d0
+        muls.w            $7ffe,d0
+        muls.w            $ffff7ffe,d0
+        muls.w            #$7ffe,d0
+        
+        * mulu.w permutations
+        mulu.w            d0,d0
+        mulu.w            (a0),d0
+        mulu.w            (a0)+,d0
+        mulu.w            -(a0),d0
+        mulu.w            $7ffe,d0
+        mulu.w            $ffff7ffe,d0
+        mulu.w            #$7ffe,d0
+        
 HERE
  
         SIMHALT
