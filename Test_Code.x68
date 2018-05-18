@@ -110,7 +110,7 @@
         move.w          -(a5),d0
         move.w          $7ffe,d0
         move.w          $ffff7ffe,d0
-        move.w          #$ffff,d0
+        move.w          #$7ffe,d0
 
         move.w          d0,(a5)
         move.w          a5,(a5)
@@ -119,7 +119,7 @@
         move.w          -(a3),(a5)
         move.w          $7ffe,(a5)
         move.w          $ffff7ffe,(a5)
-        move.w          #$ffff,(a5)
+        move.w          #$7ffe,(a5)
 
         move.w          d0,(a5)+
         move.w          a5,(a5)+
@@ -128,7 +128,7 @@
         move.w          -(a3),(a5)+
         move.w          $7ffe,(a5)+
         move.w          $ffff7ffe,(a5)+
-        move.w          #$ffff,(a5)+
+        move.w          #$7ffe,(a5)+
 
         move.w          d0,-(a5)
         move.w          a5,-(a5)
@@ -137,7 +137,7 @@
         move.w          -(a3),-(a5)
         move.w          $7ffe,-(a5)
         move.w          $ffff7ffe,-(a5)
-        move.w          #$ffff,-(a5)
+        move.w          #$7ffe,-(a5)
 
         move.w          d0,$7ffe
         move.w          a5,$7ffe
@@ -146,7 +146,7 @@
         move.w          -(a3),$7ffe
         move.w          $7ffe,$7ffe
         move.w          $ffff7ffe,$7ffe
-        move.w          #$ffff,$7ffe
+        move.w          #$7ffe,$7ffe
 
         move.w          d0,$ffff7ffe
         move.w          a5,$ffff7ffe
@@ -155,7 +155,7 @@
         move.w          -(a3),$ffff7ffe
         move.w          $7ffe,$ffff7ffe
         move.w          $ffff7ffe,$ffff7ffe
-        move.w          #$ffff,$ffff7ffe
+        move.w          #$7ffe,$ffff7ffe
 
         * move.w permutations
         move.l          d0,d0
@@ -211,6 +211,27 @@
         move.l          $7ffe,$ffff7ffe
         move.l          $ffff7ffe,$ffff7ffe
         move.l          #$ffff7ffe,$ffff7ffe
+
+        * movea.w permutations
+        movea.w          d0,a5
+        movea.w          a5,a5
+        movea.w          (a5),a5
+        movea.w          (a5)+,a5
+        movea.w          -(a5),a5
+        movea.w          $7ffe,a5
+        movea.w          $ffff7ffe,a5
+        movea.w          #$7ffe,a5
+
+        * movea.l permutations
+        movea.l          d0,a5
+        movea.l          a5,a5
+        movea.l          (a5),a5
+        movea.l          (a5)+,a5
+        movea.l          -(a5),a5
+        movea.l          $7ffe,a5
+        movea.l          $ffff7ffe,a5
+        movea.l          #$ffff7ffe,a5
+
         *   various EA modes
         MOVEM       D0-D7,-(A7)                     ;test1
         MOVEM       (A7)+,D0-D7                     ;test2
@@ -236,13 +257,7 @@
 
         MOVEM.L     A0/A1/A2/D5/D6/D7,$3A(A6,D4.L)  ;test16
         MOVEM.L     (A0)+,D0/D1/D2/A4/A3/A0/A1      ;test17
-
-        * movea.w permutations
-        movea.w          $7fff,a0
-
-        * movea.l permutations
-        movea.l          $8000,a0
-
+        
         * clr permutations
         clr             $7fff
         clr             $10000
