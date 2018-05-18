@@ -6,11 +6,28 @@
 *this is a sample code to disassemble.
 
         * addi.b permutations
-        addi.b          #20,d1
+        addi.b          #$ff,d1
+        addi.b          #$ff,(a5)
+        addi.b          #$ff,(a5)+
+        addi.b          #$ff,-(a5)
+        addi.b          #$ff,$7ffe
+        addi.b          #$ff,$ffff7ffe
 
         * addi.w permutations
+        addi.w          #$7ffe,d1
+        addi.w          #$7ffe,(a5)
+        addi.w          #$7ffe,(a5)+
+        addi.w          #$7ffe,-(a5)
+        addi.w          #$7ffe,$7ffe
+        addi.w          #$7ffe,$ffff7ffe
 
         * addi.l permutations
+        addi.l          #$ffff7ffe,d1
+        addi.l          #$ffff7ffe,(a5)
+        addi.l          #$ffff7ffe,(a5)+
+        addi.l          #$ffff7ffe,-(a5)
+        addi.l          #$ffff7ffe,$7ffe
+        addi.l          #$ffff7ffe,$ffff7ffe
   
         * subi.b permutations
         sub.b           #20,d0
