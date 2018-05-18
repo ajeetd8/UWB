@@ -7,7 +7,17 @@
 
         * addi.b permutations
         addi.b          #20,d1
+
+        * addi.w permutations
+
+        * addi.l permutations
+  
+        * subi.b permutations
         sub.b           #20,d0
+
+        * subi.w permutations
+
+        * subi.l permutations
 
         addi.w          #$8000,d3
 
