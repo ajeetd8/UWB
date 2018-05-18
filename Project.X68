@@ -78,7 +78,7 @@ DONE
         cmp.b           #$01,d5
         beq             done
 
-CHECK_BOUNDS:
+CHECK_BOUNDS: * Checks bounds of user input stored in swap_hex variable.
 * Clear data registers
         bsr             clear_data
         * Branch if str_length is greater than 8
@@ -125,7 +125,7 @@ CB_SET_FLAG
 CB_END
         rts
 
-CHECK_END_BOUNDS: * Bounds checking for start address
+CHECK_END_BOUNDS: * Bounds checking for end address range
         * Check general bounds
         bsr             check_bounds
         * Check for invalid input
@@ -146,7 +146,7 @@ CHECK_END_BOUNDS: * Bounds checking for start address
 CEB_END       
         rts
 
-CHECK_START_BOUNDS: * Bounds checking for start address
+CHECK_START_BOUNDS: * Bounds checking for start address range
         * Check general bounds
         bsr             check_bounds
         * Check for invalid input
@@ -158,7 +158,7 @@ CHECK_START_BOUNDS: * Bounds checking for start address
 CSB_END     
         rts
 
-CHECK_RESPONSE:
+CHECK_RESPONSE: * Checks response to user reprompt
         * Clear data registers
         bsr             clear_data
         * Branch if str_length is greater than 8
@@ -249,7 +249,7 @@ PROMPT_START_ADDRESS: * Collects start address from console
         trap            #15
         rts
 
-REPROMPT: * Reprompt for another reading or end program
+REPROMPT: * Reprompt for another reading or ending of program
         * "Would you like to disassemble again? (Y/N)"
         lea             prompt_4,a1
         move.w          #13,d0
