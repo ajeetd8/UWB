@@ -1,190 +1,118 @@
-*-----------------------------------------------------------
-* Title      :
-* Written by :
-* Date       :
-* Description:
-*-----------------------------------------------------------
-START       ORG    $1000 ; first instruction of program
+ **
+   * SIZE_TAG_S
+   * Assembler Code
+   * ADDI_S
+   * SUBI_S
+   * MOVE
+   *
+   *
 
-* Put program code here
-            BSR    ADDI_S
-            BSR    SUBI_S
-            BSR    MOVE_B_S
-            BSR    MOVE_L_S
-            BSR    MOVEA_L_S
-            BSR    MOVE_W_S
-            BSR    MOVEA_W_S
-            BSR    CLR_S
-            BSR    NOP_S
-            BSR    RTS_S
-            BSR    JSR_S
-            BSR    MOVEM_S
-            BSR    LEA_S           
-            BSR    ADDQ_S
-            BSR    BCC_S
-            BSR    BGT_S
-            BSR    BLE_S          
-            BSR    MOVEQ_S        
-            BSR    OR_S
-            BSR    DIVU_S           
-            BSR    SUB_S 
-            BSR    CMP_S    
-            BSR    AND_S
 
-            BSR    MULS_S           
-            BSR    MULU_S            
-            BSR    ADD_S
-            BSR    ADDA_S
-            BSR    ASR_S
-            BSR    ASL_S
-            BSR    LSR_S
-            BSR    LSL_S
-            BSR    ROR_S
-            BSR    ROL_S 
-          SIMHALT             ; halt simulator
-         
+* Assembly instruction.     
 ADDI_S      LEA     ADDI_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 SUBI_S      LEA     SUBI_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-MOVE_B_S    LEA     MOVE_B_MESSAGE,A1 * loads Message into address
+MOVE_S    LEA     MOVE_MESSAGE,A1 * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
-            RTS
-
-MOVE_L_S    LEA     MOVE_L_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-        
             RTS
             
-MOVEA_L_S   LEA     MOVEA_L_MESSAGE,A1 * loads Message into address
+MOVEA_S     LEA     MOVEA_MESSAGE,A1 * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
-            RTS
-            
-MOVE_W_S    LEA     MOVE_W_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-        
-            RTS
-
-MOVEA_W_S   LEA     MOVEA_W_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-        
             RTS
         
 CLR_S       LEA     CLR_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-            
             RTS
 
 NOP_S       LEA     NOP_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 RTS_S       LEA     RTS_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 JSR_S       LEA     JSR_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 MOVEM_S     LEA     MOVEM_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 LEA_S       LEA     LEA_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 ADDQ_S      LEA     ADDQ_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 BCC_S       LEA     BCC_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 BGT_S       LEA     BGT_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-BLE_S       LEA     BLE_MESSAGE,A1  * loads Message into address
+BLE_S       LEA     BLE_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
         
             RTS
 
 MOVEQ_S     LEA     MOVEQ_MESSAGE,A1  * loads Message into address
-            MOVE.B  #14,D0           * Moves the number 14 into data register D0
-            TRAP    #15              * Displays meessage
-        
+            MOVE.B  #14,D0            * Moves the number 14 into data register D0
+            TRAP    #15               * Displays meessage
             RTS
-
-OR_S        LEA     OR_MESSAGE,A1  * loads Message into address
+ 
+OR_S        LEA     OR_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 DIVU_S      LEA     DIVU_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-SUB_S       LEA     SUB_MESSAGE,A1  * loads Message into address
+SUB_S       LEA     SUB_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-CMP_S       LEA     CMP_MESSAGE,A1  * loads Message into address
+CMP_S       LEA     CMP_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-AND_S       LEA     AND_MESSAGE,A1  * loads Message into address
+AND_S       LEA     AND_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 MULS_S      LEA     MULS_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 MULU_S      LEA     MULU_MESSAGE,A1  * loads Message into address
@@ -193,97 +121,341 @@ MULU_S      LEA     MULU_MESSAGE,A1  * loads Message into address
         
             RTS
 
-ADD_S       LEA     ADD_MESSAGE,A1  * loads Message into address
+ADD_S       LEA     ADD_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
 ADDA_S      LEA     ADDA_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-ASR_S       LEA     ASR_MESSAGE,A1  * loads Message into address
+ASR_S       LEA     ASR_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-ASL_S       LEA     ASL_MESSAGE,A1  * loads Message into address
+ASL_S       LEA     ASL_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-LSR_S       LEA     LSR_MESSAGE,A1  * loads Message into address
+LSR_S       LEA     LSR_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-LSL_S       LEA     LSL_MESSAGE,A1  * loads Message into address
+LSL_S       LEA     LSL_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-ROR_S       LEA     ROR_MESSAGE,A1  * loads Message into address
+ROR_S       LEA     ROR_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
-ROL_S       LEA     ROL_MESSAGE,A1  * loads Message into address
+ROL_S       LEA     ROL_MESSAGE,A1   * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0
             TRAP    #15              * Displays meessage
-        
             RTS
 
+* Size instruction.
+LONG_S  LEA     LONG_MESSAGE,A1     * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
 
-   
-    
-    
+WORD_S      LEA     WORD_MESSAGE,A1          * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
 
-* Put variables and constants here
-CR      EQU    $0D              * ASCII code for Carriage Return
-LF      EQU    $0A              * ASCII code for Line Feed
+BYTE_S      LEA     BYTE_MESSAGE,A1          * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
 
-ADDI_MESSAGE            DC.B    'ADDI',CR,LF,0
-SUBI_MESSAGE            DC.B    'SUBI',CR,LF,0
-MOVE_B_MESSAGE          DC.B    'MOVE.B',CR,LF,0
-MOVE_L_MESSAGE          DC.B    'MOVE.L',CR,LF,0
-MOVEA_L_MESSAGE         DC.B    'MOVEA.L',CR,LF,0
-MOVE_W_MESSAGE          DC.B    'MOVE.W',CR,LF,0
-MOVEA_W_MESSAGE         DC.B    'MOVEA.W',CR,LF,0
-CLR_MESSAGE             DC.B    'CLR',CR,LF,0
-NOP_MESSAGE             DC.B    'NOP',CR,LF,0
-RTS_MESSAGE             DC.B    'RTS',CR,LF,0
-JSR_MESSAGE             DC.B    'JSR',CR,LF,0
-MOVEM_MESSAGE           DC.B    'MOVEM',CR,LF,0
-LEA_MESSAGE             DC.B    'LEA',CR,LF,0
-ADDQ_MESSAGE            DC.B    'ADDQ',CR,LF,0
-BCC_MESSAGE             DC.B    'BCC',CR,LF,0
-BGT_MESSAGE             DC.B    'BGT',CR,LF,0
-BLE_MESSAGE             DC.B    'BLE',CR,LF,0
-MOVEQ_MESSAGE           DC.B    'MOVEQ',CR,LF,0
-OR_MESSAGE              DC.B    'OR',CR,LF,0
-DIVU_MESSAGE            DC.B    'DIVU',CR,LF,0
-SUB_MESSAGE             DC.B    'SUB',CR,LF,0
-CMP_MESSAGE             DC.B    'CMP',CR,LF,0
-AND_MESSAGE             DC.B    'AND',CR,LF,0
-MULS_MESSAGE            DC.B    'MULS',CR,LF,0
-MULU_MESSAGE            DC.B    'MULU',CR,LF,0
-ADD_MESSAGE             DC.B    'ADD',CR,LF,0
-ADDA_MESSAGE            DC.B    'ADDA',CR,LF,0
-ASR_MESSAGE             DC.B    'ASR',CR,LF,0
-ASL_MESSAGE             DC.B    'ASL',CR,LF,0
-LSR_MESSAGE             DC.B    'LSR',CR,LF,0
-LSL_MESSAGE             DC.B    'LSL',CR,LF,0
-ROR_MESSAGE             DC.B    'ROR',CR,LF,0
-ROL_MESSAGE             DC.B    'ROL',CR,LF,0
-    END    START        ; last line of source
+* Data register.
+D_ZERO_S        LEA     D_ZERO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_ONE_S         LEA     D_ONE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_TWO_S         LEA     D_TWO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_THREE_S       LEA     D_THREE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_FOUR_S        LEA     D_FOUR_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_FIVE_S        LEA     D_FIVE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_SIX_S         LEA     D_SIX_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_SEVEN_S       LEA     D_SEVEN_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+
+* Address Register.
+A_ZERO_S        LEA     A_ZERO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_ONE_S         LEA     A_ONE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_TWO_S         LEA     A_TWO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_THREE_S       LEA     A_THREE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FOUR_S        LEA     A_FOUR_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FIVE_S        LEA     A_FIVE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SIX_S         LEA     A_SIX_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SEVEN_S       LEA     A_SEVEN_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+
+* Address Register with paranthesis.
+A_ZERO_P_S      LEA     A_ZERO_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_ONE_P_S       LEA     A_ONE_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_TWO_P_S       LEA     A_TWO_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_THREE_P_S     LEA     A_THREE_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FOUR_P_S      LEA     A_FOUR_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FIVE_P_S      LEA     A_FIVE_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SIX_P_S       LEA     A_SIX_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SEVEN_P_S     LEA     A_SEVEN_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+PLUS_S          LEA     PLUS_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+MINUS_S         LEA     MINUS_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+DOLLAR_S        LEA     DOLLAR_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+HASH_S          LEA     HASH_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+COMMA_S         LEA     COMMA_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+* NewLine
+NEWLINE         lea             CRLF,A1
+                move.b          #14,d0
+                trap            #15
+                rts
+
+* Tab
+TAB             lea             TAB_SPACE,a1
+                move.b          #14,d0
+                trap            #15
+                rts
+
+* Space
+SPACE_S         lea            SPACE,a1
+                move.b          #14,d0
+                trap            #15
+                rts
+
+* INVALID MESSAGE
+INVALID_S       lea     INVALID_INSTRUCTION_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                bra     MAIN_LOOP               * To ignore the invalid insructoin, proceed to the next loop.
+
+* Press Enter Message
+PRESS_ENTER_S
+                lea     PRESS_ENTER_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+
+* Clear the screen
+CLEAR_SCREEN
+                move.w  #$ff00,d1
+                move.b  #11,d0
+                trap    #15
+                rts
+
+
+**********************************************************
+* Based on the given size data, it will printout 
+* '.b' '.w' '.l'
+*--Size tag instructoin
+SIZE_TAG_S
+
+STS_DOT_BYTE_OUT
+        cmp.b           #BYTE,SIZE
+        bne             STS_DOT_WORD_OUT
+        bsr             BYTE_S
+        rts
+STS_DOT_WORD_OUT
+        cmp.b           #WORD,SIZE
+        bne             STS_DOT_LONG_OUT
+        bsr             WORD_S
+        rts
+STS_DOT_LONG_OUT
+        cmp.b           #LONG,SIZE
+        bne             STS_DOT_WORD_OUT
+        bsr             LONG_S
+        rts
+STS_INVALID_SIZE
+        bra             INVALID_S
+*--> Size tag instruction end
+***************************************************************
+
+
+
+
+ADDI_MESSAGE            DC.B    'ADDI',0
+SUBI_MESSAGE            DC.B    'SUBI',0
+MOVE_MESSAGE            DC.B    'MOVE',0
+MOVEA_MESSAGE           DC.B    'MOVEA',0
+CLR_MESSAGE             DC.B    'CLR',0
+NOP_MESSAGE             DC.B    'NOP',0
+RTS_MESSAGE             DC.B    'RTS',0
+JSR_MESSAGE             DC.B    'JSR',0
+MOVEM_MESSAGE           DC.B    'MOVEM',0
+LEA_MESSAGE             DC.B    'LEA',0
+ADDQ_MESSAGE            DC.B    'ADDQ',0
+BCC_MESSAGE             DC.B    'BCC',0
+BGT_MESSAGE             DC.B    'BGT',0
+BLE_MESSAGE             DC.B    'BLE',0
+MOVEQ_MESSAGE           DC.B    'MOVEQ',0
+OR_MESSAGE              DC.B    'OR',0
+DIVU_MESSAGE            DC.B    'DIVU',0
+SUB_MESSAGE             DC.B    'SUB',0
+CMP_MESSAGE             DC.B    'CMP',0
+AND_MESSAGE             DC.B    'AND',0
+MULS_MESSAGE            DC.B    'MULS',0
+MULU_MESSAGE            DC.B    'MULU',0
+ADD_MESSAGE             DC.B    'ADD',0
+ADDA_MESSAGE            DC.B    'ADDA',0
+ASR_MESSAGE             DC.B    'ASR',0
+ASL_MESSAGE             DC.B    'ASL',0
+LSR_MESSAGE             DC.B    'LSR',0
+LSL_MESSAGE             DC.B    'LSL',0
+ROR_MESSAGE             DC.B    'ROR',0
+ROL_MESSAGE             DC.B    'ROL',0
+
+* Data Register
+D_ZERO_MESSAGE          DC.B    'D0',0
+D_ONE_MESSAGE           DC.B    'D1',0
+D_TWO_MESSAGE           DC.B    'D2',0
+D_THREE_MESSAGE         DC.B    'D3',0
+D_FOUR_MESSAGE          DC.B    'D4',0
+D_FIVE_MESSAGE          DC.B    'D5',0
+D_SIX_MESSAGE           DC.B    'D6',0
+D_SEVEN_MESSAGE         DC.B    'D7',0
+
+* Address Register
+A_ZERO_MESSAGE          DC.B    'A0',0
+A_ONE_MESSAGE           DC.B    'A1',0
+A_TWO_MESSAGE           DC.B    'A2',0
+A_THREE_MESSAGE         DC.B    'A3',0
+A_FOUR_MESSAGE          DC.B    'A4',0
+A_FIVE_MESSAGE          DC.B    'A5',0
+A_SIX_MESSAGE           DC.B    'A6',0
+A_SEVEN_MESSAGE         DC.B    'A7',0
+
+* Address with Paranthesis Register
+A_ZERO_P_MESSAGE          DC.B    '(A0)',0
+A_ONE_P_MESSAGE           DC.B    '(A1)',0
+A_TWO_P_MESSAGE           DC.B    '(A2)',0
+A_THREE_P_MESSAGE         DC.B    '(A3)',0
+A_FOUR_P_MESSAGE          DC.B    '(A4)',0
+A_FIVE_P_MESSAGE          DC.B    '(A5)',0
+A_SIX_P_MESSAGE           DC.B    '(A6)',0
+A_SEVEN_P_MESSAGE         DC.B    '(A7)',0
+
+* Plus and minus sign
+PLUS_MESSAGE            dc.b    '+',0
+MINUS_MESSAGE           dc.b    '-',0
+
+* Size instruction.
+LONG_MESSAGE            DC.B    '.L',0
+WORD_MESSAGE            DC.B    '.W',0
+BYTE_MESSAGE            DC.B    '.B',0
+
+* Special character
+DOLLAR_MESSAGE          DC.B    '$',0
+HASH_MESSAGE            DC.B    '#',0
+COMMA_MESSAGE           DC.B    ',',0
+
+* Invalid Insturction.
+INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',CR,LF,0
+
+* Press Enter continue
+PRESS_ENTER_MESSAGE             DC.B    'Press Enter to Continue',0
+
+* New Line, and tab, Space
+CRLF                    dc.b    CR,LF,0
+TAB_SPACE               dc.b    HT,0
+SPACE                   dc.b    ' ',0
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
