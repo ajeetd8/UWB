@@ -319,7 +319,27 @@ MC_MOVEQ
 
 * Mnemonic: or, divu
 MC_OR_DIVU
-        
+MCOD_DIVU
+        * Check for DIVU instruction
+        bsr             INITIAL_FOUR_EA_LOAD
+        cmp.b           #3,DEST_MODE
+        bne             MCOD_OR
+        bsr             SIZE_WORD
+        move.b          #$00,DEST_MODE
+        bsr             ADDRESS_READ_DECISION_LOAD
+
+        bsr             TAB
+        bsr             DIVU_S
+        bsr             SIZE_TAG_S
+
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+        bra             MAIN_LOOP
+
+MCOD_OR
+        * Check for OR instruction
         bsr             TAB
         bsr             NEWLINE                 Newline
         bra             MAIN_LOOP
@@ -340,9 +360,44 @@ MC_COMP
 
 * Mnemonic: and
 MC_AND_MULU
-        
+MAM_MULS
+        * Check for MULS
+        bsr             INITIAL_FOUR_EA_LOAD
+        cmp.b           #7,DEST_MODE
+        bne             MAM_MULU
+        bsr             SIZE_WORD
+        move.b          #$00,DEST_MODE
+        bsr             ADDRESS_READ_DECISION_LOAD
+
         bsr             TAB
-        bsr             NEWLINE                 Newline
+        bsr             MULS_S
+        bsr             SIZE_TAG_S
+
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+        bra             MAIN_LOOP
+MAM_MULU
+        * Check for MULS
+        bsr             CLEAR_THREE_BIT_S
+        bsr             INITIAL_FOUR_EA_LOAD
+        cmp.b           #3,DEST_MODE
+        bne             MAM_AND
+        bsr             SIZE_WORD
+        move.b          #$00,DEST_MODE
+        bsr             ADDRESS_READ_DECISION_LOAD
+
+        bsr             TAB
+        bsr             MULU_S
+        bsr             SIZE_TAG_S
+
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+        bra             MAIN_LOOP
+MAM_AND
         bra             MAIN_LOOP
 
 * Mnemonic: add, adda

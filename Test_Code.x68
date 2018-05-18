@@ -189,7 +189,13 @@
         * jsr permutations
         jsr             $7044
 
-        LEA             $7000,a0
+        lea             $7000,a0
+
+        divu            $8000,d0
+
+        muls            $8000,d0
+
+        mulu            $8000,d0
 
 HERE
  
