@@ -273,10 +273,27 @@ MCL_JSR
 
         bra             MAIN_LOOP
 MCL_LEA
+        * Check 'lea' instruction
+        bsr             INITIAL_FOUR_EA_LOAD
+        cmp.b           #7,DEST_MODE
+        bne             MCL_MOVEM
+        bsr             SIZE_LONG
+        move.b          #1,DEST_MODE
+        bsr             ADDRESS_READ_DECISION_LOAD
+        
+        bsr             TAB
+        bsr             LEA_S
+        bsr             TAB
+
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+        bra             MAIN_LOOP
+
+MCL_MOVEM
+        bsr             CLEAR_THREE_BIT_S
+
         * Check 'movem' instruction
-NOT_MOVEM
-        * Check 'LEA' instruction
-NOT_LEA
         * Show error
 
 * Mnemonic: addq

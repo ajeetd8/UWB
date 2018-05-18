@@ -189,7 +189,7 @@
         * jsr permutations
         jsr             $7044
 
-        *bra             HERE
+        LEA             $7000,a0
 
 HERE
  
