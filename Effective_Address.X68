@@ -108,6 +108,7 @@ MAIN_LOOP
         cmp.w           #$f000,INITIAL_INSTRUCTION
         blo             MC_ASR_ROL
         
+        bra             INVALID_S
         
         bra             MAIN_LOOP
 
@@ -300,7 +301,8 @@ MCL_LEA
         bra             MAIN_LOOP
 
 MCL_MOVEM
-        bsr             CLEAR_THREE_BIT_S
+MCL_INVALID
+        bra             INVALID_S
 
         * Check 'movem' instruction
         * Show error
@@ -310,21 +312,24 @@ MC_ADDQ
         
         bsr             TAB
         bsr             NEWLINE                 Newline
-        bra             MAIN_LOOP
+MCAQ_INVALID
+        bra             INVALID_S
 
 * Mnemonic: bcc, bgt, ble
 MC_BCC
         
         bsr             TAB
         bsr             NEWLINE                 Newline
-        bra             MAIN_LOOP
+MCBC_INVALID
+        bra             INVALID_S
 
-* Mnemonic: moveq, or
+* Mnemonic: moveq
 MC_MOVEQ
-        
+        bra             MCMQ_INVALID
         bsr             TAB
         bsr             NEWLINE                 Newline
-        bra             MAIN_LOOP
+MCMQ_INVALID
+        bra             INVALID_S
 
 * Mnemonic: or, divu
 MC_OR_DIVU
@@ -332,7 +337,7 @@ MCOD_DIVU
         * Check for DIVU instruction
         bsr             INITIAL_FOUR_EA_LOAD
         cmp.b           #3,DEST_MODE
-        bne             MCOD_OR
+        bne             MCOD_INVALID
         bsr             SIZE_WORD
         move.b          #$00,DEST_MODE
         bsr             ADDRESS_READ_DECISION_LOAD
@@ -347,14 +352,17 @@ MCOD_DIVU
         bsr             NEWLINE
         bra             MAIN_LOOP
 
-MCOD_OR
+MCOD_OR         * need to work on decode
         * Check for OR instruction
         bsr             TAB
         bsr             NEWLINE                 Newline
         bra             MAIN_LOOP
+MCOD_INVALID
+        bra             INVALID_S
 
 * Mnemonic: sub
 MC_SUB
+        bra             INVALID_S
         
         bsr             TAB
         bsr             NEWLINE                 Newline
@@ -362,12 +370,12 @@ MC_SUB
 
 * Mnemonic: cmp
 MC_COMP
-        
+        bra             INVALID_S
         bsr             TAB
         bsr             NEWLINE                 Newline
         bra             MAIN_LOOP
 
-* Mnemonic: and
+* Mnemonic: and, muls, mulu
 MC_AND_MULU
 MAM_MULS
         * Check for MULS
@@ -392,7 +400,7 @@ MAM_MULU
         bsr             CLEAR_THREE_BIT_S
         bsr             INITIAL_FOUR_EA_LOAD
         cmp.b           #3,DEST_MODE
-        bne             MAM_AND
+        bne             MAM_INVALID
         bsr             SIZE_WORD
         move.b          #$00,DEST_MODE
         bsr             ADDRESS_READ_DECISION_LOAD
@@ -408,17 +416,19 @@ MAM_MULU
         bra             MAIN_LOOP
 MAM_AND
         bra             MAIN_LOOP
+MAM_INVALID
+        bra             INVALID_S
 
 * Mnemonic: add, adda
 MC_ADD_ADDA
-        
+        bra             INVALID_S
         bsr             TAB
         bsr             NEWLINE                 Newline
         bra             MAIN_LOOP
 
 * Mnemonic: asr, asl, lsr, lsl, ror, rol
 MC_ASR_ROL
-        
+        bra             INVALID_S
         bsr             TAB
         bsr             NEWLINE                 Newline
         bra             MAIN_LOOP
