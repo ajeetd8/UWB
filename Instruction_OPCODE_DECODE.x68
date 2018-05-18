@@ -23,7 +23,7 @@ INITIAL_FOUR_EA_LOAD
         movem.w         d7,-(sp)
 
         bsr             INITIAL_TWO_EA_LOAD             *Load last two
-
+        move.w          INITIAL_INSTRUCTION,d7
         ror.w           #6,d7
         move.b          d7,CONVERSOIN_RESERVED
         bsr             THREE_BIT_ONLY
@@ -89,8 +89,8 @@ CLEAR_THREE_BIT_S
         clr.b   DEST_MODE
         clr.b   SRC_MODE
         clr.b   SRC_REGISTER
-        clr.b   REGISTER
-        clr.b   COUNT_REGISTER
+        *clr.b   REGISTER
+        *clr.b   COUNT_REGISTER
         rts
 
 * Clear 2 bit instruction
