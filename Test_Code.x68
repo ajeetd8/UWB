@@ -30,13 +30,28 @@
         addi.l          #$ffff7ffe,$ffff7ffe
   
         * subi.b permutations
-        sub.b           #20,d0
+        subi.b          #$ff,d1
+        subi.b          #$ff,(a5)
+        subi.b          #$ff,(a5)+
+        subi.b          #$ff,-(a5)
+        subi.b          #$ff,$7ffe
+        subi.b          #$ff,$ffff7ffe
 
         * subi.w permutations
+        subi.w          #$7ffe,d1
+        subi.w          #$7ffe,(a5)
+        subi.w          #$7ffe,(a5)+
+        subi.w          #$7ffe,-(a5)
+        subi.w          #$7ffe,$7ffe
+        subi.w          #$7ffe,$ffff7ffe
 
         * subi.l permutations
-
-        addi.w          #$8000,d3
+        subi.l          #$ffff7ffe,d1
+        subi.l          #$ffff7ffe,(a5)
+        subi.l          #$ffff7ffe,(a5)+
+        subi.l          #$ffff7ffe,-(a5)
+        subi.l          #$ffff7ffe,$7ffe
+        subi.l          #$ffff7ffe,$ffff7ffe
 
         * move.b permutations 
         move.b          d0,d0
