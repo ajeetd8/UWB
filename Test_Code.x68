@@ -6,7 +6,10 @@
 *this is a sample code to disassemble.
 
         * addi.b permutations
-        addi.b          #$01,d0
+        addi.b          #20,d1
+        sub.b           #20,d0
+
+        addi.w          #$8000,d3
 
         * move.b permutations 
         move.b          d0,d0

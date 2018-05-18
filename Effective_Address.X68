@@ -24,7 +24,7 @@ MAIN_LOOP
 
         * Check for the terminal Condition.
         move.l          (a6),d7
-        cmp.l           #$FFFFFFFF,d7           Terminal condition check
+        cmp.l           #$FFFFFFFF,d7           Terminal condition check (It will be changed later)
         beq             EXIT_PROGRAM            Terminating the program.
 
 
@@ -44,73 +44,68 @@ MAIN_LOOP
         * Load initial instruction
         move.w          (a6)+,INITIAL_INSTRUCTION
 
-        * Show Initial Instruction
-        *bsr             TAB
-        *move.w          INITIAL_INSTRUCTION,WORD_OUT
-        *bsr             WORD_OUT_S
-
         * Save Initial instruction to d7 register
-        move.w          INITIAL_INSTRUCTION,d7
+        *move.w          INITIAL_INSTRUCTION,d7
         
         *-------------------
         * addi, subi
-        cmp.w           #$1000,D7
+        cmp.w           #$1000,INITIAL_INSTRUCTION
         blo             MC_ADDI_SUBI
 
         * move.b
-        cmp.w           #$2000,D7
+        cmp.w           #$2000,INITIAL_INSTRUCTION
         blo             MC_MOVE_B
 
         * move.l, movea.l
-        cmp.w           #$3000,D7
+        cmp.w           #$3000,INITIAL_INSTRUCTION
         blo             MC_MOVE_L_MOVEA_L
 
         * move.w, movea.w
-        cmp.w           #$4000,D7
+        cmp.w           #$4000,INITIAL_INSTRUCTION
         blo             MC_MOVE_W_MOVEA_W
 
         * clr, nop, rts, jsr, movem, lea
-        cmp.w           #$5000,D7
+        cmp.w           #$5000,INITIAL_INSTRUCTION
         blo             MC_CLR_LEA
 
         * addq      
-        cmp.w           #$6000,D7
+        cmp.w           #$6000,INITIAL_INSTRUCTION
         blo             MC_ADDQ
 
         * bcc
-        cmp.w           #$7000,D7
+        cmp.w           #$7000,INITIAL_INSTRUCTION
         blo             MC_BCC
 
         * moveq
-        cmp.w           #$8000,D7
+        cmp.w           #$8000,INITIAL_INSTRUCTION
         blo             MC_MOVEQ
 
         * or, divu
-        cmp.w           #$9000,D7
+        cmp.w           #$9000,INITIAL_INSTRUCTION
         blo             MC_OR_DIVU
 
         * sub
-        cmp.w           #$a000,D7
+        cmp.w           #$a000,INITIAL_INSTRUCTION
         blo             MC_SUB
 
         * Invalid input, show message
-        cmp.w          #$b000,d7
+        cmp.w          #$b000,INITIAL_INSTRUCTION
         blo             INVALID_S             
 
         * cmp
-        cmp.w           #$c000,D7
+        cmp.w           #$c000,INITIAL_INSTRUCTION
         blo             MC_COMP
         
         * and, muls, mulu
-        cmp.w           #$d000,D7
+        cmp.w           #$d000,INITIAL_INSTRUCTION
         blo             MC_AND_MULU
 
         * add, adda
-        cmp.w           #$e000,D7
+        cmp.w           #$e000,INITIAL_INSTRUCTION
         blo             MC_ADD_ADDA
 
         * asr, asl, lsr, lsl, ror, rol
-        cmp.w           #$f000,D7
+        cmp.w           #$f000,INITIAL_INSTRUCTION
         blo             MC_ASR_ROL
         
         
@@ -129,22 +124,24 @@ MAIN_LOOP
 * Addi Subi
 MC_ADDI_SUBI
 MAS_SUBI
-        cmp.b           #$5,INITIAL_INSTRUCTION
-        bne             MAS_ADDI MAS_ADDI
+        cmp.b           #4,INITIAL_INSTRUCTION
+        bne             MAS_ADDI
 
         bsr             INITIAL_TWO_EA_LOAD_SIZE
         bsr             SIZE_CONVERT_TYPE_ONE
+        bsr             MC_ADDI_SUBI_INST_CONVERTOR
         bsr             ADDRESS_READ_DECISION_LOAD
         bsr             TAB
 
         bsr             SUBI_S
         bra             MAS_OPERAND
 MAS_ADDI
-        cmp.b           #$5,INITIAL_INSTRUCTION
+        cmp.b           #6,INITIAL_INSTRUCTION
         bne             MAS_INVALID
-
+        
         bsr             INITIAL_TWO_EA_LOAD_SIZE
         bsr             SIZE_CONVERT_TYPE_ONE
+        bsr             MC_ADDI_SUBI_INST_CONVERTOR
         bsr             ADDRESS_READ_DECISION_LOAD
         bsr             TAB
 
@@ -155,10 +152,22 @@ MAS_INVALID
 MAS_OPERAND
         bsr             SIZE_TAG_S
         bsr             TAB
-
-        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
         bsr             NEWLINE
         bra             MAIN_LOOP
+
+MC_ADDI_SUBI_INST_CONVERTOR
+        * It will convert addi instruction to have similar property with move function, so that
+        * I can invoke the existing function such as
+        * ADDRESS_READ_DECISION_LOAD
+        * INITIAL_FOUR_EA_LOAD_OUT
+
+        move.b          SRC_MODE,DEST_MODE
+        move.b          SRC_REGISTER,DEST_REGISTER
+        move.b          #7,SRC_MODE
+        move.b          #4,SRC_REGISTER
+
+        rts
 
 *Mnemonic: move.b
 MC_MOVE_B
@@ -420,7 +429,8 @@ MC_ASR_ROL
 *** Clear unnecessary bit --------------------------
 **** Left only three bit ****
 THREE_BIT_ONLY
-                movem.l         d7,-(sp)
+                movem.l         d7,-(sp)        Saving D7 to stack
+
                 move.b          CONVERSOIN_RESERVED,d7
                 bclr            #$07,d7
                 bclr            #$06,d7
@@ -428,12 +438,14 @@ THREE_BIT_ONLY
                 bclr            #$04,d7
                 bclr            #$03,d7
                 move.b          d7,CONVERSOIN_RESERVED
-                movem.l         (sp)+,d7
+
+                movem.l         (sp)+,d7        Load d7 from stack
                 rts
 
 **** Left only two bit ****
 TWO_BIT_ONLY
-                movem.l         d7,-(sp)
+                movem.l         d7,-(sp)                Saving d7 to stack
+
                 move.b          CONVERSOIN_RESERVED,d7
                 bclr            #$07,d7
                 bclr            #$06,d7
@@ -442,12 +454,13 @@ TWO_BIT_ONLY
                 bclr            #$03,d7
                 bclr            #$02,d7
                 move.b          d7,CONVERSOIN_RESERVED
-                movem.l         (sp)+,d7
+
+                movem.l         (sp)+,d7                Load d7 from the stack
                 rts
 
 **** Left only One bit ****
 ONE_BIT_ONLY
-                movem.l         d7,-(sp)
+                movem.l         d7,-(sp)                        Saving d7 to stack
                 move.b          CONVERSOIN_RESERVED,d7
                 bclr            #$07,d7
                 bclr            #$06,d7
@@ -457,7 +470,7 @@ ONE_BIT_ONLY
                 bclr            #$02,d7
                 bclr            #$01,d7
                 move.b          d7,CONVERSOIN_RESERVED
-                movem.l         (sp)+,d7
+                movem.l         (sp)+,d7                        Load d7 from the stack
                 rts
 ** Sub-functions for Mnemonics
 ** ----------------------------------------

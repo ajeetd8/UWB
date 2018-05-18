@@ -2,8 +2,8 @@
 * Global Variable
 WORD_OUT                ds.w            $1      Word out reserved variable
 BYTE_OUT                ds.b            $1      Byte out reserved variable
-READ_FROM               ds.l            $1      Variable to save read From
-READ_TO                 ds.l            $1      Varaible to save read To
+READ_FROM               ds.l            $1      Variable to save read From (Inclusive)
+READ_TO                 ds.l            $1      Varaible to save read To (Inclusive)
 Current_Read            ds.l            $1      Varaible to save current read
 
 * Bit Conversion reserved Area
@@ -18,8 +18,8 @@ DEST_MODE               ds.b            $1
 SRC_MODE                ds.b            $1
 SRC_REGISTER            ds.b            $1
 
-REGISTER                ds.b            $1
-COUNT_REGISTER          ds.b            $1
+*REGISTER                ds.b            $1
+*COUNT_REGISTER          ds.b            $1
 
 * Long data saving place for src and dst
 SRC_NUMBER_DATA         ds.l            $1
