@@ -6,9 +6,10 @@
 * expected to merge to Project.X68
 *-----------------------------------------------------------
 
-        INCLUDE         'Const_Variable_Setting.x68',0
+        *INCLUDE         'Const_Variable_Setting.x68',0
 
 START:  org             $1000
+        INCLUDE         'Const_Variable_Setting.x68',0
                 * Setting the stack address.
                 lea             STACK,sp 
                 lea             DISASSEMBLE_FROM,a6     move value of DISASSEMLE_FROM
@@ -302,6 +303,7 @@ MCL_LEA
 
 MCL_MOVEM
 MCL_INVALID
+        bsr             CLEAR_ALL_BIT_S
         bra             INVALID_S
 
         * Check 'movem' instruction

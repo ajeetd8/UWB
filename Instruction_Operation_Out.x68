@@ -364,13 +364,13 @@ INITIAL_FOUR_EA_LOAD_OUT
     move.b      DEST_REGISTER,SRC_REGISTER          * Destination out
     move.b      DEST_MODE,SRC_MODE
     move.l      DST_NUMBER_DATA,SRC_NUMBER_DATA
+    movem.l     (sp)+,d0-d2
     bsr         INITIAL_TWO_EA_LOAD_OUT
 
-    move.b      d0,DEST_REGISTER
-    move.b      d1,DEST_MODE
-    move.l      d2,DST_NUMBER_DATA
-
-    movem.l     (sp)+,d0-d2
+    *move.b      d0,DEST_REGISTER
+    *move.b      d1,DEST_MODE
+    *move.l      d2,DST_NUMBER_DATA
+    *movem.l     (sp)+,d0-d2
 
     rts
 

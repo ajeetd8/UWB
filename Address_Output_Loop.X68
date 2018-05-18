@@ -21,6 +21,9 @@ START:                  ; first instruction of program
 * Read 8 character from the address.
 * for(int i =0; i<8; i++), and i = d0
 ADDRESS_OUT
+
+    movem.l     d0-d6/a0-a5,-(sp)
+
     clr         d0
     move.l      a6,d5
 ADDRESS_OUT_LOOP_1
@@ -67,6 +70,7 @@ ADDRESS_OUT_OUT
     bra         ADDRESS_OUT_LOOP_2
     
 ADDRESS_OUT_EXIT_2
+    movem.l     (sp)+,d0-d6/a0-a5
     rts
 
 * Address out instruction

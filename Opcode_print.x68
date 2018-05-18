@@ -322,6 +322,7 @@ SPACE_S         lea            SPACE,a1
 
 * INVALID MESSAGE
 INVALID_S       bsr     TAB
+                lea     STACK,sp
                 lea     INVALID_INSTRUCTION_MESSAGE,a1
                 move.b  #14,d0
                 trap    #15
