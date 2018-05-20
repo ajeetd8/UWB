@@ -2,8 +2,16 @@
         * From here, the code we are going to disassemble.
 **************************************************************************************************
         org             DISASSEMBLE_FROM        Code after this starts at DISASSEMBLE_FROM
-
 *this is a sample code to disassemble.
+
+        * OPCODE TEST EXAMPLE
+        move.w          $7fff,d0
+        move.b          #$77,d0
+        move.w          $8000,d0
+        move.w          $00007fff,d0
+        move.w          $00008000,d0
+        move.w          $ffff7fff,d0
+        move.w          $ffff8000,d0
 
         * addi.b permutations
         addi.b          #$ff,d1

@@ -6,9 +6,10 @@
 * expected to merge to Project.X68
 *-----------------------------------------------------------
 
-        INCLUDE         'Const_Variable_Setting.x68',0
+        *INCLUDE         'Const_Variable_Setting.x68',0
 
 START:  org             $1000
+        INCLUDE         'Const_Variable_Setting.x68',0
                 * Setting the stack address.
                 lea             STACK,sp 
                 lea             DISASSEMBLE_FROM,a6     move value of DISASSEMLE_FROM
@@ -49,63 +50,63 @@ MAIN_LOOP
         
         *-------------------
         * addi, subi
-        cmp.w           #$1000,INITIAL_INSTRUCTION
+        cmp.b           #$10,INITIAL_INSTRUCTION
         blo             MC_ADDI_SUBI
 
         * move.b
-        cmp.w           #$2000,INITIAL_INSTRUCTION
+        cmp.b           #$20,INITIAL_INSTRUCTION
         blo             MC_MOVE_B
 
         * move.l, movea.l
-        cmp.w           #$3000,INITIAL_INSTRUCTION
+        cmp.b           #$30,INITIAL_INSTRUCTION
         blo             MC_MOVE_L_MOVEA_L
 
         * move.w, movea.w
-        cmp.w           #$4000,INITIAL_INSTRUCTION
+        cmp.b           #$40,INITIAL_INSTRUCTION
         blo             MC_MOVE_W_MOVEA_W
 
         * clr, nop, rts, jsr, movem, lea
-        cmp.w           #$5000,INITIAL_INSTRUCTION
+        cmp.b           #$50,INITIAL_INSTRUCTION
         blo             MC_CLR_LEA
 
         * addq      
-        cmp.w           #$6000,INITIAL_INSTRUCTION
+        cmp.b           #$60,INITIAL_INSTRUCTION
         blo             MC_ADDQ
 
         * bcc
-        cmp.w           #$7000,INITIAL_INSTRUCTION
+        cmp.b           #$70,INITIAL_INSTRUCTION
         blo             MC_BCC
 
         * moveq
-        cmp.w           #$8000,INITIAL_INSTRUCTION
+        cmp.b           #$80,INITIAL_INSTRUCTION
         blo             MC_MOVEQ
 
         * or, divu
-        cmp.w           #$9000,INITIAL_INSTRUCTION
+        cmp.b           #$90,INITIAL_INSTRUCTION
         blo             MC_OR_DIVU
 
         * sub
-        cmp.w           #$a000,INITIAL_INSTRUCTION
+        cmp.b           #$a0,INITIAL_INSTRUCTION
         blo             MC_SUB
 
         * Invalid input, show message
-        cmp.w          #$b000,INITIAL_INSTRUCTION
+        cmp.b          #$b0,INITIAL_INSTRUCTION
         blo             INVALID_S             
 
         * cmp
-        cmp.w           #$c000,INITIAL_INSTRUCTION
+        cmp.b           #$c0,INITIAL_INSTRUCTION
         blo             MC_COMP
         
         * and, muls, mulu
-        cmp.w           #$d000,INITIAL_INSTRUCTION
+        cmp.b           #$d0,INITIAL_INSTRUCTION
         blo             MC_AND_MULU
 
         * add, adda
-        cmp.w           #$e000,INITIAL_INSTRUCTION
+        cmp.b           #$e0,INITIAL_INSTRUCTION
         blo             MC_ADD_ADDA
 
         * asr, asl, lsr, lsl, ror, rol
-        cmp.w           #$f000,INITIAL_INSTRUCTION
+        cmp.b           #$f0,INITIAL_INSTRUCTION
         blo             MC_ASR_ROL
         
         bra             INVALID_S
@@ -200,6 +201,7 @@ MMLML_MOVEA_OUT
         bra             MMLML_MOVE_OPERAND
 MMLML_MOVE_OUT
         bsr             MOVE_S
+        bra             MMLML_MOVE_OPERAND
 MMLML_MOVE_OPERAND
         bsr             SIZE_TAG_S
         bsr             TAB
@@ -302,6 +304,7 @@ MCL_LEA
 
 MCL_MOVEM
 MCL_INVALID
+        bsr             CLEAR_ALL_BIT_S
         bra             INVALID_S
 
         * Check 'movem' instruction
@@ -548,55 +551,21 @@ ADDRESS_OUT_EXIT_2
 * Read 4 character from the address.
 * for(int i =0; i<4; i++), and i = d0
 WORD_OUT_S
-    movem.w     d0-d7/a0-a5,-(sp)
-    clr         d0
-    move.w     WORD_OUT,D5
-WORD_OUT_LOOP_1
-    cmp.b       #$04,d0                 i=8 Break statement
-    bge         WORD_OUT_EXIT_1
-    addi.b      #$01,d0                 i++
-    
-    * Getting only one character
-    move.b      d5,d4
-    bclr        #4,d4
-    bclr        #5,d4
-    bclr        #6,d4
-    bclr        #7,d4
-    
-    * Getting next character
-    ror.l       #4,d5
-    
-    * Save the Character at stack
-    movem.w     d4,-(sp)
-    
-    bra         WORD_OUT_LOOP_1
-*********************************************
-WORD_OUT_EXIT_1  
-    clr         d7
-WORD_OUT_LOOP_2
-    cmp.b       #$04,d7
-    bge         WORD_OUT_EXIT_2
-    addi.b      #$01,d7
-    clr.l       d0
-    movem.w     (sp)+,d4
-    move.b      d4,d1
-    addi.b      #$30,d1
-    
-    cmp.b       #$3a,d1
-    blo         WORD_OUT_OUT
-    addi.b      #7,d1
-    
-WORD_OUT_OUT    
-    move.b      #6,d0
-    trap        #15
+        movem.w         d6-d7,-(sp)
+        clr             d7
+WOS_LOOP
+        move.w          WORD_OUT,d6
 
-    
-    bra         WORD_OUT_LOOP_2
-    
-WORD_OUT_EXIT_2
-        movem.w     (sp)+,d0-d7/a0-a5
+        move.b          WORD_OUT,BYTE_OUT
+        bsr             BYTE_OUT_S
+
+        move.b          D6,BYTE_OUT
+        bsr             BYTE_OUT_S
+        
+
+WOS_FINAL
+        movem.w         (sp)+,d6-d7
         rts
-
 * > word size out end
 * -------------------------------------------------------------------
 
@@ -607,54 +576,57 @@ WORD_OUT_EXIT_2
 * Read 2 character from the address.
 * for(int i =0; i<2; i++), and i = d0
 BYTE_OUT_S
-    movem.w     d0-d7/a0-a5,-(sp)
-    clr         d0
-    move.b     BYTE_OUT,d5
-BYTE_OUT_LOOP_1
-    cmp.b       #$02,d0
-    bge         BYTE_OUT_EXIT_1
-    addi.b      #$01,d0
+        movem.w     d0-d7/a0-a5,-(sp)
+        clr         d7
+        move.b     BYTE_OUT,d5
+BO_LOOP_GET_TWO
+        cmp.b       #$02,d7                 i=8 Break statement
+        bge         BO_PRINT
+        addi.b      #$01,d7                 i++
+        
+        * Getting only one character (from ?? to ?)
+        move.b      d5,d4
+        bclr        #4,d4
+        bclr        #5,d4
+        bclr        #6,d4
+        bclr        #7,d4
+        
+        * Getting next character
+        ror.l       #4,d5
+        
+        * Save the Character at stack
+        movem.w     d4,-(sp)
+        
+        bra         BO_LOOP_GET_TWO
+*********************************************
+BO_PRINT
+        clr         d7
+BO_PRINT_LOOP
+        *for(inti=0;i<2;i++)
+        cmp.b       #$02,d7
+        bge         BO_FINAL
+        addi.b      #$01,d7
+        clr.l       d0
+        movem.w     (sp)+,d4
+        move.b      d4,d1
 
-    * Getting only one character
-    move.b      d5,d4
-    bclr        #4,d4
-    bclr        #5,d4
-    bclr        #6,d4
-    bclr        #7,d4
-    
-    * Getting next character
-    ror.l       #4,d5
+        * Trap15 #6 will print value in d1
+BOP_0_TO_9
+        cmp.b           #9,d1
+        bhi             BOP_A_TO_F
+        addi.b          #$30,d1
+        bra             BOP_PRINT 
+BOP_A_TO_F
+        addi.b          #$37,d1
+        bra             BOP_PRINT 
+BOP_PRINT 
+        move.b          #6,d0
+        trap            #15
+        bra             BO_PRINT_LOOP
 
-    * Save the Character at stack
-    movem.w     d4,-(sp)
-
-    bra         BYTE_OUT_LOOP_1
-*  - - - - - - - - - - - - - - - - -
-BYTE_OUT_EXIT_1
-    clr         d7
-BYTE_OUT_LOOP_2
-    cmp.b       #$02,d7
-    bge         BYTE_OUT_EXIT_2
-    addi.b      #$01,d7
-    clr.l       d0
-    movem.w     (sp)+,d4
-    move.b      d4,d1
-    addi.b      #$30,d1
-    
-    cmp.b       #$3a,d1
-    blo         BYTE_OUT_OUT
-    addi.b      #7,d1
-
-BYTE_OUT_OUT
-    move.b      #6,d0
-    trap        #15
-
-    bra         BYTE_OUT_LOOP_2
-
-BYTE_OUT_EXIT_2
-        movem.w     (sp)+,d0-d7/a0-a5
+BO_FINAL
+        movem.w     (sp)+,d0-d7/a0-a5           Move back the stack
         rts
-
         
 * > Byte size out instructoin
 *********************************************************************

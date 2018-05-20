@@ -6,8 +6,8 @@ ARDL_SOURCE_WORD
         * Word compare
         cmp.b   #0,SRC_REGISTER
         bne     ARDL_SOURCE_LONG        * not word size
-        move.w  (a6),SRC_NUMBER_DATA
-        move.w  (a6)+,WORD_OUT
+        move.w  (a6)+,SRC_NUMBER_DATA
+        *move.w  (a6),WORD_OUT
         * TODO: DELETE THIS
         *bsr     WORD_OUT_S
         bra     ARDL_DST

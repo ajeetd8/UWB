@@ -296,6 +296,7 @@ ITELO_ADR_WLD_L_NPRCD
 
     bra         ITELO_FINAL
 ITELO_ADR_WLD_DATA
+    ** Immediate data compare
     cmp.b       #4,SRC_REGISTER
     bne         ITELO_INVALID
     bsr         HASH_S
@@ -353,24 +354,24 @@ ITELO_FINAL
 INITIAL_FOUR_EA_LOAD_OUT
     movem.l     d0-d2,-(sp)
 
-    move.b      DEST_REGISTER,d0
-    move.b      DEST_MODE,d1
-    move.l      DST_NUMBER_DATA,d2
-
     bsr         INITIAL_TWO_EA_LOAD_OUT             * Source out
 
     bsr         COMMA_S
 
+    move.b      DEST_REGISTER,d0
+    move.b      DEST_MODE,d1
+    move.l      DST_NUMBER_DATA,d2
+
     move.b      DEST_REGISTER,SRC_REGISTER          * Destination out
     move.b      DEST_MODE,SRC_MODE
     move.l      DST_NUMBER_DATA,SRC_NUMBER_DATA
+    movem.l     (sp)+,d0-d2
     bsr         INITIAL_TWO_EA_LOAD_OUT
 
-    move.b      d0,DEST_REGISTER
-    move.b      d1,DEST_MODE
-    move.l      d2,DST_NUMBER_DATA
-
-    movem.l     (sp)+,d0-d2
+    *move.b      d0,DEST_REGISTER
+    *move.b      d1,DEST_MODE
+    *move.l      d2,DST_NUMBER_DATA
+    *movem.l     (sp)+,d0-d2
 
     rts
 
