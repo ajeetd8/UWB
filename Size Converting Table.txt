@@ -1,7 +1,7 @@
 Default size instrauction
 #$01 - BYTE
-#$11 - WORD OPERATION
-#$10 - LONG OPERATION
+#$11 - WORD
+#$10 - LONG
 
 Size Convertor type 1
 #0 - BYTE
