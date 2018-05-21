@@ -1,5 +1,5 @@
 # Todo
-[Progressive Report 3]()
+[Progressive Report 5]()
 Due Saturday
 
 # Function with usage
@@ -15,8 +15,8 @@ bsr         WORD_OUT_S
 ```
 # 68K bug list
 ```
-ADDI                Automatically convert to ADD
-SUBI                Automatically convert to SUB
+ADDI         
+SUBI          
 MOVE.B
 MOVE.L
 MOVEA.L

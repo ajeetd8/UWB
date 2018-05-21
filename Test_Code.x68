@@ -221,24 +221,59 @@
         move.l          #$ffff7ffe,$ffff7ffe
 
         * movea.w permutations
-        movea.w          d0,a5
-        movea.w          a5,a5
-        movea.w          (a5),a5
-        movea.w          (a5)+,a5
-        movea.w          -(a5),a5
-        movea.w          $7ffe,a5
-        movea.w          $ffff7ffe,a5
-        movea.w          #$7ffe,a5
+        movea.w         d0,a5
+        movea.w         a5,a5
+        movea.w         (a5),a5
+        movea.w         (a5)+,a5
+        movea.w         -(a5),a5
+        movea.w         $7ffe,a5
+        movea.w         $ffff7ffe,a5
+        movea.w         #$7ffe,a5
 
         * movea.l permutations
-        movea.l          d0,a5
-        movea.l          a5,a5
-        movea.l          (a5),a5
-        movea.l          (a5)+,a5
-        movea.l          -(a5),a5
-        movea.l          $7ffe,a5
-        movea.l          $ffff7ffe,a5
-        movea.l          #$ffff7ffe,a5
+        movea.l         d0,a5
+        movea.l         a5,a5
+        movea.l         (a5),a5
+        movea.l         (a5)+,a5
+        movea.l         -(a5),a5
+        movea.l         $7ffe,a5
+        movea.l         $ffff7ffe,a5
+        movea.l         #$ffff7ffe,a5
+        
+        * clr.b permutations
+        clr.b           d0
+        clr.b           (a5)
+        clr.b           (a5)+
+        clr.b           -(a5)
+        clr.b           $7ffe
+        clr.b           $ffff7ffe
+
+        * clr.w permutations
+        clr.w           d0
+        clr.w           (a5)
+        clr.w           (a5)+
+        clr.w           -(a5)
+        clr.w           $7ffe
+        clr.w           $ffff7ffe
+
+        * clr.l permutations
+        clr.l           d0
+        clr.l           (a5)
+        clr.l           (a5)+
+        clr.l           -(a5)
+        clr.l           $7ffe
+        clr.l           $ffff7ffe
+
+        * nop permutations
+        nop
+
+        * rts permutations
+        rts
+
+        * jsr permutations
+        jsr             (a5)
+        jsr             $7ffe
+        jsr             $ffff7ffe
 
         *   various EA modes
         MOVEM       D0-D7,-(A7)                     ;test1
@@ -253,7 +288,7 @@
         MOVEM       D0-D7/A0-A6,$2468               ;test7
         MOVEM       D0-D7/A0-A6,$2468               ;test8
 
-*   test different sizes        
+        *   test different sizes        
         MOVEM       (A1)+,D0-D7                     ;test9
         MOVEM.W     (A1)+,D0-D7                     ;test10
         MOVEM.L     (A1)+,D0-D7                     ;test11
@@ -265,31 +300,43 @@
 
         MOVEM.L     A0/A1/A2/D5/D6/D7,$3A(A6,D4.L)  ;test16
         MOVEM.L     (A0)+,D0/D1/D2/A4/A3/A0/A1      ;test17
+
+        * lea.l permutations
+        lea.l           (a5),a0
+        lea.l           $7ffe,a0
+        lea.l           $ffff7ffe,a0
+
+        * addq.b permutations
+        * addq.w permutations
+        * addq.l permutations
+
+        * divu.w permutations
+        divu.w            d0,d0
+        divu.w            (a0),d0
+        divu.w            (a0)+,d0
+        divu.w            -(a0),d0
+        divu.w            $7ffe,d0
+        divu.w            $ffff7ffe,d0
+        divu.w            #$7ffe,d0
+
+        * muls.w permutations
+        muls.w            d0,d0
+        muls.w            (a0),d0
+        muls.w            (a0)+,d0
+        muls.w            -(a0),d0
+        muls.w            $7ffe,d0
+        muls.w            $ffff7ffe,d0
+        muls.w            #$7ffe,d0
         
-        * clr permutations
-        clr             $7fff
-        clr             $10000
-
-        * clr.b permutations
-
-        * clr.w permutations
-        clr.w           $8000
-        clr.w           -(A5)
-
-        * clr permutations
-        clr.l           -(a7)
-
-        * jsr permutations
-        jsr             $7044
-
-        lea             $7000,a0
-
-        divu            $8000,d0
-
-        muls            $8000,d0
-
-        mulu            $8000,d0
-
+        * mulu.w permutations
+        mulu.w            d0,d0
+        mulu.w            (a0),d0
+        mulu.w            (a0)+,d0
+        mulu.w            -(a0),d0
+        mulu.w            $7ffe,d0
+        mulu.w            $ffff7ffe,d0
+        mulu.w            #$7ffe,d0
+        
 HERE
  
         SIMHALT
