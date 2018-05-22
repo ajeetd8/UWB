@@ -338,9 +338,9 @@
         mulu.w            #$7ffe,d0
 
         * bcc perumtations
-        *bcc               here
-        *bgt               here
-        *ble               here
+        bcc               here
+        bgt               here
+        ble               here
 
         * or.b permutations
         or.b              d0,d0
