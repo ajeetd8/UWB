@@ -392,7 +392,7 @@ MC_BCGL_FINAL_32
         bra             MC_BCGL_FINAL_LAST
 MC_BCGL_FINAL_LAST
         movem.l         (sp)+,d6-d7
-        rts
+        bra             MAIN_LOOP
 MCBC_INVALID
         movem.l         (sp)+,d6-d7
         bra             INVALID_S
