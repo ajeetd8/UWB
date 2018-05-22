@@ -95,7 +95,7 @@ MAIN_LOOP
 
         * cmp
         cmp.b           #$c0,INITIAL_INSTRUCTION
-        blo             MC_COMP
+        blo             MC_CMP
         
         * and, muls, mulu
         cmp.b           #$d0,INITIAL_INSTRUCTION
@@ -336,11 +336,11 @@ MCMQ_INVALID
 
 * Mnemonic: or, divu
 MC_OR_DIVU
+        bsr             INITIAL_FOUR_EA_LOAD
 MCOD_DIVU
         * Check for DIVU instruction
-        bsr             INITIAL_FOUR_EA_LOAD
         cmp.b           #3,DEST_MODE
-        bne             MCOD_INVALID
+        bne             MCOD_OR
         bsr             SIZE_WORD
         move.b          #$00,DEST_MODE
         bsr             ADDRESS_READ_DECISION_LOAD
@@ -355,34 +355,114 @@ MCOD_DIVU
         bsr             NEWLINE
         bra             MAIN_LOOP
 
-MCOD_OR         * need to work on decode
-        * Check for OR instruction
+MCOD_OR
+        * OR valid case
+        cmp.b           #7,DEST_MODE
+        beq             MCOD_INVALID
+
+        * Invalid common operation
+        ** Setting the size
+        move.b          DEST_MODE,SIZE
+        bsr             SIZE_CONVERT_TYPE_TWO
+
+        * This is valid OR so printout OR.
         bsr             TAB
-        bsr             NEWLINE                 Newline
+        bsr             OR_S
+        bsr             SIZE_TAG_S
+MCOD_OR_DN
+        * Check for OR instruction <ea> V Dn -> Dn format
+        cmp.b           #4,DEST_MODE
+        bcc             MCOD_OR_EA
+
+        * Set dest mode as register (Deception!!)
+        move.b          #$00,DEST_MODE
+
+        * Based on deception, load memory
+        bsr             ADDRESS_READ_DECISION_LOAD
+
+        * Print out
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+        bra             MAIN_LOOP
+MCOD_OR_EA
+        * OR instruction and Dn V <ea> -> <ea> format
+
+        * back up the Dest_register
+        move.b          DEST_REGISTER,d7
+        move.b          SRC_MODE,DEST_MODE
+        move.b          SRC_REGISTER,DEST_REGISTER
+
+        move.b          #$00,SRC_MODE
+        move.b          d7,SRC_REGISTER
+
+        * Based on deception, load memory
+        bsr             ADDRESS_READ_DECISION_LOAD
+
+        * Print out
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+
         bra             MAIN_LOOP
 MCOD_INVALID
         bra             INVALID_S
 
+
 * Mnemonic: sub
 MC_SUB
-        bra             INVALID_S
-        
+        bsr             INITIAL_FOUR_EA_LOAD
+
+        * sub invalid cases #7, #3
+        cmp.b           #7,DEST_MODE
+        beq             MCSB_INVALID
+        cmp.b           #3,DEST_MODE
+        beq             MCSB_INVALID
+
+        * This is valid OR so printout OR.
         bsr             TAB
-        bsr             NEWLINE                 Newline
+        bsr             SUB_S
+
+        * Predefine code to print size tag, and two operands
+        bsr             FOUR_OPCODE_LOAD_OUT
+
         bra             MAIN_LOOP
 
-* Mnemonic: cmp
-MC_COMP
+MCSB_INVALID
         bra             INVALID_S
+
+
+* Mnemonic: cmp
+MC_CMP
+        ** Load initial four instruction.
+        bsr             INITIAL_FOUR_EA_LOAD
+
+        * cmp valid cases bigger or equal to #3
+        cmp.b           #3,DEST_MODE
+        bcc             MCCP_INVALID
+
+        * Invalid common operation
+
+        * This is valid OR so printout OR.
         bsr             TAB
-        bsr             NEWLINE                 Newline
+        bsr             CMP_S
+
+        * Predefine code to print size tag, and two operands
+        bsr             FOUR_OPCODE_LOAD_OUT
+
         bra             MAIN_LOOP
+
+MCCP_INVALID
+        bra             INVALID_S
+
 
 * Mnemonic: and, muls, mulu
 MC_AND_MULU
+        bsr             INITIAL_FOUR_EA_LOAD
 MAM_MULS
         * Check for MULS
-        bsr             INITIAL_FOUR_EA_LOAD
         cmp.b           #7,DEST_MODE
         bne             MAM_MULU
         bsr             SIZE_WORD
@@ -400,10 +480,8 @@ MAM_MULS
         bra             MAIN_LOOP
 MAM_MULU
         * Check for MULS
-        bsr             CLEAR_THREE_BIT_S
-        bsr             INITIAL_FOUR_EA_LOAD
         cmp.b           #3,DEST_MODE
-        bne             MAM_INVALID
+        bne             MAM_AND
         bsr             SIZE_WORD
         move.b          #$00,DEST_MODE
         bsr             ADDRESS_READ_DECISION_LOAD
@@ -418,16 +496,79 @@ MAM_MULU
         bsr             NEWLINE
         bra             MAIN_LOOP
 MAM_AND
+        * Invalid common operation
+        ** Setting the size
+
+        * This is valid AND so printout AND.
+        bsr             TAB
+        bsr             AND_S
+
+        * Predefine code to print size tag, and two operands
+        bsr             FOUR_OPCODE_LOAD_OUT
+
         bra             MAIN_LOOP
+
 MAM_INVALID
         bra             INVALID_S
 
 * Mnemonic: add, adda
 MC_ADD_ADDA
-        bra             INVALID_S
+        bsr             INITIAL_FOUR_EA_LOAD
+MCADDDA_ADD
+        *Add cases check
+
+        ** ADDA cases are #7 #3
+        cmp.b           #7,DEST_MODE
+        beq             MCADDDA_ADDA
+        cmp.b           #3,DEST_MODE
+        beq             MCADDDA_ADDA
+        * -----------------------------
+
+        * It's not ADDA, so its ADD
         bsr             TAB
-        bsr             NEWLINE                 Newline
+        bsr             ADD_S
+
+        * Predefine code to print size tag, and two operands
+        bsr             FOUR_OPCODE_LOAD_OUT
+
         bra             MAIN_LOOP
+
+MCADDDA_ADDA
+        * It's ADDA.
+        * converting manually.
+        bsr             TAB
+        bsr             ADDA_S
+
+*Size operation
+MCADDDA_ADDA_WORD
+        cmp.b           #3,DEST_MODE
+        bne             MCADDDA_ADDA_LONG
+        bsr             SIZE_WORD
+        bra             MCADDDA_ADDA_OUT
+MCADDDA_ADDA_LONG
+        cmp.b           #7,DEST_MODE
+        bne             MCADDDA_INVALID
+        bsr             SIZE_LONG
+MCADDDA_ADDA_OUT
+        * This is valid OR so printout OR.
+        bsr             SIZE_TAG_S
+MCADDDA_ADDA_OUT_AN
+        * Set dest mode as register (Deception!!)
+        move.b          #$01,DEST_MODE
+
+        * Based on deception, load memory
+        bsr             ADDRESS_READ_DECISION_LOAD
+
+        * Print out
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+        
+        bra             MAIN_LOOP
+
+MCADDDA_INVALID
+        bra             INVALID_S
 
 * Mnemonic: asr, asl, lsr, lsl, ror, rol
 MC_ASR_ROL
