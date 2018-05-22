@@ -336,7 +336,111 @@
         mulu.w            $7ffe,d0
         mulu.w            $ffff7ffe,d0
         mulu.w            #$7ffe,d0
+
+        * bcc perumtations
+        *bcc               here
+        *bgt               here
+        *ble               here
+
+        * or.b permutations
+        or.b              d0,d0
+        or.b              (a5),d0
+        or.b              (a5)+,d0
+        or.b              -(a5),d0
+        or.b              $7ffe,d0
+        or.b              $ffff7ffe,d0
+
+        or.b              d0,(a5)
+        or.b              d0,(a5)+
+        or.b              d0,-(a5)
+        or.b              d0,$7ffe
+        or.b              d0,$ffff7ffe
+
+        * or.w permutations
+        or.w              d0,d0
+        or.w              (a5),d0
+        or.w              (a5)+,d0
+        or.w              -(a5),d0
+        or.w              $7ffe,d0
+        or.w              $ffff7ffe,d0
+
+        or.w              d0,(a5)
+        or.w              d0,(a5)+
+        or.w              d0,-(a5)
+        or.w              d0,$7ffe
+        or.w              d0,$ffff7ffe
+
+        * or.l permutations
+        or.l              d0,d0
+        or.l              (a5),d0
+        or.l              (a5)+,d0
+        or.l              -(a5),d0
+        or.l              $7ffe,d0
+        or.l              $ffff7ffe,d0
+
+        or.l              d0,(a5)
+        or.l              d0,(a5)+
+        or.l              d0,-(a5)
+        or.l              d0,$7ffe
+        or.l              d0,$ffff7ffe
+
+        * sub.b permutations
+        sub.b             d0,d0
+        sub.b             (a5),d0
+        sub.b             (a5)+,d0
+        sub.b             -(a5),d0
+        sub.b             $7ffe,d0
+        sub.b             $ffff7ffe,d0
+
+        sub.b             d0,(a5)
+        sub.b             d0,(a5)+
+        sub.b             d0,-(a5)
+        sub.b             d0,$7ffe
+        sub.b             d0,$ffff7ffe
+
+        * sub.w permutations
+        sub.w             d0,d0
+        sub.w             (a5),d0
+        sub.w             (a5)+,d0
+        sub.w             -(a5),d0
+        sub.w             $7ffe,d0
+        sub.w             $ffff7ffe,d0
+
+        sub.w             d0,(a5)
+        sub.w             d0,(a5)+
+        sub.w             d0,-(a5)
+        sub.w             d0,$7ffe
+        sub.w             d0,$ffff7ffe
+
+        * sub.l permutations
+        sub.l             d0,d0
+        sub.l             (a5),d0
+        sub.l             (a5)+,d0
+        sub.l             -(a5),d0
+        sub.l             $7ffe,d0
+        sub.l             $ffff7ffe,d0
+
+        sub.l             d0,(a5)
+        sub.l             d0,(a5)+
+        sub.l             d0,-(a5)
+        sub.l             d0,$7ffe
+        sub.l             d0,$ffff7ffe
+
+        * cmp.b permutations
+        * cmp.w permutations
+        * cmp.l permutations
+
+        * and.b permutations
+        * and.w permutations
+        * and.l permutations
+
+        * add.b permutations
+        * add.w permutations
+        * add.l permutations
         
+
+        * adda.w permutations
+        * adda.l permutations
 HERE
  
         SIMHALT
