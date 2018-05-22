@@ -377,3 +377,56 @@ INITIAL_FOUR_EA_LOAD_OUT
 
 * -> Initial four ea out mode
 ***************************************************************
+
+
+***************************************************************
+* -> Memory structure | Register | Opmode | EA Mode | EA register |
+FOUR_OPCODE_LOAD_OUT
+        * Invalid common operation
+        ** Setting the size
+        move.b          DEST_MODE,SIZE
+        bsr             SIZE_CONVERT_TYPE_TWO
+
+        * This is valid OR so printout OR.
+        bsr             SIZE_TAG_S
+FOLO_DN
+
+        * Check for OR instruction <ea> V Dn -> Dn format
+        cmp.b           #4,DEST_MODE
+        bcc             FOLO_EA
+
+        * Set dest mode as register (Deception!!)
+        move.b          #$00,DEST_MODE
+
+        * Based on deception, load memory
+        bsr             ADDRESS_READ_DECISION_LOAD
+
+        * Print out
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+        rts
+FOLO_EA
+        * OR instruction and Dn V <ea> -> <ea> format
+
+        * back up the Dest_register
+        move.b          DEST_REGISTER,d7
+        move.b          SRC_MODE,DEST_MODE
+        move.b          SRC_REGISTER,DEST_REGISTER
+
+        move.b          #$00,SRC_MODE
+        move.b          d7,SRC_REGISTER
+
+        * Based on deception, load memory
+        bsr             ADDRESS_READ_DECISION_LOAD
+
+        * Print out
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+
+        rts
+FOLO_INVALID
+        bra             INVALID_S
