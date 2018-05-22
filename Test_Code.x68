@@ -427,8 +427,31 @@
         sub.l             d0,$ffff7ffe
 
         * cmp.b permutations
+        cmp.b             d3,d3
+        cmp.b             (a3),d3
+        cmp.b             (a3)+,d3
+        cmp.b             -(a3),d3
+        cmp.b             $7ffe,d3
+        cmp.b             $ffff7ffe,d3
+        cmp.b             #$ff,d3
+
         * cmp.w permutations
+        cmp.w             d3,d3
+        cmp.w             (a3),d3
+        cmp.w             (a3)+,d3
+        cmp.w             -(a3),d3
+        cmp.w             $7ffe,d3
+        cmp.w             $ffff7ffe,d3
+        cmp.w             #$ff,d3
+
         * cmp.l permutations
+        cmp.l             d3,d3
+        cmp.l             (a3),d3
+        cmp.l             (a3)+,d3
+        cmp.l             -(a3),d3
+        cmp.l             $7ffe,d3
+        cmp.l             $ffff7ffe,d3
+        cmp.l             #$ff,d3
 
         * and.b permutations
         * and.w permutations
@@ -437,7 +460,7 @@
         * add.b permutations
         * add.w permutations
         * add.l permutations
-        
+
 
         * adda.w permutations
         * adda.l permutations
