@@ -75,7 +75,7 @@ MAIN_LOOP
 
         * bcc
         cmp.b           #$70,INITIAL_INSTRUCTION
-        blo             MC_BCC
+        blo             MC_BCGL
 
         * moveq
         cmp.b           #$80,INITIAL_INSTRUCTION
@@ -319,11 +319,82 @@ MCAQ_INVALID
         bra             INVALID_S
 
 * Mnemonic: bcc, bgt, ble
-MC_BCC
-        
+MC_BCGL
+        movem.l         d6/d7,-(sp)
+        move.l          a6,d6
+        cmp.b           #$64,INITIAL_INSTRUCTION
+        beq             MCBL_BCC
+        cmp.b           #$6E,INITIAL_INSTRUCTION
+        beq             MCBL_BGT
+        cmp.b           #$6F,INITIAL_INSTRUCTION
+        beq             MCBL_BLE
+
+        bra             MCBC_INVALID
+MCBL_BCC
+        bsr             INITIAL_DATA_EIGHT_LOAD
+        bsr             CONDIITON_DECISION_LOAD
         bsr             TAB
-        bsr             NEWLINE                 Newline
+        bsr             BCC_S
+        bra             MC_BCGL_FINAL
+MCBL_BGT
+        bsr             INITIAL_DATA_EIGHT_LOAD
+        bsr             CONDIITON_DECISION_LOAD
+        bsr             TAB
+        bsr             BGT_S
+        bra             MC_BCGL_FINAL
+MCBL_BLE
+        bsr             INITIAL_DATA_EIGHT_LOAD
+        bsr             CONDIITON_DECISION_LOAD
+        bsr             TAB
+        bsr             BLE_S
+        bra             MC_BCGL_FINAL
+
+MC_BCGL_FINAL
+        bsr             TAB
+        
+        cmp.b           #$00,DATA_EIGHT_BIT
+        beq             MC_BCGL_FINAL_16
+        cmp.b           #$FF,DATA_EIGHT_BIT
+        beq             MC_BCGL_FINAL_32
+        
+        clr.w           d7
+        move.b          DATA_EIGHT_BIT,d7
+        move.w          d7,SRC_NUMBER_DATA
+        add.w           d6,SRC_NUMBER_DATA
+
+        * Deceiving Assembler
+        move.b          #7,SRC_MODE
+        move.b          #0,SRC_REGISTER
+
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+
+        bra             MC_BCGL_FINAL_LAST
+        
+MC_BCGL_FINAL_16
+        * 16 bit displacement
+        ** Deceiving Assembler
+        move.b          #7,SRC_MODE
+        move.b          #0,SRC_REGISTER
+
+        add.w           d6,SRC_NUMBER_DATA
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+
+        bra             MC_BCGL_FINAL_LAST
+MC_BCGL_FINAL_32
+        * 16 bit displacement
+        ** Deceiving Assembler
+        move.b          #7,SRC_MODE
+        move.b          #1,SRC_REGISTER
+
+        add.l           d6,SRC_NUMBER_DATA
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+
+        bra             MC_BCGL_FINAL_LAST
+MC_BCGL_FINAL_LAST
+        movem.l         (sp)+,d6-d7
+        rts
 MCBC_INVALID
+        movem.l         (sp)+,d6-d7
         bra             INVALID_S
 
 * Mnemonic: moveq
