@@ -70,6 +70,33 @@ INITIAL_TWO_EA_LOAD
         movem.w         (sp)+,d7          
 
         rts
+
+** Expected to use with BGT, BLE, BCC
+INITIAL_DATA_EIGHT_LOAD
+        movem.l         d7,-(sp)
+
+        move.w          INITIAL_INSTRUCTION,d7
+        move.b          d7,DATA_EIGHT_BIT
+
+        movem.l         (sp)+,d7     
+
+        rts
+
+* Expected to use with MOVDQ
+INITIAL_DATA_EIGHT_LOAD_REG
+        movem.l         d7,-(sp)
+
+        bsr             INITIAL_DATA_EIGHT_LOAD
+
+        move.b          INITIAL_INSTRUCTION,d7
+        
+        ror.w           #1,d7
+        move.b          d7,CONVERSOIN_RESERVED
+        bsr             THREE_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,DEST_REGISTER
+
+        movem.l         (sp)+,d7  
+        rts
 * Effective address load end here
 ***************************************************************
 

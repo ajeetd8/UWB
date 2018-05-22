@@ -126,3 +126,27 @@ ARDL_FINAL_RTS
 
 * -----------------------------------------------
 ***************************************************
+
+***************************************************
+* -----------------------------------------------
+* Condition address decision load
+* BCC BGT BLE
+** Using DATA_EIGHT_BIT, SRC_NUMBER_DATA
+CONDIITON_DECISION_LOAD
+        cmp.b           #$00,DATA_EIGHT_BIT
+        beq             CDL_16
+        cmp.b           #$FF,DATA_EIGHT_BIT
+        beq             CDL_32
+
+        rts
+CDL_16
+        ** 16 bit displacement
+        move.w          (a6)+,SRC_NUMBER_DATA
+        rts
+CDL_32
+        ** 32 bit displacement
+        move.l          (a6)+,SRC_NUMBER_DATA
+        rts
+
+* -----------------------------------------------
+***************************************************
