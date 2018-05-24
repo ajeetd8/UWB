@@ -133,8 +133,9 @@ MAS_SUBI
         bsr             SIZE_CONVERT_TYPE_ONE
         bsr             MC_ADDI_SUBI_INST_CONVERTOR
         bsr             ADDRESS_READ_DECISION_LOAD
+        
+        bsr             IS_VALID
         bsr             TAB
-
         bsr             SUBI_S
         bra             MAS_OPERAND
 MAS_ADDI
@@ -145,8 +146,9 @@ MAS_ADDI
         bsr             SIZE_CONVERT_TYPE_ONE
         bsr             MC_ADDI_SUBI_INST_CONVERTOR
         bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             TAB
 
+        bsr             IS_VALID
+        bsr             TAB
         bsr             ADDI_S
         bra             MAS_OPERAND
 MAS_INVALID
@@ -177,6 +179,7 @@ MC_MOVE_B
         bsr             INITIAL_FOUR_EA_LOAD
         bsr             ADDRESS_READ_DECISION_LOAD
 
+        bsr             IS_VALID
         bsr             TAB
         bsr             MOVE_S                Print out the instruction.
         bsr             SIZE_TAG_S
@@ -192,6 +195,7 @@ MC_MOVE_L_MOVEA_L
         bsr             SIZE_LONG
         bsr             INITIAL_FOUR_EA_LOAD
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
         bsr             TAB
 
 MMLML_MOVEA_OUT
@@ -215,6 +219,7 @@ MC_MOVE_W_MOVEA_W
         bsr             SIZE_WORD
         bsr             INITIAL_FOUR_EA_LOAD
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
         bsr             TAB
 
 MMLMW_MOVEA_OUT
@@ -256,6 +261,7 @@ MCL_CLR
         bsr             INITIAL_TWO_EA_LOAD_SIZE
         bsr             SIZE_CONVERT_TYPE_ONE
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
         bsr             TAB
         bsr             CLR_S
         bsr             SIZE_TAG_S
@@ -274,6 +280,7 @@ MCL_JSR
         bne             INVALID_S
 
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
 
         bsr             TAB
         bsr             JSR_S
@@ -292,6 +299,7 @@ MCL_LEA
         bsr             SIZE_LONG
         move.b          #1,DEST_MODE
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
         
         bsr             TAB
         bsr             LEA_S
@@ -416,6 +424,7 @@ MCOD_DIVU
         bsr             SIZE_WORD
         move.b          #$00,DEST_MODE
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
 
         bsr             TAB
         bsr             DIVU_S
@@ -644,9 +653,10 @@ MCADDDA_INVALID
 
 * Mnemonic: asr, asl, lsr, lsl, ror, rol
 MC_ASR_ROL
+
         bra             INVALID_S
-        bsr             TAB
-        bsr             NEWLINE                 Newline
+
+MC_ASR_ROL_FINAL
         bra             MAIN_LOOP
 
 ** ----------------------------------------
