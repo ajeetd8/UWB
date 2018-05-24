@@ -539,6 +539,8 @@
         asr             $1234
         lsl             $321
 
+        asr.w           #8,d0
+
         
 HERE
  

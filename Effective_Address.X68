@@ -796,7 +796,11 @@ MTR_EADY
         move.w          d6,SRC_NUMBER_DATA
         move.b          SRC_REGISTER,DEST_REGISTER
         move.b          #4,SRC_REGISTER
-        
+
+        cmp.w           #0,SRC_NUMBER_DATA
+        bne             MTR_EADY_DECISION
+        move.w          #8,SRC_NUMBER_DATA
+MTR_EADY_DECISION
         btst            #4,d7
         bne             MTR_EADY_ROd
         btst            #3,d7
