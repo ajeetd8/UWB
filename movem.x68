@@ -961,8 +961,20 @@ EXIT_PROGRAM
 
         INCLUDE 'Variable.x68',0
 
+
         *TODO: Delete this later
         org             DISASSEMBLE_FROM        Code after this starts at DISASSEMBLE_FROM
+        
+        movem.w    d0,-(a7)
+        movem.w    d0,-(a6)
+        movem.w    d0,-(a5)
+        movem.w    d0,-(a4)
+        movem.w    d0,(a3)
+        movem.w    d0,-(a2)
+        movem.w    d0,-(a1)
+
+        movem.w     d0,$12345678
+        
         MOVEM       D0-D7,-(A7)                     ;test1
         MOVEM       (A7)+,D0-D7                     ;test2
 
