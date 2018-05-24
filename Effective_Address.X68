@@ -674,6 +674,14 @@ MAR_TO_REGISTER
         beq             MTR_EADY
 * CASE 1, DX,DY
 MTR_DXDY
+        * Common operation
+        move.b          #0,SRC_MODE
+        move.b          #0,DEST_MODE
+        move.b          SRC_REGISTER,d6
+        move.b          DEST_REGISTER,SRC_REGISTER
+        move.b          d6,DEST_REGISTER
+
+        * branching
         btst            #4,d7
         bne             MTR_DXDY_ROd
         btst            #3,d7
@@ -682,13 +690,6 @@ MTR_DXDY
         beq             MTR_DXDY_ASd
 
 MTR_DXDY_ASd
-        * Common operation
-        move.b          #0,SRC_MODE
-        move.b          #0,DEST_MODE
-        move.b          SRC_REGISTER,d6
-        move.b          DEST_REGISTER,SRC_REGISTER
-        move.b          d6,DEST_REGISTER
-
         * Now it is valid
         btst            #8,d7
         beq             MTR_DXDY_ASR
@@ -707,8 +708,6 @@ MTR_DXDY_ASR
 
         bra             MC_ASR_ROL_FINAL 
 MTR_DXDY_ASL
-        
-
         bsr             IS_VALID
         bsr             TAB
         bsr             ASL_S
@@ -722,12 +721,6 @@ MTR_DXDY_ASL
 
 
 MTR_DXDY_LSd
-        move.b          #0,SRC_MODE
-        move.b          #0,DEST_MODE
-        move.b          SRC_REGISTER,d6
-        move.b          DEST_REGISTER,SRC_REGISTER
-        move.b          d6,DEST_REGISTER
-
         * Now it is valid
         btst            #8,d7
         beq             MTR_DXDY_LSR
@@ -761,13 +754,6 @@ MTR_DXDY_ROd
         * invalid check
         btst            #3,d7
         beq             MC_ASR_ROL_INVALID
-        
-        * deceiving assembler
-        move.b          #0,SRC_MODE
-        move.b          #0,DEST_MODE
-        move.b          SRC_REGISTER,d6
-        move.b          DEST_REGISTER,SRC_REGISTER
-        move.b          d6,DEST_REGISTER
 
         * Now it is valid
         btst            #8,d7
@@ -802,6 +788,15 @@ MTR_DXDY_ROL
 
 *CASE 2 <EA>,DY
 MTR_EADY
+        *common for eady
+        move.b          #7,SRC_MODE
+        move.b          #0,DEST_MODE
+        clr.w           d6
+        move.b          DEST_REGISTER,d6
+        move.w          d6,SRC_NUMBER_DATA
+        move.b          SRC_REGISTER,DEST_REGISTER
+        move.b          #4,SRC_REGISTER
+        
         btst            #4,d7
         bne             MTR_EADY_ROd
         btst            #3,d7
@@ -811,15 +806,6 @@ MTR_EADY
 
 
 MTR_EADY_ASd
-        * common for lsr lsl
-        move.b          #7,SRC_MODE
-        move.b          #0,DEST_MODE
-        clr.w           d6
-        move.b          DEST_REGISTER,d6
-        move.w          d6,SRC_NUMBER_DATA
-        move.b          SRC_REGISTER,DEST_REGISTER
-        move.b          #4,SRC_REGISTER
-
         * Now it is valid
         btst            #8,d7
         beq             MTR_EADY_ASR
@@ -852,15 +838,6 @@ MTR_EADY_ASL
 
 
 MTR_EADY_LSd
-        * common for lsr lsl
-        move.b          #7,SRC_MODE
-        move.b          #0,DEST_MODE
-        clr.w           d6
-        move.b          DEST_REGISTER,d6
-        move.w          d6,SRC_NUMBER_DATA
-        move.b          SRC_REGISTER,DEST_REGISTER
-        move.b          #4,SRC_REGISTER
-
         * Now it is valid
         btst            #8,d7
         beq             MTR_EADY_LSR
@@ -895,15 +872,6 @@ MTR_EADY_ROd
         * invalid check
         btst            #3,d7
         beq             MC_ASR_ROL_INVALID
-
-        * common for ror rol
-        move.b          #7,SRC_MODE
-        move.b          #0,DEST_MODE
-        clr.w           d6
-        move.b          DEST_REGISTER,d6
-        move.w          d6,SRC_NUMBER_DATA
-        move.b          SRC_REGISTER,DEST_REGISTER
-        move.b          #4,SRC_REGISTER
 
         * Now it is valid
         btst            #8,d7
