@@ -302,6 +302,11 @@ COMMA_S         LEA     COMMA_MESSAGE,a1
                 trap    #15
                 rts
 
+SLASH_S         LEA     SLASH_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
 * NewLine
 NEWLINE         lea             CRLF,A1
                 move.b          #14,d0
@@ -447,6 +452,7 @@ BYTE_MESSAGE            DC.B    '.B',0
 DOLLAR_MESSAGE          DC.B    '$',0
 HASH_MESSAGE            DC.B    '#',0
 COMMA_MESSAGE           DC.B    ',',0
+SLASH_MESSAGE           DC.B    '/',0
 
 * Invalid Insturction.
 INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',CR,LF,0

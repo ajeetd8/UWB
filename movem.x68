@@ -303,6 +303,80 @@ MCL_LEA
         bra             MAIN_LOOP
 
 MCL_MOVEM
+
+
+        *Example to printout
+        * INITIAL_INSTRUCTION : variable hold word size instruction.
+        * PC right after INITIAL_INSTRUCTION
+        bsr             D_ZERO_S
+        bsr             D_ONE_S
+        bsr             D_TWO_S
+        bsr             D_THREE_S
+        bsr             D_FOUR_S
+        bsr             D_FIVE_S
+        bsr             D_SIX_S
+        bsr             D_SEVEN_S
+
+
+        bsr             A_ZERO_S
+        bsr             A_ONE_S
+        bsr             A_TWO_S
+        bsr             A_THREE_S
+        bsr             A_FOUR_S
+        bsr             A_FIVE_S
+        bsr             A_SIX_S
+        bsr             A_SEVEN_S
+
+        bsr             A_ZERO_P_S
+        bsr             A_ONE_P_S
+        bsr             A_TWO_P_S
+        bsr             A_THREE_P_S
+        bsr             A_FOUR_P_S
+        bsr             A_FIVE_P_S
+        bsr             A_SIX_P_S
+        bsr             A_SEVEN_P_S
+
+        bsr             NEWLINE
+
+        bsr             PLUS_S
+        bsr             MINUS_S
+
+        bsr             SLASH_S
+        bsr             COMMA_S
+        bsr             DOLLAR_S
+
+        * word data out example
+        move.w          #$1234,WORD_OUT
+        bsr             WORD_OUT_S
+
+        * long out example
+        *move.l          #$12345678,LONG_OUT
+        *bsr             LONG_OUT_S
+
+        * byte out example
+        move.b          #$01,BYTE_OUT
+        bsr             BYTE_OUT_S
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 MCL_INVALID
         bsr             CLEAR_ALL_BIT_S
         bra             INVALID_S
