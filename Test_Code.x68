@@ -400,7 +400,6 @@
         movea.l         $ffff7ffe,a5
         movea.l         #$ffff7ffe,a5
 
-            
         * muls.w permutations
         muls.w          d0,d0
         muls.w          (a0),d0
