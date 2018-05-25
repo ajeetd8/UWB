@@ -5,6 +5,7 @@
 *this is a sample code to disassemble.
 
         * OPCODE TEST EXAMPLE
+        andi	        #$643,d0
         move.w          $7fff,d0
         move.b          #$77,d0
         move.w          $8000,d0
@@ -399,6 +400,7 @@
         movea.l         $7ffe,a5
         movea.l         $ffff7ffe,a5
         movea.l         #$ffff7ffe,a5
+
         * muls.w permutations
         muls.w          d0,d0
         muls.w          (a0),d0
@@ -533,6 +535,12 @@
         subi.l          #$ffff7ffe,-(a5)
         subi.l          #$ffff7ffe,$7ffe
         subi.l          #$ffff7ffe,$ffff7ffe
+
+        asr             $1234
+        lsl             $321
+
+        asr.w           #8,d0
+
         
 HERE
  
