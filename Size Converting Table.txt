@@ -7,3 +7,8 @@ Size Convertor type 1
 #0 - BYTE
 #1 - WORD
 #2 - LONG
+
+Size convertor type 2
+$000, %100 -> BYTE
+$001, %101 -> WORD
+$010, %110 -> LONG

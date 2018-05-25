@@ -82,24 +82,6 @@ INITIAL_DATA_EIGHT_LOAD
 
         rts
 
-* Expected to use with MOVDQ
-INITIAL_DATA_EIGHT_LOAD_REG
-        movem.l         d7,-(sp)
-
-        bsr             INITIAL_DATA_EIGHT_LOAD
-
-        move.b          INITIAL_INSTRUCTION,d7
-        
-        ror.w           #1,d7
-        move.b          d7,CONVERSOIN_RESERVED
-        bsr             THREE_BIT_ONLY
-        move.b          CONVERSOIN_RESERVED,DEST_REGISTER
-
-        movem.l         (sp)+,d7  
-        rts
-* Effective address load end here
-***************************************************************
-
 ***************************************************************
 * Clear 3 bit instructoins
 *-> BIT CLEAR START HERE

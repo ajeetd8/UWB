@@ -320,17 +320,21 @@ MCL_INVALID
 
 * Mnemonic: addq
 MC_ADDQ
-        * Valid check
+        * Valid check (Check whether 8th bit is one or not, '1' is invalid)
         clr.w          d7
         move.b          INITIAL_INSTRUCTION,D7
         btst            #8,d7
         bne             MCAQ_INVALID
+        * InInitiating EA_MODE, EA_Register, SIZE
         bsr             INITIAL_TWO_EA_LOAD_SIZE
-        bsr             SIZE_CONVERT_TYPE_ONE
-        bsr             ADDRESS_READ_DECISION_LOAD
-        BSR             IS_VALID
+        bsr             SIZE_CONVERT_TYPE_ONE           * Converting size instruction.
+        bsr             ADDRESS_READ_DECISION_LOAD      * Check for memory load
+        BSR             IS_VALID                        * Validation check
+        
+        * Load 'Data' into 'DEST_REGISTER variable' - DEST_MODE get garbage.
         bsr             INITIAL_FOUR_EA_LOAD
 
+        * Save data into register, and if 'DATA' is #0, change it into '8'
         clr             d7
         move.b          DEST_REGISTER,d7
         cmp.b           #8,d7
@@ -338,11 +342,11 @@ MC_ADDQ
         move.b          #8,d7
 
 MC_ADDQ_FINAL
+        * Check whether the destination <ea> or not, and if the destination is ea, set DEST_NUMBER_DATA.
         cmp.b           #7,SRC_MODE
         bne             MC_ADDQ_FINAL_DONE
         move.l          SRC_NUMBER_DATA,DST_NUMBER_DATA
 MC_ADDQ_FINAL_DONE       
-        
         *deceiving assembler
         move.w          d7,SRC_NUMBER_DATA
         move.b          SRC_MODE,DEST_MODE
