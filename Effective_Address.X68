@@ -320,9 +320,46 @@ MCL_INVALID
 
 * Mnemonic: addq
 MC_ADDQ
+        * Valid check
+        clr.w          d7
+        move.b          INITIAL_INSTRUCTION,D7
+        btst            #8,d7
+        bne             MCAQ_INVALID
+        bsr             INITIAL_TWO_EA_LOAD_SIZE
+        bsr             SIZE_CONVERT_TYPE_ONE
+        bsr             ADDRESS_READ_DECISION_LOAD
+        BSR             IS_VALID
+        bsr             INITIAL_FOUR_EA_LOAD
+
+        clr             d7
+        move.b          DEST_REGISTER,d7
+        cmp.b           #8,d7
+        beq             MC_ADDQ_FINAL
+        move.b          #8,d7
+
+MC_ADDQ_FINAL
+        cmp.b           #7,SRC_MODE
+        bne             MC_ADDQ_FINAL_DONE
+        move.l          SRC_NUMBER_DATA,DST_NUMBER_DATA
+MC_ADDQ_FINAL_DONE       
         
+        *deceiving assembler
+        move.w          d7,SRC_NUMBER_DATA
+        move.b          SRC_MODE,DEST_MODE
+        move.b          SRC_REGISTER,DEST_REGISTER
+        move.b          #7,SRC_MODE
+        move.b          #4,SRC_REGISTER
+        bsr             IS_VALID
+
         bsr             TAB
+        bsr             ADDQ_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+        bsr             SIZE_BYTE
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
         bsr             NEWLINE                 Newline
+
+        bra             MAIN_LOOP
 MCAQ_INVALID
         bra             INVALID_S
 
@@ -408,9 +445,31 @@ MCBC_INVALID
 
 * Mnemonic: moveq
 MC_MOVEQ
-        bra             MCMQ_INVALID
+        move.w          INITIAL_INSTRUCTION,d7
+        btst            #8,d7
+        bne             MCMQ_INVALID
+
+        * The instruction is valid
+        bsr             INITIAL_DATA_EIGHT_LOAD
+        bsr             INITIAL_FOUR_EA_LOAD
+
+        * Deceiving Assembler
+        move.b          #0,DEST_MODE
+        move.b          #7,SRC_MODE
+        move.b          #4,SRC_REGISTER
+        clr.w           d6
+        move.b          DATA_EIGHT_BIT,d6
+        move.w          d6,SRC_NUMBER_DATA
+        bsr             SIZE_BYTE
         bsr             TAB
+        
+        bsr             MOVEQ_S
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
         bsr             NEWLINE                 Newline
+        bra             MC_MOVEQ_FINAL
+MC_MOVEQ_FINAL
+        bra             MAIN_LOOP
 MCMQ_INVALID
         bra             INVALID_S
 
