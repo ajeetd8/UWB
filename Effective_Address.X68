@@ -320,17 +320,21 @@ MCL_INVALID
 
 * Mnemonic: addq
 MC_ADDQ
-        * Valid check
+        * Valid check (Check whether 8th bit is one or not, '1' is invalid)
         clr.w          d7
         move.b          INITIAL_INSTRUCTION,D7
         btst            #8,d7
         bne             MCAQ_INVALID
+        * InInitiating EA_MODE, EA_Register, SIZE
         bsr             INITIAL_TWO_EA_LOAD_SIZE
-        bsr             SIZE_CONVERT_TYPE_ONE
-        bsr             ADDRESS_READ_DECISION_LOAD
-        BSR             IS_VALID
+        bsr             SIZE_CONVERT_TYPE_ONE           * Converting size instruction.
+        bsr             ADDRESS_READ_DECISION_LOAD      * Check for memory load
+        BSR             IS_VALID                        * Validation check
+        
+        * Load 'Data' into 'DEST_REGISTER variable' - DEST_MODE get garbage.
         bsr             INITIAL_FOUR_EA_LOAD
 
+        * Save data into register, and if 'DATA' is #0, change it into '8'
         clr             d7
         move.b          DEST_REGISTER,d7
         cmp.b           #8,d7
@@ -338,11 +342,11 @@ MC_ADDQ
         move.b          #8,d7
 
 MC_ADDQ_FINAL
+        * Check whether the destination <ea> or not, and if the destination is ea, set DEST_NUMBER_DATA.
         cmp.b           #7,SRC_MODE
         bne             MC_ADDQ_FINAL_DONE
         move.l          SRC_NUMBER_DATA,DST_NUMBER_DATA
 MC_ADDQ_FINAL_DONE       
-        
         *deceiving assembler
         move.w          d7,SRC_NUMBER_DATA
         move.b          SRC_MODE,DEST_MODE
@@ -723,7 +727,7 @@ MC_ASR_ROL
         bsr             INITIAL_FOUR_EA_LOAD
 
         cmp.b           #3,SIZE
-        beq             MAR_TO_ADDRESS
+        beq             MAR_TO_ADDRESS          * It has very different instruction set
 
 MAR_TO_REGISTER
         bsr             SIZE_CONVERT_TYPE_TWO
@@ -755,7 +759,6 @@ MTR_DXDY_ASd
         btst            #8,d7
         bne             MTR_DXDY_ASL
 MTR_DXDY_ASR
-        bsr             ADDRESS_READ_DECISION_LOAD * maybe not required
         bsr             IS_VALID
         bsr             TAB
         bsr             ASR_S
@@ -986,11 +989,13 @@ MAR_TO_ADDRESS
 MAR_TA_ASd
         move.b          #0,DEST_MODE
         move.b          #0,DEST_REGISTER
+
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+
         btst            #8,d7
         beq             MAR_TA_ASR
 MAR_TA_ASL
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             ASL_S
         bsr             SIZE_TAG_S
@@ -1000,8 +1005,6 @@ MAR_TA_ASL
         bsr             NEWLINE
         bra             MC_ASR_ROL_FINAL
 MAR_TA_ASR
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             ASR_S
         bsr             SIZE_TAG_S
@@ -1015,12 +1018,14 @@ MAR_TA_ASR
 MAR_TA_LSd
         move.b          #0,DEST_MODE
         move.b          #0,DEST_REGISTER
+
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+
         btst            #8,d7
         beq             MAR_TA_LSR
 
 MAR_TA_LSL
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             LSL_S
         bsr             SIZE_TAG_S
@@ -1031,8 +1036,6 @@ MAR_TA_LSL
 
         bra             MC_ASR_ROL_FINAL
 MAR_TA_LSR
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             LSR_S
         bsr             SIZE_TAG_S
@@ -1048,11 +1051,13 @@ MAR_TA_LSR
 MAR_TA_ROd
         move.b          #0,DEST_MODE
         move.b          #0,DEST_REGISTER
+
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+
         btst            #8,d7
         beq             MAR_TA_ROR
 MAR_TA_ROL
-        bsr             ADDRESS_READ_DECISION_LOAD
-        *bsr             IS_VALID
         bsr             TAB
         bsr             ROL_S
         bsr             SIZE_TAG_S
@@ -1063,8 +1068,6 @@ MAR_TA_ROL
 
         bra             MC_ASR_ROL_FINAL
 MAR_TA_ROR
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             ROR_S
         bsr             SIZE_TAG_S
