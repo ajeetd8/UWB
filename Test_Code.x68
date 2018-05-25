@@ -5,6 +5,7 @@
 *this is a sample code to disassemble.
 
         * OPCODE TEST EXAMPLE
+        andi	        #$643,d0
         move.w          $7fff,d0
         move.b          #$77,d0
         move.w          $8000,d0
