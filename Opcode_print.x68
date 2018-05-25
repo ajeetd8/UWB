@@ -367,7 +367,7 @@ STS_DOT_WORD_OUT
         rts
 STS_DOT_LONG_OUT
         cmp.b           #LONG,SIZE
-        bne             STS_DOT_WORD_OUT
+        bne             STS_INVALID_SIZE
         bsr             LONG_S
         rts
 STS_INVALID_SIZE
