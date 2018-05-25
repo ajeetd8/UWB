@@ -1056,11 +1056,6 @@ MAR_TA_ROd
         btst            #8,d7
         beq             MAR_TA_ROR
 MAR_TA_ROL
-<<<<<<< HEAD
-=======
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
->>>>>>> 0e135ebb578b037818d562549b719e0d542b8596
         bsr             TAB
         bsr             ROL_S
         bsr             SIZE_TAG_S
