@@ -989,11 +989,13 @@ MAR_TO_ADDRESS
 MAR_TA_ASd
         move.b          #0,DEST_MODE
         move.b          #0,DEST_REGISTER
+
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+
         btst            #8,d7
         beq             MAR_TA_ASR
 MAR_TA_ASL
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             ASL_S
         bsr             SIZE_TAG_S
@@ -1003,8 +1005,6 @@ MAR_TA_ASL
         bsr             NEWLINE
         bra             MC_ASR_ROL_FINAL
 MAR_TA_ASR
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             ASR_S
         bsr             SIZE_TAG_S
@@ -1018,12 +1018,14 @@ MAR_TA_ASR
 MAR_TA_LSd
         move.b          #0,DEST_MODE
         move.b          #0,DEST_REGISTER
+
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+
         btst            #8,d7
         beq             MAR_TA_LSR
 
 MAR_TA_LSL
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             LSL_S
         bsr             SIZE_TAG_S
@@ -1034,8 +1036,6 @@ MAR_TA_LSL
 
         bra             MC_ASR_ROL_FINAL
 MAR_TA_LSR
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             LSR_S
         bsr             SIZE_TAG_S
@@ -1051,11 +1051,13 @@ MAR_TA_LSR
 MAR_TA_ROd
         move.b          #0,DEST_MODE
         move.b          #0,DEST_REGISTER
+
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+
         btst            #8,d7
         beq             MAR_TA_ROR
 MAR_TA_ROL
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             ROL_S
         bsr             SIZE_TAG_S
@@ -1066,8 +1068,6 @@ MAR_TA_ROL
 
         bra             MC_ASR_ROL_FINAL
 MAR_TA_ROR
-        bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             IS_VALID
         bsr             TAB
         bsr             ROR_S
         bsr             SIZE_TAG_S
