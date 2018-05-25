@@ -6,6 +6,8 @@
 
         * OPCODE TEST EXAMPLE
         *andi	        #$643,d0
+        rol             $1234
+        ror             $4321
         moveq           #$12,d6
         addq            #8,d5
         addq            #8,$12345678
