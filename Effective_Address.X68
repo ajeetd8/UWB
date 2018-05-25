@@ -727,7 +727,7 @@ MC_ASR_ROL
         bsr             INITIAL_FOUR_EA_LOAD
 
         cmp.b           #3,SIZE
-        beq             MAR_TO_ADDRESS
+        beq             MAR_TO_ADDRESS          * It has very different instruction set
 
 MAR_TO_REGISTER
         bsr             SIZE_CONVERT_TYPE_TWO
@@ -759,7 +759,6 @@ MTR_DXDY_ASd
         btst            #8,d7
         bne             MTR_DXDY_ASL
 MTR_DXDY_ASR
-        bsr             ADDRESS_READ_DECISION_LOAD * maybe not required
         bsr             IS_VALID
         bsr             TAB
         bsr             ASR_S
@@ -1056,7 +1055,7 @@ MAR_TA_ROd
         beq             MAR_TA_ROR
 MAR_TA_ROL
         bsr             ADDRESS_READ_DECISION_LOAD
-        *bsr             IS_VALID
+        bsr             IS_VALID
         bsr             TAB
         bsr             ROL_S
         bsr             SIZE_TAG_S
