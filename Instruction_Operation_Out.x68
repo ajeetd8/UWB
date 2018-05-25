@@ -430,3 +430,66 @@ FOLO_EA
         rts
 FOLO_INVALID
         bra             INVALID_S
+
+* -> Memory structure | Register | Opmode | EA Mode | EA register |
+*******************************************************************
+
+
+*******************************************************************
+* Check whether current instruction is valid or not
+IS_VALID
+
+IV_SRC
+    cmp.b               #5,SRC_MODE
+    beq                 IV_INVALID
+    cmp.b               #6,SRC_MODE
+    beq                 IV_INVALID
+
+    cmp.b               #4,SRC_MODE
+    bls                 IV_SRC_REG_CK1
+    cmp.b               #7,SRC_MODE
+    beq                 IV_SRC_REG_CK2             
+
+IV_SRC_REG_CK1
+    cmp.b               #7,SRC_REGISTER
+    bls                 IV_DST
+    bra                 IV_INVALID
+IV_SRC_REG_CK2
+    cmp.b               #2,SRC_REGISTER
+    beq                 IV_INVALID
+    cmp.b               #3,SRC_REGISTER
+    beq                 IV_INVALID
+
+    bra                 IV_DST
+
+IV_DST * Destination check
+    cmp.b               #5,DEST_MODE
+    beq                 IV_INVALID
+    cmp.b               #6,DEST_MODE
+    beq                 IV_INVALID
+
+    cmp.b               #4,DEST_MODE
+    bls                 IV_DST_REG_CK1
+    cmp.b               #7,DEST_MODE
+    beq                 IV_DST_REG_CK2   
+
+IV_DST_REG_CK1
+    cmp.b               #7,DEST_REGISTER
+    bls                 IV_FINAL
+    bra                 IV_INVALID
+IV_DST_REG_CK2
+    cmp.b               #2,DEST_REGISTER
+    beq                 IV_INVALID
+    cmp.b               #3,DEST_REGISTER
+    beq                 IV_INVALID
+
+    bra                 IV_FINAL
+IV_FINAL
+        rts
+IV_INVALID
+    bra                 INVALID_S
+
+
+
+* Check whether current instruction is valid or not
+*******************************************************************

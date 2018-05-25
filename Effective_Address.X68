@@ -133,8 +133,9 @@ MAS_SUBI
         bsr             SIZE_CONVERT_TYPE_ONE
         bsr             MC_ADDI_SUBI_INST_CONVERTOR
         bsr             ADDRESS_READ_DECISION_LOAD
+        
+        bsr             IS_VALID
         bsr             TAB
-
         bsr             SUBI_S
         bra             MAS_OPERAND
 MAS_ADDI
@@ -145,8 +146,9 @@ MAS_ADDI
         bsr             SIZE_CONVERT_TYPE_ONE
         bsr             MC_ADDI_SUBI_INST_CONVERTOR
         bsr             ADDRESS_READ_DECISION_LOAD
-        bsr             TAB
 
+        bsr             IS_VALID
+        bsr             TAB
         bsr             ADDI_S
         bra             MAS_OPERAND
 MAS_INVALID
@@ -177,6 +179,7 @@ MC_MOVE_B
         bsr             INITIAL_FOUR_EA_LOAD
         bsr             ADDRESS_READ_DECISION_LOAD
 
+        bsr             IS_VALID
         bsr             TAB
         bsr             MOVE_S                Print out the instruction.
         bsr             SIZE_TAG_S
@@ -192,6 +195,7 @@ MC_MOVE_L_MOVEA_L
         bsr             SIZE_LONG
         bsr             INITIAL_FOUR_EA_LOAD
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
         bsr             TAB
 
 MMLML_MOVEA_OUT
@@ -215,6 +219,7 @@ MC_MOVE_W_MOVEA_W
         bsr             SIZE_WORD
         bsr             INITIAL_FOUR_EA_LOAD
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
         bsr             TAB
 
 MMLMW_MOVEA_OUT
@@ -256,6 +261,7 @@ MCL_CLR
         bsr             INITIAL_TWO_EA_LOAD_SIZE
         bsr             SIZE_CONVERT_TYPE_ONE
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
         bsr             TAB
         bsr             CLR_S
         bsr             SIZE_TAG_S
@@ -274,6 +280,7 @@ MCL_JSR
         bne             INVALID_S
 
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
 
         bsr             TAB
         bsr             JSR_S
@@ -292,6 +299,7 @@ MCL_LEA
         bsr             SIZE_LONG
         move.b          #1,DEST_MODE
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
         
         bsr             TAB
         bsr             LEA_S
@@ -416,6 +424,7 @@ MCOD_DIVU
         bsr             SIZE_WORD
         move.b          #$00,DEST_MODE
         bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
 
         bsr             TAB
         bsr             DIVU_S
@@ -644,10 +653,372 @@ MCADDDA_INVALID
 
 * Mnemonic: asr, asl, lsr, lsl, ror, rol
 MC_ASR_ROL
-        bra             INVALID_S
+        * shift and rotation common operation.
+        * Load the data, and set to
+        * SRC_MODE
+        * DST_MODE
+        * SRC_REGISTER
+        * DST_REGISTER
+        move.w          INITIAL_INSTRUCTION,d7
+        bsr             INITIAL_TWO_EA_LOAD_SIZE
+        bsr             INITIAL_FOUR_EA_LOAD
+
+        cmp.b           #3,SIZE
+        beq             MAR_TO_ADDRESS
+
+MAR_TO_REGISTER
+        bsr             SIZE_CONVERT_TYPE_TWO
+        btst            #5,d7
+        bne             MTR_DXDY
+        btst            #5,d7
+        beq             MTR_EADY
+* CASE 1, DX,DY
+MTR_DXDY
+        * Common operation
+        move.b          #0,SRC_MODE
+        move.b          #0,DEST_MODE
+        move.b          SRC_REGISTER,d6
+        move.b          DEST_REGISTER,SRC_REGISTER
+        move.b          d6,DEST_REGISTER
+
+        * branching
+        btst            #4,d7
+        bne             MTR_DXDY_ROd
+        btst            #3,d7
+        bne             MTR_DXDY_LSd
+        btst            #3,d7
+        beq             MTR_DXDY_ASd
+
+MTR_DXDY_ASd
+        * Now it is valid
+        btst            #8,d7
+        beq             MTR_DXDY_ASR
+        btst            #8,d7
+        bne             MTR_DXDY_ASL
+MTR_DXDY_ASR
+        bsr             ADDRESS_READ_DECISION_LOAD * maybe not required
+        bsr             IS_VALID
         bsr             TAB
-        bsr             NEWLINE                 Newline
+        bsr             ASR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL 
+MTR_DXDY_ASL
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             ASL_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL 
+
+
+MTR_DXDY_LSd
+        * Now it is valid
+        btst            #8,d7
+        beq             MTR_DXDY_LSR
+        btst            #8,d7
+        bne             MTR_DXDY_LSL
+MTR_DXDY_LSR
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             LSR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL  
+
+MTR_DXDY_LSL
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             LSR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL  
+
+MTR_DXDY_ROd
+        * invalid check
+        btst            #3,d7
+        beq             MC_ASR_ROL_INVALID
+
+        * Now it is valid
+        btst            #8,d7
+        beq             MTR_DXDY_ROR
+        btst            #8,d7
+        bne             MTR_DXDY_ROL
+
+MTR_DXDY_ROR
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             ROR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL  
+MTR_DXDY_ROL
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             ROL_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL  
+
+
+
+*CASE 2 <EA>,DY
+MTR_EADY
+        *common for eady
+        move.b          #7,SRC_MODE
+        move.b          #0,DEST_MODE
+        clr.w           d6
+        move.b          DEST_REGISTER,d6
+        move.w          d6,SRC_NUMBER_DATA
+        move.b          SRC_REGISTER,DEST_REGISTER
+        move.b          #4,SRC_REGISTER
+
+        cmp.w           #0,SRC_NUMBER_DATA
+        bne             MTR_EADY_DECISION
+        move.w          #8,SRC_NUMBER_DATA
+MTR_EADY_DECISION
+        btst            #4,d7
+        bne             MTR_EADY_ROd
+        btst            #3,d7
+        bne             MTR_EADY_LSd
+        btst            #3,d7
+        beq             MTR_EADY_ASd
+
+
+MTR_EADY_ASd
+        * Now it is valid
+        btst            #8,d7
+        beq             MTR_EADY_ASR
+        btst            #8,d7
+        bne             MTR_EADY_ASL
+MTR_EADY_ASR
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             ASR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             SIZE_BYTE
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL 
+MTR_EADY_ASL
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             ASL_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             SIZE_BYTE
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL 
+
+
+MTR_EADY_LSd
+        * Now it is valid
+        btst            #8,d7
+        beq             MTR_EADY_LSR
+        btst            #8,d7
+        bne             MTR_EADY_LSL
+MTR_EADY_LSR
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             LSR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             SIZE_BYTE
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL 
+MTR_EADY_LSL
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             LSL_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             SIZE_BYTE
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL 
+
+MTR_EADY_ROd
+        * invalid check
+        btst            #3,d7
+        beq             MC_ASR_ROL_INVALID
+
+        * Now it is valid
+        btst            #8,d7
+        beq             MTR_EADY_ROR
+        btst            #8,d7
+        bne             MTR_EADY_ROL
+MTR_EADY_ROR
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             ROR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             SIZE_BYTE
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL 
+
+MTR_EADY_ROL
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             ROL_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             SIZE_BYTE
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL 
+
+
+
+
+MAR_TO_ADDRESS
+        * Only one Effective address and parameter
+        bsr             SIZE_WORD       * Commonly size word
+
+        cmp.b           #0,DEST_REGISTER
+        beq             MAR_TA_ASd
+        cmp.b           #1,DEST_REGISTER
+        beq             MAR_TA_LSd
+        cmp.b           #3,DEST_REGISTER
+        beq             MAR_TA_ROd
+
+        bra             MC_ASR_ROL_INVALID
+
+MAR_TA_ASd
+        move.b          #0,DEST_MODE
+        move.b          #0,DEST_REGISTER
+        btst            #8,d7
+        beq             MAR_TA_ASR
+MAR_TA_ASL
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             ASL_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             NEWLINE
+        bra             MC_ASR_ROL_FINAL
+MAR_TA_ASR
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             ASR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL
+
+MAR_TA_LSd
+        move.b          #0,DEST_MODE
+        move.b          #0,DEST_REGISTER
+        btst            #8,d7
+        beq             MAR_TA_LSR
+
+MAR_TA_LSL
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             LSL_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL
+MAR_TA_LSR
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             LSR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL
+
+
+
+MAR_TA_ROd
+        move.b          #0,DEST_MODE
+        move.b          #0,DEST_REGISTER
+        btst            #8,d7
+        beq             MAR_TA_ROR
+MAR_TA_ROL
+        bsr             ADDRESS_READ_DECISION_LOAD
+        *bsr             IS_VALID
+        bsr             TAB
+        bsr             ROL_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL
+MAR_TA_ROR
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+        bsr             TAB
+        bsr             ROR_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             NEWLINE
+
+        bra             MC_ASR_ROL_FINAL
+MC_ASR_ROL_FINAL
         bra             MAIN_LOOP
+MC_ASR_ROL_INVALID
+        bra             INVALID_S
 
 ** ----------------------------------------
 ** Sub-functions for Mnemonics
