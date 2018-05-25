@@ -49,43 +49,43 @@ MAIN_LOOP
         *move.w          INITIAL_INSTRUCTION,d7
         
         *-------------------
-        * addi, subi
+        * case 1 addi, subi
         cmp.b           #$10,INITIAL_INSTRUCTION
         blo             MC_ADDI_SUBI
 
-        * move.b
+        * case 2 move.b
         cmp.b           #$20,INITIAL_INSTRUCTION
         blo             MC_MOVE_B
 
-        * move.l, movea.l
+        * case 3 move.l, movea.l
         cmp.b           #$30,INITIAL_INSTRUCTION
         blo             MC_MOVE_L_MOVEA_L
 
-        * move.w, movea.w
+        * case 4 move.w, movea.w
         cmp.b           #$40,INITIAL_INSTRUCTION
         blo             MC_MOVE_W_MOVEA_W
 
-        * clr, nop, rts, jsr, movem, lea
+        * case 5 clr, nop, rts, jsr, movem, lea
         cmp.b           #$50,INITIAL_INSTRUCTION
         blo             MC_CLR_LEA
 
-        * addq      
+        * case 6 addq      
         cmp.b           #$60,INITIAL_INSTRUCTION
         blo             MC_ADDQ
 
-        * bcc
+        * case 7 bcc, bgt, ble
         cmp.b           #$70,INITIAL_INSTRUCTION
         blo             MC_BCGL
 
-        * moveq
+        * case 8 moveq
         cmp.b           #$80,INITIAL_INSTRUCTION
         blo             MC_MOVEQ
 
-        * or, divu
+        * case 9 or, divu
         cmp.b           #$90,INITIAL_INSTRUCTION
         blo             MC_OR_DIVU
 
-        * sub
+        * case 10 sub
         cmp.b           #$a0,INITIAL_INSTRUCTION
         blo             MC_SUB
 
@@ -93,19 +93,19 @@ MAIN_LOOP
         cmp.b          #$b0,INITIAL_INSTRUCTION
         blo             INVALID_S             
 
-        * cmp
+        * case 11 cmp
         cmp.b           #$c0,INITIAL_INSTRUCTION
         blo             MC_CMP
         
-        * and, muls, mulu
+        * case 12 and, muls, mulu
         cmp.b           #$d0,INITIAL_INSTRUCTION
         blo             MC_AND_MULU
 
-        * add, adda
+        * case 13 add, adda
         cmp.b           #$e0,INITIAL_INSTRUCTION
         blo             MC_ADD_ADDA
 
-        * asr, asl, lsr, lsl, ror, rol
+        * case 14 asr, asl, lsr, lsl, ror, rol
         cmp.b           #$f0,INITIAL_INSTRUCTION
         blo             MC_ASR_ROL
         
