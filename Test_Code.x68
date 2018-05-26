@@ -5,6 +5,14 @@
 *this is a sample code to disassemble.
 
         * OPCODE TEST EXAMPLE
+
+        move.b          $FFFFA340,d3
+
+        move.b          $0000a340,d3
+        move.b          $a340,d3
+        
+
+
         *andi	        #$643,d0
         rol             $1234
         ror             $4321
