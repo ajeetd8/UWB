@@ -430,7 +430,7 @@ MC_BCGL_FINAL_16
 
         bra             MC_BCGL_FINAL_LAST
 MC_BCGL_FINAL_32
-        * 16 bit displacement
+        * 32 bit displacement
         ** Deceiving Assembler
         move.b          #7,SRC_MODE
         move.b          #1,SRC_REGISTER
