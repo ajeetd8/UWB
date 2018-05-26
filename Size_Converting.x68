@@ -27,7 +27,7 @@ SCTO_INVALID                           ** Invalid size instruction.
 
 * Size converting type two
 SIZE_CONVERT_TYPE_TWO
-****Putting size into the destined size
+**** Putting size into the destined size
 
         ** Byte case %000, %100
         cmp.b   #0,SIZE
