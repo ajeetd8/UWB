@@ -12,3 +12,12 @@ CR                      equ             $0D         Carriage Return
 LONG                    equ             $10
 WORD                    equ             $11
 BYTE                    equ             $01
+
+** Lower and Upper bound
+LOWER_BOUND             equ             $3000
+UPPER_BOUND             equ             $00095000
+
+*~Font name~Courier New~
+*~Font size~10~
+*~Tab type~1~
+*~Tab size~4~

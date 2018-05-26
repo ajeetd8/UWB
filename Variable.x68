@@ -37,4 +37,16 @@ SIZE                    ds.b            $1
 INITIAL_INSTRUCTION     ds.w            $1      Initial instruction variable
 MAIN_LOOP_COUNT         ds.b            $1      Loop count variable for main function
 
+* Variables - Alphabetical
+END_HEX                 ds.l        $1
+FLAG                    ds.b        $1
+START_HEX               ds.l        $1
+STRING                  ds.b        $8
+SWAP_HEX                ds.l        $1
+STR_LENGTH              ds.w        $1
+
 **************************************************************************************************
+*~Font name~Courier New~
+*~Font size~10~
+*~Tab type~1~
+*~Tab size~4~

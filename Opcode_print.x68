@@ -325,14 +325,6 @@ SPACE_S         lea            SPACE,a1
                 trap            #15
                 rts
 
-* INVALID MESSAGE
-INVALID_S       bsr     TAB
-                lea     STACK,sp
-                lea     INVALID_INSTRUCTION_MESSAGE,a1
-                move.b  #14,d0
-                trap    #15
-                bra     MAIN_LOOP               * To ignore the invalid insructoin, proceed to the next loop.
-
 * Press Enter Message
 PRESS_ENTER_S
                 lea     PRESS_ENTER_MESSAGE,a1
@@ -347,33 +339,6 @@ CLEAR_SCREEN
                 move.b  #11,d0
                 trap    #15
                 rts
-
-
-**********************************************************
-* Based on the given size data, it will printout 
-* '.b' '.w' '.l'
-*--Size tag instructoin
-SIZE_TAG_S
-
-STS_DOT_BYTE_OUT
-        cmp.b           #BYTE,SIZE
-        bne             STS_DOT_WORD_OUT
-        bsr             BYTE_S
-        rts
-STS_DOT_WORD_OUT
-        cmp.b           #WORD,SIZE
-        bne             STS_DOT_LONG_OUT
-        bsr             WORD_S
-        rts
-STS_DOT_LONG_OUT
-        cmp.b           #LONG,SIZE
-        bne             STS_INVALID_SIZE
-        bsr             LONG_S
-        rts
-STS_INVALID_SIZE
-        bra             INVALID_S
-*--> Size tag instruction end
-***************************************************************
 
 
 
@@ -464,6 +429,23 @@ PRESS_ENTER_MESSAGE             DC.B    'Press Enter to Continue',0
 CRLF                    dc.b    CR,LF,0
 TAB_SPACE               dc.b    HT,0
 SPACE                   dc.b    ' ',0
+
+* Constants - Alphabetical
+ERROR_1                 dc.b    'INVALID INPUT: too long',0
+ERROR_2                 dc.b    'INVALID INPUT: not within range',0
+ERROR_3                 dc.b    'INVALID INPUT: not recognized',0
+ERROR_4                 dc.b    'INVALID INPUT: less than start address',0
+NEW_LINE                dc.b    ' ',0,CR,LF
+PROMPT_1                dc.b    'Enter starting address. Range=[$3000,$00095000]',0
+PROMPT_2                dc.b    '$',0
+PROMPT_3                dc.b    'Press ENTER to continue...',0
+PROMPT_4                dc.b    'Would you like to disassemble again? (Y/N)',0
+PROMPT_5                dc.b    '>',0
+PROMPT_6                dc.b    'Press ENTER to continue...',0
+PROMPT_7                dc.b    'Enter ending address. Range=[$3000,$00095000]',0
+
+        include 'Const_Variable_Setting.x68',0
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
