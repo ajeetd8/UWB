@@ -6,8 +6,10 @@
 
         * OPCODE TEST EXAMPLE
 
-        move.b          $FFFFA340,d3
+        andi.l          #$1234,$1234
 
+
+        move.b          $FFFFA340,d3
         move.b          $0000a340,d3
         move.b          $a340,d3
         
