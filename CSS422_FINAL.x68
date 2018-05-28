@@ -778,6 +778,8 @@ MCL_MM_ORD_REG_MEM_LAST
         bsr             INITIAL_TWO_EA_LOAD_OUT
 
         rts
+
+        
 MCL_MM_ORD_MEM_REG
         bsr             INITIAL_TWO_EA_LOAD_OUT
         bsr             COMMA_S
