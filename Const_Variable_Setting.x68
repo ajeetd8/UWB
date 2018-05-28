@@ -14,7 +14,7 @@ WORD                    equ             $11
 BYTE                    equ             $01
 
 ** Lower and Upper bound
-LOWER_BOUND             equ             $3000
+LOWER_BOUND             equ             $3500
 UPPER_BOUND             equ             $00095000
 
 *~Font name~Courier New~

@@ -6,6 +6,9 @@ READ_FROM               ds.l            $1      Variable to save read From (Incl
 READ_TO                 ds.l            $1      Varaible to save read To (Inclusive)
 Current_Read            ds.l            $1      Varaible to save current read
 
+* Variable specific for movem
+REGISTER_LIST_MASK      ds.w            $1      Register list Mask Variable for MOVEM
+
 * Bit Conversion reserved Area
 CONVERSOIN_RESERVED     ds.b            $1
 

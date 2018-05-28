@@ -621,6 +621,276 @@ MCL_LEA
         bra             MAIN_LOOP
 
 MCL_MOVEM
+        * Check whether it correct movem or not
+        move.w          INITIAL_INSTRUCTION,d7
+        btst            #11,d7
+        beq             MCL_INVALID
+        btst            #9,d7
+        bne             MCL_INVALID
+        btst            #8,d7
+        bne             MCL_INVALID
+        btst            #7,d7
+        beq             MCL_INVALID
+
+        * Now its valid instruction
+        ** load and checking Register list mask
+        bsr             MCL_MM_LOAD_REGISTER_MASK       * Register List load
+        bsr             INITIAL_TWO_EA_LOAD             * mode and register load
+        bsr             ADDRESS_READ_DECISION_LOAD
+        bsr             IS_VALID
+        
+        * Settign the size of the instruction.
+MCL_MM_WORD
+        btst            #6,d7
+        bne             MCL_MM_LONG
+        bsr             SIZE_WORD
+        bra             MCL_MM_OUT
+MCL_MM_LONG
+        bsr             SIZE_LONG
+        bra             MCL_MM_OUT
+MCL_MM_OUT
+        bsr             TAB
+        bsr             MOVEM_S
+        bsr             SIZE_TAG_S
+        bsr             TAB
+
+        bsr             MCL_MM_OPERAND
+        bsr             NEWLINE
+
+        bra             MAIN_LOOP
+        
+
+MCL_MM_LOAD_REGISTER_MASK
+        ** Load register list mask
+        move.w          (a6)+,REGISTER_LIST_MASK
+        cmp.w           #0,REGISTER_LIST_MASK
+        beq             MCL_INVALID
+        rts
+
+
+MCL_MM_OPERAND
+        clr.w           d5                      * boolean register, saving more than one or not?
+        clr.w           d4                      * Instructoin order
+        move.w          REGISTER_LIST_MASK,d4
+        btst            #10,d7
+        bne             MCL_MM_ORD_MEM_REG
+MCL_MM_ORD_REG_MEM
+        * -------------------------------
+        * Printing List
+MCL_MM_ORD_REG_MEM_D0
+        btst            #15,d4
+        beq             MCL_MM_ORD_REG_MEM_D1
+        bsr             D_ZERO_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_D1
+        btst            #14,d4
+        beq             MCL_MM_ORD_REG_MEM_D2
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_ONE_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_D2
+        btst            #13,d4
+        beq             MCL_MM_ORD_REG_MEM_D3
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_TWO_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_D3
+        btst            #12,d4
+        beq             MCL_MM_ORD_REG_MEM_D4
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_THREE_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_D4
+        btst            #11,d4
+        beq             MCL_MM_ORD_REG_MEM_D5
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_FOUR_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_D5
+        btst            #10,d4
+        beq             MCL_MM_ORD_REG_MEM_D6
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_FIVE_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_D6
+        btst            #9,d4
+        beq             MCL_MM_ORD_REG_MEM_D7
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_SIX_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_D7
+        btst            #8,d4
+        beq             MCL_MM_ORD_REG_MEM_A0
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_SEVEN_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_A0
+        btst            #7,d4
+        beq             MCL_MM_ORD_REG_MEM_A1
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_ZERO_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_A1
+        btst            #6,d4
+        beq             MCL_MM_ORD_REG_MEM_A2
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_ONE_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_A2
+        btst            #5,d4
+        beq             MCL_MM_ORD_REG_MEM_A3
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_TWO_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_A3
+        btst            #4,d4
+        beq             MCL_MM_ORD_REG_MEM_A4
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_THREE_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_A4
+        btst            #3,d4
+        beq             MCL_MM_ORD_REG_MEM_A5
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_FOUR_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_A5
+        btst            #2,d4
+        beq             MCL_MM_ORD_REG_MEM_A6
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_FIVE_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_A6
+        btst            #1,d4
+        beq             MCL_MM_ORD_REG_MEM_A7
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_SIX_S
+        move.b          #1,d5
+MCL_MM_ORD_REG_MEM_A7
+        btst            #0,d4
+        beq             MCL_MM_ORD_REG_MEM_LAST
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_SEVEN_S
+        move.b          #1,d5
+        * -------------------------------
+MCL_MM_ORD_REG_MEM_LAST
+        bsr             COMMA_S
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+
+        rts
+
+        
+MCL_MM_ORD_MEM_REG
+        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             COMMA_S
+        * -------------------------------
+        * Printing List
+MCL_MM_ORD_MEM_REG_D0
+        btst            #0,d4
+        beq             MCL_MM_ORD_MEM_REG_D1
+        bsr             D_ZERO_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_D1
+        btst            #1,d4
+        beq             MCL_MM_ORD_MEM_REG_D2
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_ONE_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_D2
+        btst            #2,d4
+        beq             MCL_MM_ORD_MEM_REG_D3
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_TWO_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_D3
+        btst            #3,d4
+        beq             MCL_MM_ORD_MEM_REG_D4
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_THREE_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_D4
+        btst            #4,d4
+        beq             MCL_MM_ORD_MEM_REG_D5
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_FOUR_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_D5
+        btst            #5,d4
+        beq             MCL_MM_ORD_MEM_REG_D6
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_FIVE_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_D6
+        btst            #6,d4
+        beq             MCL_MM_ORD_MEM_REG_D7
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_SIX_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_D7
+        btst            #7,d4
+        beq             MCL_MM_ORD_MEM_REG_A0
+        bsr             MCL_MM_ORD_SLASH
+        bsr             D_SEVEN_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_A0
+        btst            #8,d4
+        beq             MCL_MM_ORD_MEM_REG_A1
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_ZERO_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_A1
+        btst            #9,d4
+        beq             MCL_MM_ORD_MEM_REG_A2
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_ONE_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_A2
+        btst            #10,d4
+        beq             MCL_MM_ORD_MEM_REG_A3
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_TWO_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_A3
+        btst            #11,d4
+        beq             MCL_MM_ORD_MEM_REG_A4
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_THREE_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_A4
+        btst            #12,d4
+        beq             MCL_MM_ORD_MEM_REG_A5
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_FOUR_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_A5
+        btst            #13,d4
+        beq             MCL_MM_ORD_MEM_REG_A6
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_FIVE_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_A6
+        btst            #14,d4
+        beq             MCL_MM_ORD_MEM_REG_A7
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_SIX_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_A7
+        btst            #15,d4
+        beq             MCL_MM_ORD_MEM_REG_LAST
+        bsr             MCL_MM_ORD_SLASH
+        bsr             A_SEVEN_S
+        move.b          #1,d5
+MCL_MM_ORD_MEM_REG_LAST
+        rts
+        * -------------------------------
+
+MCL_MM_ORD_SLASH
+        cmp.w           #1,d5
+        bne             MCL_MM_ORD_SLASH_NOT
+        bsr             SLASH_S   
+MCL_MM_ORD_SLASH_NOT
+        rts
+
 MCL_INVALID
         bsr             CLEAR_ALL_BIT_S
         bra             INVALID_S
@@ -740,11 +1010,10 @@ MC_BCGL_FINAL_16
 
         bra             MC_BCGL_FINAL_LAST
 MC_BCGL_FINAL_32
-        * 16 bit displacement
+        * 32 bit displacement
         ** Deceiving Assembler
         move.b          #7,SRC_MODE
         move.b          #1,SRC_REGISTER
-
         add.l           d6,SRC_NUMBER_DATA
         bsr             INITIAL_TWO_EA_LOAD_OUT
 
@@ -1666,6 +1935,7 @@ EXIT_PROGRAM
 
         *TODO: Delete this later
         INCLUDE 'Test_Code.x68',0
+        *include 'demo_test.x68',0
 
 
     END    START        ; last line of source
