@@ -349,6 +349,40 @@ ITELO_FINAL
 * -> Initial two ea out mode
 ***************************************************************
 
+
+***************************************************************
+BRANCH_CONDITION_DIS_OUT
+    cmp.b       #7,SRC_MODE
+    bne         BCDO_INVALID
+BCDO_WORD
+    cmp.b       #0,SRC_REGISTER
+    bne         BCDO_LONG
+    bsr         DOLLAR_S
+
+    move.w      SRC_NUMBER_DATA,WORD_OUT
+    bsr         WORD_OUT_S
+    bra         BCDO_FINAL
+BCDO_LONG
+    cmp.b       #1,SRC_REGISTER
+    bne         BCDO_INVALID
+    bsr         DOLLAR_S
+
+    movem.l     d0,-(sp)
+    move.l      SRC_NUMBER_DATA,d0
+    move.w      d0,WORD_OUT
+    bsr         WORD_OUT_S
+
+    movem.l     (sp)+,d0
+
+    bra         BCDO_FINAL
+
+BCDO_FINAL
+    rts
+BCDO_INVALID
+    bsr         INVALID_S
+***************************************************************
+
+
 ***************************************************************
 * -> Initial four ea out mode
 INITIAL_FOUR_EA_LOAD_OUT

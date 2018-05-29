@@ -992,6 +992,8 @@ MC_BCGL_FINAL
         
         clr.w           d7
         move.b          DATA_EIGHT_BIT,d7
+        asl.w           #8,d7
+        asr.w           #8,d7
         move.w          d7,SRC_NUMBER_DATA
         add.w           d6,SRC_NUMBER_DATA
 
@@ -999,7 +1001,7 @@ MC_BCGL_FINAL
         move.b          #7,SRC_MODE
         move.b          #0,SRC_REGISTER
 
-        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             BRANCH_CONDITION_DIS_OUT
 
         bra             MC_BCGL_FINAL_LAST
         
@@ -1010,7 +1012,7 @@ MC_BCGL_FINAL_16
         move.b          #0,SRC_REGISTER
 
         add.w           d6,SRC_NUMBER_DATA
-        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             BRANCH_CONDITION_DIS_OUT
 
         bra             MC_BCGL_FINAL_LAST
 MC_BCGL_FINAL_32
@@ -1019,7 +1021,7 @@ MC_BCGL_FINAL_32
         move.b          #7,SRC_MODE
         move.b          #1,SRC_REGISTER
         add.l           d6,SRC_NUMBER_DATA
-        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             BRANCH_CONDITION_DIS_OUT
 
         bra             MC_BCGL_FINAL_LAST
 MC_BCGL_FINAL_LAST
