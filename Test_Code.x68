@@ -15,7 +15,6 @@
         movem.w    d0,-(a2)
         movem.w    d0,-(a1)
 
-        BCC       $1234
         bgt       $7000
         ble       $7000
         bcc       $7000
