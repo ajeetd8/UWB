@@ -330,8 +330,7 @@ DONE
 * Iteration loop start from here
 MAIN_LOOP
         * Clear three bit instructions
-        bsr             CLEAR_THREE_BIT_S
-        bsr             CLEAR_TWO_BIT_S
+        bsr             CLEAR_ALL_BIT_S
 
         * Check for the terminal Condition.
         move.l          a6,d7
@@ -638,7 +637,7 @@ MCL_MOVEM
         bsr             INITIAL_TWO_EA_LOAD             * mode and register load
         bsr             ADDRESS_READ_DECISION_LOAD
         bsr             IS_VALID
-        
+
         * Settign the size of the instruction.
 MCL_MM_WORD
         btst            #6,d7
@@ -671,6 +670,11 @@ MCL_MM_LOAD_REGISTER_MASK
 MCL_MM_OPERAND
         clr.w           d5                      * boolean register, saving more than one or not?
         clr.w           d4                      * Instructoin order
+        
+        * Validatoin check for REGISTER_LIST_MASK
+        cmp.w           #0,REGISTER_LIST_MASK
+        beq             INVALID_S
+
         move.w          REGISTER_LIST_MASK,d4
         btst            #10,d7
         bne             MCL_MM_ORD_MEM_REG
@@ -988,6 +992,8 @@ MC_BCGL_FINAL
         
         clr.w           d7
         move.b          DATA_EIGHT_BIT,d7
+        asl.w           #8,d7
+        asr.w           #8,d7
         move.w          d7,SRC_NUMBER_DATA
         add.w           d6,SRC_NUMBER_DATA
 
@@ -995,7 +1001,7 @@ MC_BCGL_FINAL
         move.b          #7,SRC_MODE
         move.b          #0,SRC_REGISTER
 
-        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             BRANCH_CONDITION_DIS_OUT
 
         bra             MC_BCGL_FINAL_LAST
         
@@ -1006,7 +1012,7 @@ MC_BCGL_FINAL_16
         move.b          #0,SRC_REGISTER
 
         add.w           d6,SRC_NUMBER_DATA
-        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             BRANCH_CONDITION_DIS_OUT
 
         bra             MC_BCGL_FINAL_LAST
 MC_BCGL_FINAL_32
@@ -1015,7 +1021,7 @@ MC_BCGL_FINAL_32
         move.b          #7,SRC_MODE
         move.b          #1,SRC_REGISTER
         add.l           d6,SRC_NUMBER_DATA
-        bsr             INITIAL_TWO_EA_LOAD_OUT
+        bsr             BRANCH_CONDITION_DIS_OUT
 
         bra             MC_BCGL_FINAL_LAST
 MC_BCGL_FINAL_LAST

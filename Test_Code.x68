@@ -6,6 +6,7 @@
 
         * OPCODE TEST EXAMPLE
 
+
         movem.w    d0,-(a7)
         movem.w    d0,-(a6)
         movem.w    d0,-(a5)
@@ -13,6 +14,10 @@
         movem.w    d0,(a3)
         movem.w    d0,-(a2)
         movem.w    d0,-(a1)
+
+        bgt       $7000
+        ble       $7000
+        bcc       $7000
 
         movem.w     d0,$12345678
         
@@ -147,8 +152,30 @@
         addi.l          #$ffff7ffe,$ffff7ffe
 
         * addq.b permutations
+        addq.b          #$08,d1
+        addq.b          #$08,(a5)
+        addq.b          #$08,(a5)+
+        addq.b          #$08,-(a5)
+        addq.b          #$08,$7ffe
+        addq.b          #$08,$ffff7ffe
+
         * addq.w permutations
+        addq.w          #$08,d1
+        addq.w          #$08,a1
+        addq.w          #$08,(a5)
+        addq.w          #$08,(a5)+
+        addq.w          #$08,-(a5)
+        addq.w          #$08,$7ffe
+        addq.w          #$08,$ffff7ffe
+
         * addq.l permutations
+        addq.l          #$08,d1
+        addq.l          #$08,a1
+        addq.l          #$08,(a5)
+        addq.l          #$08,(a5)+
+        addq.l          #$08,-(a5)
+        addq.l          #$08,$7ffe
+        addq.l          #$08,$ffff7ffe
 
         * and.b permutations
         and.b           d0,d0
@@ -194,6 +221,40 @@
         and.l           d0,-(a5)
         and.l           d0,$7ffe
         and.l           d0,$ffff7ffe
+
+        * asl.b permutations
+        asl.b           d0,d0
+        asl.b           #$08,d0
+
+        * asl.w permutations
+        asl.w           d0,d0
+        asl.w           #$08,d0
+        asl.w           (a4)
+        asl.w           (a4)+
+        asl.w           -(a4)
+        asl.w           $7ffe
+        asl.w           $ffff7ffe
+
+        * asl.l permutations
+        asl.l           d0,d0
+        asl.l           #$08,d0
+        
+        * asr.b permutations
+        asr.b           d0,d0
+        asr.b           #$08,d0
+        
+        * asr.w permutations
+        asr.w           d0,d0
+        asr.w           #$08,d0
+        asr.w           (a4)
+        asr.w           (a4)+
+        asr.w           -(a4)
+        asr.w           $7ffe
+        asr.w           $ffff7ffe
+
+        * asr.l permutations
+        asr.l           d0,d0
+        asr.l           #$08,d0
 
         * bcc perumtations
         bcc             here
@@ -269,6 +330,40 @@
         lea.l           (a5),a0
         lea.l           $7ffe,a0
         lea.l           $ffff7ffe,a0
+
+        * lsl.b permutations
+        lsl.b           d0,d0
+        lsl.b           #$08,d0
+        
+        * lsl.w permutations
+        lsl.w           d0,d0
+        lsl.w           #$08,d0
+        lsl.w           (a4)
+        lsl.w           (a4)+
+        lsl.w           -(a4)
+        lsl.w           $7ffe
+        lsl.w           $ffff7ffe
+
+        * lsl.l permutations
+        lsl.l           d0,d0
+        lsl.l           #$08,d0
+
+        * lsr.b permutations
+        lsr.b           d0,d0
+        lsr.b           #$08,d0
+        
+        * lsr.w permutations
+        lsr.w           d0,d0
+        lsr.w           #$08,d0
+        lsr.w           (a4)
+        lsr.w           (a4)+
+        lsr.w           -(a4)
+        lsr.w           $7ffe
+        lsr.w           $ffff7ffe
+
+        * lsr.l permutations
+        lsr.l           d0,d0
+        lsr.l           #$08,d0
 
         * move.b permutations 
         move.b          d0,d0
@@ -449,6 +544,31 @@
         movea.l         $ffff7ffe,a5
         movea.l         #$ffff7ffe,a5
 
+        * movem.w permutations
+        movem.w         d0-d7/a0-a7, (a4)
+        movem.w         d0-d7/a0-a7, -(a1)
+        movem.w         d0-d7/a0-a7, $7ffe
+        movem.w         d0-d7/a0-a7, $ffff7ffe
+
+        movem.w         (a4), d0-d7/a0-a7
+        movem.w         (a3)+, d0-d7/a0-a7
+        movem.w         $7ffe, d0-d7/a0-a7
+        movem.w         $ffff7ffe, d0-d7/a0-a7
+
+        * movem.l permutations
+        movem.l         d0-d7/a0-a7, (a4)
+        movem.l         d0-d7/a0-a7, -(a1)
+        movem.l         d0-d7/a0-a7, $7ffe
+        movem.l         d0-d7/a0-a7, $ffff7ffe
+
+        movem.l         (a4), d0-d7/a0-a7
+        movem.l         (a3)+, d0-d7/a0-a7
+        movem.l         $7ffe, d0-d7/a0-a7
+        movem.l         $ffff7ffe, d0-d7/a0-a7
+        
+        * moveq.l permutations
+        moveq           #$08,d4
+
         * muls.w permutations
         muls.w          d0,d0
         muls.w          (a0),d0
@@ -515,6 +635,40 @@
         or.l            d0,$7ffe
         or.l            d0,$ffff7ffe
         
+        * rol.b permutations
+        rol.b           d0,d0
+        rol.b           #$08,d0
+        
+        * rol.w permutations
+        rol.w           d0,d0
+        rol.w           #$08,d0
+        rol.w           (a4)
+        rol.w           (a4)+
+        rol.w           -(a4)
+        rol.w           $7ffe
+        rol.w           $ffff7ffe
+
+        * rol.l permutations
+        rol.l           d0,d0
+        rol.l           #$08,d0
+
+        * ror.b permutations
+        ror.b           d0,d0
+        ror.b           #$08,d0
+        
+        * ror.w permutations
+        ror.w           d0,d0
+        ror.w           #$08,d0
+        ror.w           (a4)
+        ror.w           (a4)+
+        ror.w           -(a4)
+        ror.w           $7ffe
+        ror.w           $ffff7ffe
+
+        * ror.l permutations
+        ror.l           d0,d0
+        ror.l           #$08,d0
+
         * rts permutations
         rts
         

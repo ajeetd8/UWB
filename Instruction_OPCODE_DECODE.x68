@@ -86,8 +86,9 @@ INITIAL_DATA_EIGHT_LOAD
 * Clear 3 bit instructoins
 *-> BIT CLEAR START HERE
 CLEAR_ALL_BIT_S
-    bsr     CLEAR_THREE_BIT_S
-    bsr     CLEAR_TWO_BIT_S
+    bsr         CLEAR_THREE_BIT_S
+    bsr         CLEAR_TWO_BIT_S
+    clr.w       REGISTER_LIST_MASK
     rts
 
 CLEAR_THREE_BIT_S
