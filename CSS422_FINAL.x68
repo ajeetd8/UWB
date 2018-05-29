@@ -330,8 +330,7 @@ DONE
 * Iteration loop start from here
 MAIN_LOOP
         * Clear three bit instructions
-        bsr             CLEAR_THREE_BIT_S
-        bsr             CLEAR_TWO_BIT_S
+        bsr             CLEAR_ALL_BIT_S
 
         * Check for the terminal Condition.
         move.l          a6,d7
@@ -638,7 +637,7 @@ MCL_MOVEM
         bsr             INITIAL_TWO_EA_LOAD             * mode and register load
         bsr             ADDRESS_READ_DECISION_LOAD
         bsr             IS_VALID
-        
+
         * Settign the size of the instruction.
 MCL_MM_WORD
         btst            #6,d7
@@ -671,6 +670,11 @@ MCL_MM_LOAD_REGISTER_MASK
 MCL_MM_OPERAND
         clr.w           d5                      * boolean register, saving more than one or not?
         clr.w           d4                      * Instructoin order
+        
+        * Validatoin check for REGISTER_LIST_MASK
+        cmp.w           #0,REGISTER_LIST_MASK
+        beq             INVALID_S
+
         move.w          REGISTER_LIST_MASK,d4
         btst            #10,d7
         bne             MCL_MM_ORD_MEM_REG
