@@ -351,6 +351,7 @@ ITELO_FINAL
 
 
 ***************************************************************
+* -> Branch condition displace load out
 BRANCH_CONDITION_DIS_OUT
     cmp.b       #7,SRC_MODE
     bne         BCDO_INVALID
