@@ -436,13 +436,13 @@ ERROR_2                 dc.b    'INVALID INPUT: not within range',0
 ERROR_3                 dc.b    'INVALID INPUT: not recognized',0
 ERROR_4                 dc.b    'INVALID INPUT: less than start address',0
 NEW_LINE                dc.b    ' ',0,CR,LF
-PROMPT_1                dc.b    'Enter starting address. Range=[$3500,$9fff]',0
+PROMPT_1                dc.b    'Enter starting address. Range=[$3500,$9f00]',0
 PROMPT_2                dc.b    '$',0
 PROMPT_3                dc.b    'Press ENTER to continue...',0
 PROMPT_4                dc.b    'Would you like to disassemble again? (Y/N)',0
 PROMPT_5                dc.b    '>',0
 PROMPT_6                dc.b    'Press ENTER to continue...',0
-PROMPT_7                dc.b    'Enter ending address. Range=[$3500,$9fff]',0
+PROMPT_7                dc.b    'Enter ending address. Range=[$3500,$9f00]',0
 
         include 'Const_Variable_Setting.x68',0
 

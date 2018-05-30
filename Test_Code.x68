@@ -7,6 +7,9 @@ start:        org             $7000        Code after this starts at DISASSEMBLE
         * OPCODE TEST EXAMPLE
 
 
+        asl.w           $1234
+        asl.l           #3,d0
+        
         movem.w    d0,-(a7)
         movem.w    d0,-(a6)
         movem.w    d0,-(a5)
@@ -748,6 +751,7 @@ HERE
  
         SIMHALT
     end start
+
 
 *~Font name~Courier New~
 *~Font size~10~
