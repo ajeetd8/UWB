@@ -1940,7 +1940,7 @@ EXIT_PROGRAM
         INCLUDE 'Variable.x68',0
 
         *TODO: Delete this later
-        INCLUDE 'Test_Code.x68',0
+        *INCLUDE 'Test_Code.x68',0
         *include 'demo_test.x68',0
 
 

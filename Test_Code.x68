@@ -1,7 +1,7 @@
 **************************************************************************************************
         * From here, the code we are going to disassemble.
 **************************************************************************************************
-        org             DISASSEMBLE_FROM        Code after this starts at DISASSEMBLE_FROM
+start:        org             $7000        Code after this starts at DISASSEMBLE_FROM
 *this is a sample code to disassemble.
 
         * OPCODE TEST EXAMPLE
@@ -747,6 +747,7 @@
 HERE
  
         SIMHALT
+    end start
 
 *~Font name~Courier New~
 *~Font size~10~
