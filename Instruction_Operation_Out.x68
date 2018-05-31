@@ -349,36 +349,6 @@ ITELO_FINAL
 * -> Initial two ea out mode
 ***************************************************************
 
-
-***************************************************************
-* -> Branch condition displace load out
-BRANCH_CONDITION_DIS_OUT
-    cmp.b       #7,SRC_MODE
-    bne         BCDO_INVALID
-BCDO_LONG * This is the only case
-    cmp.b       #1,SRC_REGISTER
-    bne         BCDO_INVALID
-    bsr         DOLLAR_S
-
-    move.w      SRC_NUMBER_DATA,WORD_OUT
-    bsr         WORD_OUT_S
-
-    movem.l     d0,-(sp)
-    move.l      SRC_NUMBER_DATA,d0
-    move.w      d0,WORD_OUT
-    bsr         WORD_OUT_S
-
-    movem.l     (sp)+,d0
-
-    bra         BCDO_FINAL
-
-BCDO_FINAL
-    rts
-BCDO_INVALID
-    bsr         INVALID_S
-***************************************************************
-
-
 ***************************************************************
 * -> Initial four ea out mode
 INITIAL_FOUR_EA_LOAD_OUT
