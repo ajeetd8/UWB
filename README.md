@@ -13,7 +13,26 @@ bsr     ADDRESS_OUT
 move.w      #<data>.w, WORD_OUT
 bsr         WORD_OUT_S
 ```
-# 68K bug list
+
+## Size Converting Table
+```
+Default size instrauction
+#$01 - BYTE
+#$11 - WORD
+#$10 - LONG
+
+Size Convertor type 1
+#0 - BYTE
+#1 - WORD
+#2 - LONG
+
+Size convertor type 2
+$000, %100 -> BYTE
+$001, %101 -> WORD
+$010, %110 -> LONG
+```
+
+# 68K instruction list
 ```
 ADDI         
 SUBI          
@@ -89,23 +108,23 @@ Stack Point(sp) = $100000
 # Usage of each register
 ## Data Register
 ```
-d0 -> Free (Not set)
+d0 -> Free
 d1 -> Free
 d2 -> Free
 d3 -> Free
 d4 -> Free
 d5 -> Free
-d6 -> Arithematic (Free to use within the loop) 
+d6 -> Free
 d7 -> End Condition check
 ```
 ## Address Register
 ```
-a0 -> Free (not set)
+a0 -> Free
 a1 -> Free
 a2 -> Free
 a3 -> Free
 a4 -> Free
-a5 -> word instruction to printout (reserved)
+a5 -> Free
 a6 -> Reading address (from $7000)
 a7 -> Stack Pointer (Free to use in subroutine)
 ```
@@ -134,10 +153,10 @@ MOVEQ
 MOVEM
 ADD
 ADDA
-ADDI            Does not work (sub)
+ADDI
 ADDQ
 SUB
-SUBI            Does not work (sub)
+SUBI
 MULS
 MULU
 DIVU
