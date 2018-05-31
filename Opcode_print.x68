@@ -1,13 +1,3 @@
- **
-   * SIZE_TAG_S
-   * Assembler Code
-   * ADDI_S
-   * SUBI_S
-   * MOVE
-   *
-   *
-
-
 * Assembly instruction.     
 ADDI_S      LEA     ADDI_MESSAGE,A1  * loads Message into address
             MOVE.B  #14,D0           * Moves the number 14 into data register D0

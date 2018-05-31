@@ -6,14 +6,10 @@
 * expected to merge to Project.X68
 *-----------------------------------------------------------
 
-
 START:  org             $1000
                 * Setting the stack address.
                 lea             STACK,sp 
                 lea             DISASSEMBLE_FROM,a6     move value of DISASSEMLE_FROM
-
-
-
 
 * Prompt for user to enter data        
 PROMPT_START

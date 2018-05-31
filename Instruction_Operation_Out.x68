@@ -368,11 +368,6 @@ INITIAL_FOUR_EA_LOAD_OUT
     movem.l     (sp)+,d0-d2
     bsr         INITIAL_TWO_EA_LOAD_OUT
 
-    *move.b      d0,DEST_REGISTER
-    *move.b      d1,DEST_MODE
-    *move.l      d2,DST_NUMBER_DATA
-    *movem.l     (sp)+,d0-d2
-
     rts
 
 * -> Initial four ea out mode
@@ -488,8 +483,6 @@ IV_FINAL
         rts
 IV_INVALID
     bra                 INVALID_S
-
-
 
 * Check whether current instruction is valid or not
 *******************************************************************
