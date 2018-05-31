@@ -983,23 +983,28 @@ MCBL_BLE
         bra             MC_BCGL_FINAL
 
 MC_BCGL_FINAL
-        bsr             TAB
-        
+        clr.w           d7
+
         cmp.b           #$00,DATA_EIGHT_BIT
         beq             MC_BCGL_FINAL_16
         cmp.b           #$FF,DATA_EIGHT_BIT
         beq             MC_BCGL_FINAL_32
         
-        clr.w           d7
         move.b          DATA_EIGHT_BIT,d7
-        asl.w           #8,d7
-        asr.w           #8,d7
-        move.w          d7,SRC_NUMBER_DATA
-        add.w           d6,SRC_NUMBER_DATA
+        clr.l           d5
+        move.b          #24,d5
+        asl.l           d5,d7
+        asr.l           d5,d7
+
+        move.l          d7,SRC_NUMBER_DATA
+        add.l           d6,SRC_NUMBER_DATA
 
         * Deceiving Assembler
+        bsr             SIZE_BYTE
+        bsr             SIZE_TAG_S
+        bsr             TAB
         move.b          #7,SRC_MODE
-        move.b          #0,SRC_REGISTER
+        move.b          #1,SRC_REGISTER
 
         bsr             BRANCH_CONDITION_DIS_OUT
 
@@ -1008,16 +1013,29 @@ MC_BCGL_FINAL
 MC_BCGL_FINAL_16
         * 16 bit displacement
         ** Deceiving Assembler
+        bsr             SIZE_WORD
+        bsr             SIZE_TAG_S
+        bsr             TAB
         move.b          #7,SRC_MODE
-        move.b          #0,SRC_REGISTER
+        move.b          #1,SRC_REGISTER
 
-        add.w           d6,SRC_NUMBER_DATA
+        move.w          SRC_NUMBER_DATA,d7
+        clr.l           d5
+        move.b          #16,d5
+        asl.l           d5,d7
+        asr.l           d5,d7
+        move.l          d7,SRC_NUMBER_DATA
+
+        add.l           d6,SRC_NUMBER_DATA
         bsr             BRANCH_CONDITION_DIS_OUT
 
         bra             MC_BCGL_FINAL_LAST
 MC_BCGL_FINAL_32
         * 32 bit displacement
         ** Deceiving Assembler
+        bsr             SIZE_LONG
+        bsr             SIZE_TAG_S
+        bsr             TAB
         move.b          #7,SRC_MODE
         move.b          #1,SRC_REGISTER
         add.l           d6,SRC_NUMBER_DATA
@@ -1722,6 +1740,13 @@ INVALID_S       bsr     TAB
                 lea     INVALID_INSTRUCTION_MESSAGE,a1
                 move.b  #14,d0
                 trap    #15
+
+                bsr     TAB
+                move.w  INITIAL_INSTRUCTION,WORD_OUT
+                bsr     WORD_OUT_S
+
+                bsr     NEWLINE
+
                 bra     MAIN_LOOP               * To ignore the invalid insructoin, proceed to the next loop.
 ** Sub-functions for Mnemonics
 ** ----------------------------------------
@@ -1945,6 +1970,7 @@ EXIT_PROGRAM
 
 
     END    START        ; last line of source
+
 
 
 

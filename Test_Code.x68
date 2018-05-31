@@ -1,7 +1,7 @@
 **************************************************************************************************
         * From here, the code we are going to disassemble.
 **************************************************************************************************
-start:        org             $7000        Code after this starts at DISASSEMBLE_FROM
+start:        org             $9000        Code after this starts at DISASSEMBLE_FROM
 *this is a sample code to disassemble.
 
         * OPCODE TEST EXAMPLE
@@ -9,6 +9,9 @@ start:        org             $7000        Code after this starts at DISASSEMBLE
 
         asl.w           $1234
         asl.l           #3,d0
+
+        bcc             $9000
+        bcc             $10000
         
         movem.w    d0,-(a7)
         movem.w    d0,-(a6)
@@ -17,10 +20,6 @@ start:        org             $7000        Code after this starts at DISASSEMBLE
         movem.w    d0,(a3)
         movem.w    d0,-(a2)
         movem.w    d0,-(a1)
-
-        bgt       $7000
-        ble       $7000
-        bcc       $7000
 
         movem.w     d0,$12345678
         
@@ -751,6 +750,7 @@ HERE
  
         SIMHALT
     end start
+
 
 
 *~Font name~Courier New~

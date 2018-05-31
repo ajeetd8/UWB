@@ -355,18 +355,13 @@ ITELO_FINAL
 BRANCH_CONDITION_DIS_OUT
     cmp.b       #7,SRC_MODE
     bne         BCDO_INVALID
-BCDO_WORD
-    cmp.b       #0,SRC_REGISTER
-    bne         BCDO_LONG
+BCDO_LONG * This is the only case
+    cmp.b       #1,SRC_REGISTER
+    bne         BCDO_INVALID
     bsr         DOLLAR_S
 
     move.w      SRC_NUMBER_DATA,WORD_OUT
     bsr         WORD_OUT_S
-    bra         BCDO_FINAL
-BCDO_LONG
-    cmp.b       #1,SRC_REGISTER
-    bne         BCDO_INVALID
-    bsr         DOLLAR_S
 
     movem.l     d0,-(sp)
     move.l      SRC_NUMBER_DATA,d0

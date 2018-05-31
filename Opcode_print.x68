@@ -420,7 +420,7 @@ COMMA_MESSAGE           DC.B    ',',0
 SLASH_MESSAGE           DC.B    '/',0
 
 * Invalid Insturction.
-INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',CR,LF,0
+INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',0
 
 * Press Enter continue
 PRESS_ENTER_MESSAGE             DC.B    'Press Enter to Continue',0
