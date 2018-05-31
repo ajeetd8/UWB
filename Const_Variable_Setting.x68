@@ -15,7 +15,7 @@ BYTE                    equ             $01
 
 ** Lower and Upper bound
 LOWER_BOUND             equ             $3500
-UPPER_BOUND             equ             $9f00
+UPPER_BOUND             equ             $9fff
 
 *~Font name~Courier New~
 *~Font size~10~
