@@ -1,9 +1,8 @@
 *-----------------------------------------------------------
-* Title      : Effective_Address with opcode
+* Title      : Final submission file. (Main executable)
 * Written by : Haram, Byeonggeun, Erik
-* Date       : 
-* Description: this code will traverse memory. This code is
-* expected to merge to Project.X68
+* Date       : June 2 2018
+* Description: The code will disassemble from loaded memory
 *-----------------------------------------------------------
 
 START:  org             $1000
