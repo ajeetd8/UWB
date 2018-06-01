@@ -391,7 +391,33 @@ MAIN_LOOP
 *******************************************************************************************
 
 
-        INCLUDE         'Halt_Continue_Message.x68',0
+*******************************************************************************************
+* Halting the simulator
+HALT
+        move.b          #$00,MAIN_LOOP_COUNT         Clear the Loop count
+        
+        * Getting the 'Enter' Key from the user
+        * Once you get the enter, clear the screen
+        * go back to the routine
+
+        bsr             PRESS_ENTER_S
+        bsr             WAIT_ENTER
+
+        bsr             CLEAR_SCREEN
+        bra             MAIN_LOOP
+
+* ----------------------------------
+WAIT_ENTER
+        move.b          #5,d0
+        trap            #15
+
+
+        
+        cmp.b           #$0d,d1
+        bne             WAIT_ENTER
+        rts
+* ----------------------------------
+*******************************************************************************************
 
 
 *******************************************************************************************
@@ -1869,17 +1895,1219 @@ BO_FINAL
 ****************************************************************************
 
         **Printing save instructoin with bsr
-        INCLUDE         'Opcode_print.x68',
+* Assembly instruction.     
+ADDI_S      LEA     ADDI_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+SUBI_S      LEA     SUBI_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+MOVE_S    LEA     MOVE_MESSAGE,A1 * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+            
+MOVEA_S     LEA     MOVEA_MESSAGE,A1 * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+        
+CLR_S       LEA     CLR_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+NOP_S       LEA     NOP_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+RTS_S       LEA     RTS_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+JSR_S       LEA     JSR_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+MOVEM_S     LEA     MOVEM_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+LEA_S       LEA     LEA_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+ADDQ_S      LEA     ADDQ_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+BCC_S       LEA     BCC_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+BGT_S       LEA     BGT_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+BLE_S       LEA     BLE_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+        
+            RTS
+
+MOVEQ_S     LEA     MOVEQ_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0            * Moves the number 14 into data register D0
+            TRAP    #15               * Displays meessage
+            RTS
+ 
+OR_S        LEA     OR_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+DIVU_S      LEA     DIVU_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+SUB_S       LEA     SUB_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+CMP_S       LEA     CMP_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+AND_S       LEA     AND_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+MULS_S      LEA     MULS_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+MULU_S      LEA     MULU_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+        
+            RTS
+
+ADD_S       LEA     ADD_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+ADDA_S      LEA     ADDA_MESSAGE,A1  * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+ASR_S       LEA     ASR_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+ASL_S       LEA     ASL_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+LSR_S       LEA     LSR_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+LSL_S       LEA     LSL_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+ROR_S       LEA     ROR_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+ROL_S       LEA     ROL_MESSAGE,A1   * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+* Size instruction.
+LONG_S  LEA     LONG_MESSAGE,A1     * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+WORD_S      LEA     WORD_MESSAGE,A1          * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+BYTE_S      LEA     BYTE_MESSAGE,A1          * loads Message into address
+            MOVE.B  #14,D0           * Moves the number 14 into data register D0
+            TRAP    #15              * Displays meessage
+            RTS
+
+* Data register.
+D_ZERO_S        LEA     D_ZERO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_ONE_S         LEA     D_ONE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_TWO_S         LEA     D_TWO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_THREE_S       LEA     D_THREE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_FOUR_S        LEA     D_FOUR_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_FIVE_S        LEA     D_FIVE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_SIX_S         LEA     D_SIX_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+D_SEVEN_S       LEA     D_SEVEN_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+
+* Address Register.
+A_ZERO_S        LEA     A_ZERO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_ONE_S         LEA     A_ONE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_TWO_S         LEA     A_TWO_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_THREE_S       LEA     A_THREE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FOUR_S        LEA     A_FOUR_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FIVE_S        LEA     A_FIVE_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SIX_S         LEA     A_SIX_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SEVEN_S       LEA     A_SEVEN_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+
+* Address Register with paranthesis.
+A_ZERO_P_S      LEA     A_ZERO_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_ONE_P_S       LEA     A_ONE_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_TWO_P_S       LEA     A_TWO_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_THREE_P_S     LEA     A_THREE_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FOUR_P_S      LEA     A_FOUR_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_FIVE_P_S      LEA     A_FIVE_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SIX_P_S       LEA     A_SIX_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+A_SEVEN_P_S     LEA     A_SEVEN_P_MESSAGE,A1
+                MOVE.B  #14,D0
+                TRAP    #15
+                RTS
+PLUS_S          LEA     PLUS_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+MINUS_S         LEA     MINUS_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+DOLLAR_S        LEA     DOLLAR_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+HASH_S          LEA     HASH_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+COMMA_S         LEA     COMMA_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+SLASH_S         LEA     SLASH_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+* NewLine
+NEWLINE         lea             CRLF,A1
+                move.b          #14,d0
+                trap            #15
+                rts
+
+* Tab
+TAB             lea             TAB_SPACE,a1
+                move.b          #14,d0
+                trap            #15
+                rts
+
+* Space
+SPACE_S         lea            SPACE,a1
+                move.b          #14,d0
+                trap            #15
+                rts
+
+* Press Enter Message
+PRESS_ENTER_S
+                lea     PRESS_ENTER_MESSAGE,a1
+                move.b  #14,d0
+                trap    #15
+                rts
+
+
+* Clear the screen
+CLEAR_SCREEN
+                move.w  #$ff00,d1
+                move.b  #11,d0
+                trap    #15
+                rts
+
+
+
+
+ADDI_MESSAGE            DC.B    'ADDI',0
+SUBI_MESSAGE            DC.B    'SUBI',0
+MOVE_MESSAGE            DC.B    'MOVE',0
+MOVEA_MESSAGE           DC.B    'MOVEA',0
+CLR_MESSAGE             DC.B    'CLR',0
+NOP_MESSAGE             DC.B    'NOP',0
+RTS_MESSAGE             DC.B    'RTS',0
+JSR_MESSAGE             DC.B    'JSR',0
+MOVEM_MESSAGE           DC.B    'MOVEM',0
+LEA_MESSAGE             DC.B    'LEA',0
+ADDQ_MESSAGE            DC.B    'ADDQ',0
+BCC_MESSAGE             DC.B    'BCC',0
+BGT_MESSAGE             DC.B    'BGT',0
+BLE_MESSAGE             DC.B    'BLE',0
+MOVEQ_MESSAGE           DC.B    'MOVEQ',0
+OR_MESSAGE              DC.B    'OR',0
+DIVU_MESSAGE            DC.B    'DIVU',0
+SUB_MESSAGE             DC.B    'SUB',0
+CMP_MESSAGE             DC.B    'CMP',0
+AND_MESSAGE             DC.B    'AND',0
+MULS_MESSAGE            DC.B    'MULS',0
+MULU_MESSAGE            DC.B    'MULU',0
+ADD_MESSAGE             DC.B    'ADD',0
+ADDA_MESSAGE            DC.B    'ADDA',0
+ASR_MESSAGE             DC.B    'ASR',0
+ASL_MESSAGE             DC.B    'ASL',0
+LSR_MESSAGE             DC.B    'LSR',0
+LSL_MESSAGE             DC.B    'LSL',0
+ROR_MESSAGE             DC.B    'ROR',0
+ROL_MESSAGE             DC.B    'ROL',0
+
+* Data Register
+D_ZERO_MESSAGE          DC.B    'D0',0
+D_ONE_MESSAGE           DC.B    'D1',0
+D_TWO_MESSAGE           DC.B    'D2',0
+D_THREE_MESSAGE         DC.B    'D3',0
+D_FOUR_MESSAGE          DC.B    'D4',0
+D_FIVE_MESSAGE          DC.B    'D5',0
+D_SIX_MESSAGE           DC.B    'D6',0
+D_SEVEN_MESSAGE         DC.B    'D7',0
+
+* Address Register
+A_ZERO_MESSAGE          DC.B    'A0',0
+A_ONE_MESSAGE           DC.B    'A1',0
+A_TWO_MESSAGE           DC.B    'A2',0
+A_THREE_MESSAGE         DC.B    'A3',0
+A_FOUR_MESSAGE          DC.B    'A4',0
+A_FIVE_MESSAGE          DC.B    'A5',0
+A_SIX_MESSAGE           DC.B    'A6',0
+A_SEVEN_MESSAGE         DC.B    'A7',0
+
+* Address with Paranthesis Register
+A_ZERO_P_MESSAGE          DC.B    '(A0)',0
+A_ONE_P_MESSAGE           DC.B    '(A1)',0
+A_TWO_P_MESSAGE           DC.B    '(A2)',0
+A_THREE_P_MESSAGE         DC.B    '(A3)',0
+A_FOUR_P_MESSAGE          DC.B    '(A4)',0
+A_FIVE_P_MESSAGE          DC.B    '(A5)',0
+A_SIX_P_MESSAGE           DC.B    '(A6)',0
+A_SEVEN_P_MESSAGE         DC.B    '(A7)',0
+
+* Plus and minus sign
+PLUS_MESSAGE            dc.b    '+',0
+MINUS_MESSAGE           dc.b    '-',0
+
+* Size instruction.
+LONG_MESSAGE            DC.B    '.L',0
+WORD_MESSAGE            DC.B    '.W',0
+BYTE_MESSAGE            DC.B    '.B',0
+
+* Special character
+DOLLAR_MESSAGE          DC.B    '$',0
+HASH_MESSAGE            DC.B    '#',0
+COMMA_MESSAGE           DC.B    ',',0
+SLASH_MESSAGE           DC.B    '/',0
+
+* Invalid Insturction.
+INVALID_INSTRUCTION_MESSAGE     DC.B    'Invalid Instruction!!!',0
+
+* Press Enter continue
+PRESS_ENTER_MESSAGE             DC.B    'Press Enter to Continue',0
+
+* New Line, and tab, Space
+CRLF                    dc.b    CR,LF,0
+TAB_SPACE               dc.b    HT,0
+SPACE                   dc.b    ' ',0
+
+* Constants - Alphabetical
+ERROR_1                 dc.b    'INVALID INPUT: too long',0
+ERROR_2                 dc.b    'INVALID INPUT: not within range',0
+ERROR_3                 dc.b    'INVALID INPUT: not recognized',0
+ERROR_4                 dc.b    'INVALID INPUT: less than start address',0
+NEW_LINE                dc.b    ' ',0,CR,LF
+PROMPT_1                dc.b    'Enter starting address. Range=[$3500,$9fff]',0
+PROMPT_2                dc.b    '$',0
+PROMPT_3                dc.b    'Press ENTER to continue...',0
+PROMPT_4                dc.b    'Would you like to disassemble again? (Y/N)',0
+PROMPT_5                dc.b    '>',0
+PROMPT_6                dc.b    'Press ENTER to continue...',0
+PROMPT_7                dc.b    'Enter ending address. Range=[$3500,$9fff]',0
+
+* Const variable we need to invoke
+STACK                   equ             $100000
+DISASSEMBLE_FROM        equ             $7000
+BS                      equ             $08         Backspace
+HT                      equ             $09         Tab (horizontal 5 characters)
+LF                      equ             $0A         New line (line feed)
+VT                      equ             $0B         Vertical tab (4 lines)
+FF                      equ             $0C         Form Feed (Always end printing with a Form Feed.)
+CR                      equ             $0D         Carriage Return
+
+** Size variable for size.
+LONG                    equ             $10
+WORD                    equ             $11
+BYTE                    equ             $01
+
+** Lower and Upper bound
+LOWER_BOUND             equ             $3500
+UPPER_BOUND             equ             $9fff
         
 
-        ** Read Opcode from Initial Instruction.
-        INCLUDE         'Instruction_OPCODE_DECODE.x68',0
+*******************************************************
+* Description: Odcode reading
+*1)
+** INITIAL_FOUR_EA_LOAD
+*** ???? | DST Register(3) | Dest Mode(3) | Src Mode(3) | Src Register(3)
+
+*2) INITIAL_TWO_EA_LOAD
+** ???? | ??? | ??? | Src Mode(3) | Src Register(3)
+
+*3) INITIAL_TWO_EA_LOAD_SIZE
+** ???? | ???? | size(2) | Src Mode(3) | Src Register(3)
+*
+*
+* Description: Bit clear instructions
+* 1) CLEAR_THREE_BIT_S
+* 2) CLEAR_TWO_BIT_S
+
+
+*******************************************************
+* Effective address part
+* Load four EA (last four) from Initial instruction.
+INITIAL_FOUR_EA_LOAD
+        movem.w         d7,-(sp)
+
+        bsr             INITIAL_TWO_EA_LOAD             *Load last two
+        move.w          INITIAL_INSTRUCTION,d7
+        ror.w           #6,d7
+        move.b          d7,CONVERSOIN_RESERVED
+        bsr             THREE_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,DEST_MODE
+
+        ror.w           #3,d7
+        move.b          d7,CONVERSOIN_RESERVED
+        bsr             THREE_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,DEST_REGISTER
+
+        movem.w         (sp)+,d7
+
+        rts
+
+INITIAL_TWO_EA_LOAD_SIZE
+
+        movem.w         d7,-(sp)
+
+        bsr             INITIAL_TWO_EA_LOAD
+        move.w          INITIAL_INSTRUCTION,d7
+        ror.b           #6,d7
+        move.b          d7,CONVERSOIN_RESERVED
+        bsr             TWO_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,SIZE
+
+        movem.w         (sp)+,d7       
+
+        rts
+
+* Load two Ea(last two) from Initial instruction
+INITIAL_TWO_EA_LOAD
+        movem.w         d7,-(sp)
+
+        move.w          INITIAL_INSTRUCTION,d7
+        move.b          d7,CONVERSOIN_RESERVED
+        bsr             THREE_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,SRC_REGISTER
+
+        ror.w           #3,d7
+        move.b          d7,CONVERSOIN_RESERVED
+        bsr             THREE_BIT_ONLY
+        move.b          CONVERSOIN_RESERVED,SRC_MODE
+
+        movem.w         (sp)+,d7          
+
+        rts
+
+** Expected to use with BGT, BLE, BCC
+INITIAL_DATA_EIGHT_LOAD
+        movem.l         d7,-(sp)
+
+        move.w          INITIAL_INSTRUCTION,d7
+        move.b          d7,DATA_EIGHT_BIT
+
+        movem.l         (sp)+,d7     
+
+        rts
+
+***************************************************************
+* Clear 3 bit instructoins
+*-> BIT CLEAR START HERE
+CLEAR_ALL_BIT_S
+    bsr         CLEAR_THREE_BIT_S
+    bsr         CLEAR_TWO_BIT_S
+    clr.w       REGISTER_LIST_MASK
+    rts
+
+CLEAR_THREE_BIT_S
+        *clr.b   EA_MODE
+        *clr.b   OP_MODE
+        *clr.b   EA_REGISTER
+        clr.b   DEST_REGISTER
+        clr.b   DEST_MODE
+        clr.b   SRC_MODE
+        clr.b   SRC_REGISTER
+        *clr.b   REGISTER
+        *clr.b   COUNT_REGISTER
+        rts
+
+* Clear 2 bit instruction
+CLEAR_TWO_BIT_S
+        clr.b   SIZE
+        rts
+*-> BIT CLEAR END HERE
+***************************************************************
+
 
         ** Decide whether to read more address or not.
-        INCLUDE         'Address_Read_Decision_Load.x68',0
+ADDRESS_READ_DECISION_LOAD
+ARDL_Source
+        cmp.b   #7,SRC_MODE
+        bne     ARDL_DST     * No source Data memory value
+ARDL_SOURCE_WORD
+        * Word compare
+        cmp.b   #0,SRC_REGISTER
+        bne     ARDL_SOURCE_LONG        * not word size
+        move.w  (a6)+,SRC_NUMBER_DATA
+        *move.w  (a6),WORD_OUT
+        * TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        bra     ARDL_DST
+ARDL_SOURCE_LONG                        * down here, check long size
+        cmp.b   #1,SRC_REGISTER
+        bne     ARDL_SOURCE_DATA        * not Long size
+        move.l  (a6), SRC_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        * TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        bra     ARDL_DST
+
+***DATA check
+ARDL_SOURCE_DATA                        * down here, check #<data>
+        cmp.b   #4,SRC_REGISTER
+        bne     INVALID_S               * Here is the code we don't need to disassemble
+
+ARDL_SOURCE_DATA_BYTE
+        * byte compare
+        cmp.b   #BYTE,SIZE
+        bne     ARDL_SOURCE_DATA_WORD
+        move.w  (a6),SRC_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        * TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        bra     ARDL_DST
+
+ARDL_SOURCE_DATA_WORD
+        cmp.b   #WORD,SIZE
+        bne     ARDL_SOURCE_DATA_LONG
+        move.w  (a6),SRC_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        bra     ARDL_DST
+
+ARDL_SOURCE_DATA_LONG
+        cmp.b   #LONG,SIZE
+        bne     INVALID_S
+        move.l  (a6), SRC_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        bra     ARDL_DST 
+
+
+ARDL_DST                 * Address extension for source is not required
+        cmp.b   #7,DEST_MODE
+        bne     ARDL_FINAL_RTS
+
+ARDL_DST_WORD
+        * Word compare
+        cmp.b   #0,DEST_REGISTER
+        bne     ARDL_DST_LONG        * not word size
+        move.w  (a6),DST_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        bra     ARDL_FINAL_RTS
+ARDL_DST_LONG                        * down here, check long size
+        cmp.b   #1,DEST_REGISTER
+        bne     ARDL_DST_DATA        * not Long size
+        move.l  (a6), DST_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        bra     ARDL_FINAL_RTS
+
+***DATA check
+ARDL_DST_DATA                        * down here, check #<data>
+        cmp.b   #4,DEST_REGISTER
+        bne     INVALID_S               * Here is the code we don't need to disassemble
+
+ARDL_DST_DATA_BYTE
+        * byte compare
+        cmp.b   #BYTE,SIZE
+        bne     ARDL_DST_DATA_WORD
+        move.w  (a6),DST_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        bra     ARDL_FINAL_RTS
+
+ARDL_DST_DATA_WORD
+        cmp.b   #WORD,SIZE
+        bne     ARDL_DST_DATA_LONG
+        move.w  (a6),DST_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        bra     ARDL_FINAL_RTS
+
+ARDL_DST_DATA_LONG
+        cmp.b   #LONG,SIZE
+        bne     INVALID_S
+        move.l  (a6), DST_NUMBER_DATA
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        move.w  (a6)+,WORD_OUT
+        *TODO: DELETE THIS
+        *bsr     WORD_OUT_S
+        bra     ARDL_FINAL_RTS 
+* Address extension is not required
+ARDL_FINAL_RTS
+        rts
+
+* -----------------------------------------------
+***************************************************
+
+***************************************************
+* -----------------------------------------------
+* Condition address decision load
+* BCC BGT BLE
+** Using DATA_EIGHT_BIT, SRC_NUMBER_DATA
+CONDIITON_DECISION_LOAD
+        cmp.b           #$00,DATA_EIGHT_BIT
+        beq             CDL_16
+        cmp.b           #$FF,DATA_EIGHT_BIT
+        beq             CDL_32
+
+        rts
+CDL_16
+        ** 16 bit displacement
+        move.w          (a6)+,SRC_NUMBER_DATA
+        rts
+CDL_32
+        ** 32 bit displacement
+        move.l          (a6)+,SRC_NUMBER_DATA
+        rts
+
+* -----------------------------------------------
+***************************************************
 
         ** Based on mode setting, print out the instruction.
-        INCLUDE         'Instruction_Operation_Out.x68',0
+***************************************************************
+* -> Initial two ea out mode
+INITIAL_TWO_EA_LOAD_OUT
+ITELO_Dn
+    cmp.b       #0,SRC_MODE
+    bne         ITELO_AN
+
+    *** compare to d0 ~ d7
+ITELO_D0
+    cmp.b       #0,SRC_REGISTER
+    bne         ITELO_D1
+    bsr         D_ZERO_S
+    bra         ITELO_FINAL
+ITELO_D1
+    cmp.b       #1,SRC_REGISTER
+    bne         ITELO_D2
+    bsr         D_ONE_S
+    bra         ITELO_FINAL
+ITELO_D2
+    cmp.b       #2,SRC_REGISTER
+    bne         ITELO_D3
+    bsr         D_TWO_S
+    bra         ITELO_FINAL
+ITELO_D3
+    cmp.b       #3,SRC_REGISTER
+    bne         ITELO_D4
+    bsr         D_THREE_S
+    bra         ITELO_FINAL
+ITELO_D4
+    cmp.b       #4,SRC_REGISTER
+    bne         ITELO_D5
+    bsr         D_FOUR_S
+    bra         ITELO_FINAL
+ITELO_D5
+    cmp.b       #5,SRC_REGISTER
+    bne         ITELO_D6
+    bsr         D_FIVE_S
+    bra         ITELO_FINAL
+ITELO_D6
+    cmp.b       #6,SRC_REGISTER
+    bne         ITELO_D7
+    bsr         D_SIX_S
+    bra         ITELO_FINAL
+ITELO_D7
+    cmp.b       #7,SRC_REGISTER
+    bne         ITELO_INVALID
+    bsr         D_SEVEN_S
+    bra         ITELO_FINAL
+* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+ITELO_AN
+    cmp.b       #1,SRC_MODE
+    bne         ITELO_AN_P
+
+    *** compare to a0 ~ a7
+ITELO_A0
+    cmp.b       #0,SRC_REGISTER
+    bne         ITELO_A1
+    bsr         A_ZERO_S
+    bra         ITELO_FINAL
+ITELO_A1
+    cmp.b       #1,SRC_REGISTER
+    bne         ITELO_A2
+    bsr         A_ONE_S
+    bra         ITELO_FINAL
+ITELO_A2
+    cmp.b       #2,SRC_REGISTER
+    bne         ITELO_A3
+    bsr         A_TWO_S
+    bra         ITELO_FINAL
+ITELO_A3
+    cmp.b       #3,SRC_REGISTER
+    bne         ITELO_A4
+    bsr         A_THREE_S
+    bra         ITELO_FINAL
+ITELO_A4
+    cmp.b       #4,SRC_REGISTER
+    bne         ITELO_A5
+    bsr         A_FOUR_S
+    bra         ITELO_FINAL
+ITELO_A5
+    cmp.b       #5,SRC_REGISTER
+    bne         ITELO_A6
+    bsr         A_FIVE_S
+    bra         ITELO_FINAL
+ITELO_A6
+    cmp.b       #6,SRC_REGISTER
+    bne         ITELO_A7
+    bsr         A_SIX_S
+    bra         ITELO_FINAL
+ITELO_A7
+    cmp.b       #7,SRC_REGISTER
+    bne         ITELO_INVALID
+    bsr         A_SEVEN_S
+    bra         ITELO_FINAL
+* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+ITELO_AN_P
+    cmp.b       #2,SRC_MODE
+    bne         ITELO_AN_P_P
+
+    *** compare to a0 ~ a7
+ITELO_A0_P
+    cmp.b       #0,SRC_REGISTER
+    bne         ITELO_A1_P
+    bsr         A_ZERO_P_S
+    bra         ITELO_FINAL
+ITELO_A1_P
+    cmp.b       #1,SRC_REGISTER
+    bne         ITELO_A2_P
+    bsr         A_ONE_P_S
+    bra         ITELO_FINAL
+ITELO_A2_P
+    cmp.b       #2,SRC_REGISTER
+    bne         ITELO_A3_P
+    bsr         A_TWO_P_S
+    bra         ITELO_FINAL
+ITELO_A3_P
+    cmp.b       #3,SRC_REGISTER
+    bne         ITELO_A4_P
+    bsr         A_THREE_P_S
+    bra         ITELO_FINAL
+ITELO_A4_P
+    cmp.b       #4,SRC_REGISTER
+    bne         ITELO_A5_P
+    bsr         A_FOUR_P_S
+    bra         ITELO_FINAL
+ITELO_A5_P
+    cmp.b       #5,SRC_REGISTER
+    bne         ITELO_A6_P
+    bsr         A_FIVE_P_S
+    bra         ITELO_FINAL
+ITELO_A6_P
+    cmp.b       #6,SRC_REGISTER
+    bne         ITELO_A7_P
+    bsr         A_SIX_P_S
+    bra         ITELO_FINAL
+ITELO_A7_P
+    cmp.b       #7,SRC_REGISTER
+    bne         ITELO_INVALID
+    bsr         A_SEVEN_P_S
+    bra         ITELO_FINAL
+* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+ITELO_AN_P_P
+    cmp.b       #3,SRC_MODE
+    bne         ITELO_AN_P_M
+
+    *** compare to a0 ~ a7
+ITELO_A0_P_P
+    cmp.b       #0,SRC_REGISTER
+    bne         ITELO_A1_P_P
+    bsr         A_ZERO_P_S
+    bsr         PLUS_S
+    bra         ITELO_FINAL
+ITELO_A1_P_P
+    cmp.b       #1,SRC_REGISTER
+    bne         ITELO_A2_P_P
+    bsr         A_ONE_P_S
+    bsr         PLUS_S
+    bra         ITELO_FINAL
+ITELO_A2_P_P
+    cmp.b       #2,SRC_REGISTER
+    bne         ITELO_A3_P_P
+    bsr         A_TWO_P_S
+    bsr         PLUS_S
+    bra         ITELO_FINAL
+ITELO_A3_P_P
+    cmp.b       #3,SRC_REGISTER
+    bne         ITELO_A4_P_P
+    bsr         A_THREE_P_S
+    bsr         PLUS_S
+    bra         ITELO_FINAL
+ITELO_A4_P_P
+    cmp.b       #4,SRC_REGISTER
+    bne         ITELO_A5_P_P
+    bsr         A_FOUR_P_S
+    bsr         PLUS_S
+    bra         ITELO_FINAL
+ITELO_A5_P_P
+    cmp.b       #5,SRC_REGISTER
+    bne         ITELO_A6_P_P
+    bsr         A_FIVE_P_S
+    bsr         PLUS_S
+    bra         ITELO_FINAL
+ITELO_A6_P_P
+    cmp.b       #6,SRC_REGISTER
+    bne         ITELO_A7_P_P
+    bsr         A_SIX_P_S
+    bsr         PLUS_S
+    bra         ITELO_FINAL
+ITELO_A7_P_P
+    cmp.b       #7,SRC_REGISTER
+    bne         ITELO_INVALID
+    bsr         A_SEVEN_P_S
+    bsr         PLUS_S
+    bra         ITELO_FINAL
+* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+ITELO_AN_P_M
+    cmp.b       #4,SRC_MODE
+    bne         ITELO_ADR_WLD
+
+    *** compare to a0 ~ a7
+ITELO_A0_P_M
+    cmp.b       #0,SRC_REGISTER
+    bne         ITELO_A1_P_M
+    bsr         MINUS_S
+    bsr         A_ZERO_P_S
+    bra         ITELO_FINAL
+ITELO_A1_P_M
+    cmp.b       #1,SRC_REGISTER
+    bne         ITELO_A2_P_M
+    bsr         MINUS_S
+    bsr         A_ONE_P_S
+    bra         ITELO_FINAL
+ITELO_A2_P_M
+    cmp.b       #2,SRC_REGISTER
+    bne         ITELO_A3_P_M
+    bsr         MINUS_S
+    bsr         A_TWO_P_S
+    bra         ITELO_FINAL
+ITELO_A3_P_M
+    cmp.b       #3,SRC_REGISTER
+    bne         ITELO_A4_P_M
+    bsr         MINUS_S
+    bsr         A_THREE_P_S
+    bra         ITELO_FINAL
+ITELO_A4_P_M
+    cmp.b       #4,SRC_REGISTER
+    bne         ITELO_A5_P_M
+    bsr         MINUS_S
+    bsr         A_FOUR_P_S
+    bra         ITELO_FINAL
+ITELO_A5_P_M
+    cmp.b       #5,SRC_REGISTER
+    bne         ITELO_A6_P_M
+    bsr         MINUS_S
+    bsr         A_FIVE_P_S
+    bra         ITELO_FINAL
+ITELO_A6_P_M
+    cmp.b       #6,SRC_REGISTER
+    bne         ITELO_A7_P_M
+    bsr         MINUS_S
+    bsr         A_SIX_P_S
+    bra         ITELO_FINAL
+ITELO_A7_P_M
+    cmp.b       #7,SRC_REGISTER
+    bne         ITELO_INVALID
+    bsr         MINUS_S
+    bsr         A_SEVEN_P_S
+    bra         ITELO_FINAL
+* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+* WORD, LONG, DATA, (XXX).W (XXX).L #<data>
+ITELO_ADR_WLD
+    cmp.b       #7,SRC_MODE
+    bne         ITELO_INVALID
+ITELO_ADR_WLD_WORD
+    cmp.b       #0,SRC_REGISTER
+    bne         ITELO_ADR_WLD_LONG
+    bsr         DOLLAR_S
+
+    cmp.w       #$8000,SRC_NUMBER_DATA
+    bcs         ITELO_AWW_OUT
+ITELO_AWW_FFFF
+    move.w      #$ffff,WORD_OUT
+    bsr         WORD_OUT_S
+ITELO_AWW_OUT
+    move.w      SRC_NUMBER_DATA,WORD_OUT
+    bsr         WORD_OUT_S
+
+    bra         ITELO_FINAL
+
+
+ITELO_ADR_WLD_LONG
+    cmp.b       #1,SRC_REGISTER
+    bne         ITELO_ADR_WLD_DATA
+    bsr         DOLLAR_S
+
+    movem.l     d0,-(sp)
+
+    cmp.w       #$0000,SRC_NUMBER_DATA
+    beq         ITELO_ADR_WLD_L_NPRCD
+ITELO_ADR_WLD_L_PRCD
+    move.w      SRC_NUMBER_DATA,WORD_OUT
+    bsr         WORD_OUT_S
+ITELO_ADR_WLD_L_NPRCD
+    move.l      SRC_NUMBER_DATA,d0
+    move.w      d0,WORD_OUT
+    bsr         WORD_OUT_S
+
+    movem.l     (sp)+,d0
+
+    bra         ITELO_FINAL
+ITELO_ADR_WLD_DATA
+    ** Immediate data compare
+    cmp.b       #4,SRC_REGISTER
+    bne         ITELO_INVALID
+    bsr         HASH_S
+    bsr         DOLLAR_S
+
+ITELO_AWD_WORD
+    ** WORD SIZE
+    cmp.b       #WORD,SIZE
+    bne         ITELO_AWD_LONG
+    move.w      SRC_NUMBER_DATA,WORD_OUT
+    bsr         WORD_OUT_S
+    bra         ITELO_FINAL
+ITELO_AWD_LONG
+    ** LONG SIZE
+    cmp.b       #LONG,SIZE
+    bne         ITELO_AWD_BYTE
+
+    movem.l     d0,-(sp)
+
+    move.w      SRC_NUMBER_DATA,WORD_OUT
+    bsr         WORD_OUT_S
+    move.l      SRC_NUMBER_DATA,d0
+    move.w      d0,WORD_OUT
+    bsr         WORD_OUT_S
+
+    movem.l     (sp)+,d0
+
+    bra         ITELO_FINAL
+
+ITELO_AWD_BYTE
+    ** BYTE SIZE
+    cmp.b       #BYTE,SIZE
+    bne         ITELO_INVALID
+
+    movem.w     d0,-(sp)
+
+    move.w      SRC_NUMBER_DATA,d0
+    move.b      d0,BYTE_OUT
+    bsr         BYTE_OUT_S
+
+    movem.w     (sp)+,d0
+
+    bra         ITELO_FINAL
+
+ITELO_INVALID
+    bra         INVALID_S
+ITELO_FINAL
+    rts
+
+* -> Initial two ea out mode
+***************************************************************
+
+***************************************************************
+* -> Initial four ea out mode
+INITIAL_FOUR_EA_LOAD_OUT
+    movem.l     d0-d2,-(sp)
+
+    bsr         INITIAL_TWO_EA_LOAD_OUT             * Source out
+
+    bsr         COMMA_S
+
+    move.b      DEST_REGISTER,d0
+    move.b      DEST_MODE,d1
+    move.l      DST_NUMBER_DATA,d2
+
+    move.b      DEST_REGISTER,SRC_REGISTER          * Destination out
+    move.b      DEST_MODE,SRC_MODE
+    move.l      DST_NUMBER_DATA,SRC_NUMBER_DATA
+    movem.l     (sp)+,d0-d2
+    bsr         INITIAL_TWO_EA_LOAD_OUT
+
+    rts
+
+* -> Initial four ea out mode
+***************************************************************
+
+
+***************************************************************
+* -> Memory structure | Register | Opmode | EA Mode | EA register |
+FOUR_OPCODE_LOAD_OUT
+        * Invalid common operation
+        ** Setting the size
+        move.b          DEST_MODE,SIZE
+        bsr             SIZE_CONVERT_TYPE_TWO
+
+        * This is valid OR so printout OR.
+        bsr             SIZE_TAG_S
+FOLO_DN
+
+        * Check for OR instruction <ea> V Dn -> Dn format
+        cmp.b           #4,DEST_MODE
+        bcc             FOLO_EA
+
+        * Set dest mode as register (Deception!!)
+        move.b          #$00,DEST_MODE
+
+        * Based on deception, load memory
+        bsr             ADDRESS_READ_DECISION_LOAD
+
+        * Print out
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+        rts
+FOLO_EA
+        * OR instruction and Dn V <ea> -> <ea> format
+
+        * back up the Dest_register
+        move.b          DEST_REGISTER,d7
+        move.b          SRC_MODE,DEST_MODE
+        move.b          SRC_REGISTER,DEST_REGISTER
+
+        move.b          #$00,SRC_MODE
+        move.b          d7,SRC_REGISTER
+
+        * Based on deception, load memory
+        bsr             ADDRESS_READ_DECISION_LOAD
+
+        * Print out
+        bsr             TAB
+        bsr             INITIAL_FOUR_EA_LOAD_OUT
+
+        bsr             NEWLINE
+
+        rts
+FOLO_INVALID
+        bra             INVALID_S
+
+* -> Memory structure | Register | Opmode | EA Mode | EA register |
+*******************************************************************
+
+
+*******************************************************************
+* Check whether current instruction is valid or not
+IS_VALID
+
+IV_SRC
+    cmp.b               #5,SRC_MODE
+    beq                 IV_INVALID
+    cmp.b               #6,SRC_MODE
+    beq                 IV_INVALID
+
+    cmp.b               #4,SRC_MODE
+    bls                 IV_SRC_REG_CK1
+    cmp.b               #7,SRC_MODE
+    beq                 IV_SRC_REG_CK2             
+
+IV_SRC_REG_CK1
+    cmp.b               #7,SRC_REGISTER
+    bls                 IV_DST
+    bra                 IV_INVALID
+IV_SRC_REG_CK2
+    cmp.b               #2,SRC_REGISTER
+    beq                 IV_INVALID
+    cmp.b               #3,SRC_REGISTER
+    beq                 IV_INVALID
+
+    bra                 IV_DST
+
+IV_DST * Destination check
+    cmp.b               #5,DEST_MODE
+    beq                 IV_INVALID
+    cmp.b               #6,DEST_MODE
+    beq                 IV_INVALID
+
+    cmp.b               #4,DEST_MODE
+    bls                 IV_DST_REG_CK1
+    cmp.b               #7,DEST_MODE
+    beq                 IV_DST_REG_CK2   
+
+IV_DST_REG_CK1
+    cmp.b               #7,DEST_REGISTER
+    bls                 IV_FINAL
+    bra                 IV_INVALID
+IV_DST_REG_CK2
+    cmp.b               #2,DEST_REGISTER
+    beq                 IV_INVALID
+    cmp.b               #3,DEST_REGISTER
+    beq                 IV_INVALID
+
+    bra                 IV_FINAL
+IV_FINAL
+        rts
+IV_INVALID
+    bra                 INVALID_S
+
+* Check whether current instruction is valid or not
+*******************************************************************
+
 
 ***************************************************************
 * Load instruction to print out
@@ -1887,27 +3115,143 @@ BO_FINAL
 **> Loaed instruction to print out
 ***************************************************************
 
-        INCLUDE 'Size_Converting.x68',0
+** Reference Size 'Converting Table.txt'
+*
+
+* SIZE_CONVERT_TYPE_ONE
+* Size converting operation
+SIZE_CONVERT_TYPE_ONE
+****Putting size into the destined size
+SCTO_BYTE
+        cmp.b           #0,SIZE
+        bne             SCTO_WORD
+        bsr             SIZE_BYTE
+        rts
+SCTO_WORD
+        cmp.b           #1,SIZE
+        bne             SCTO_LONG
+        bsr             SIZE_WORD
+        rts
+SCTO_LONG
+        cmp.b           #2,SIZE
+        bne             SCTO_INVALID
+        bsr             SIZE_LONG
+        rts
+SCTO_INVALID                           ** Invalid size instruction.
+        bra             INVALID_S
+        rts
+
+
+* Size converting type two
+SIZE_CONVERT_TYPE_TWO
+**** Putting size into the destined size
+
+        ** Byte case %000, %100
+        cmp.b   #0,SIZE
+        beq     SCTT_BYTE
+        cmp.b   #4,SIZE
+        beq     SCTT_BYTE
+
+        ** Word case %001, %101
+        cmp.b   #1,SIZE
+        beq     SCTT_WORD
+        cmp.b   #5,SIZE
+        beq     SCTT_WORD
+
+        ** Long case %010, %110
+        cmp.b   #2,SIZE
+        beq     SCTT_LONG
+        cmp.b   #6,SIZE
+        beq     SCTT_LONG
+
+** Set size byte
+SCTT_BYTE
+        bsr     SIZE_BYTE
+        rts
+** Set size word
+SCTT_WORD
+        bsr     SIZE_WORD
+        rts
+** Set size long
+SCTT_LONG
+        bsr     SIZE_LONG
+        rts
+** Invalid case
+SCTT_INVALID
+        bra     INVALID_S
+        rts
+
+* Set 'SIZE'
+SIZE_BYTE
+        move.b          #BYTE,SIZE
+        rts
+SIZE_WORD
+        move.b          #WORD,SIZE
+        rts
+SIZE_LONG
+        move.b          #LONG,SIZE
+        rts
 
 *EXIT
 EXIT_PROGRAM
         SIMHALT
 
 
-        INCLUDE 'Variable.x68',0
+**************************************************************************************************
+* Global Variable
+BYTE_OUT                ds.b            $1      Byte out reserved variable
+WORD_OUT                ds.w            $1      Word out reserved variable
+READ_FROM               ds.l            $1      Variable to save read From (Inclusive)
+READ_TO                 ds.l            $1      Varaible to save read To (Inclusive)
+Current_Read            ds.l            $1      Varaible to save current read
 
-        *TODO: Delete this later
-        *INCLUDE 'Test_Code.x68',0
-        *include 'demo_test.x68',0
+* Variable specific for movem
+REGISTER_LIST_MASK      ds.w            $1      Register list Mask Variable for MOVEM
+
+* Bit Conversion reserved Area
+CONVERSOIN_RESERVED     ds.b            $1
+
+** 8 bit instruction saving place
+DATA_EIGHT_BIT          ds.b            $1
+
+** 3 bit instruction saving place
+DEST_REGISTER           ds.b            $1
+DEST_MODE               ds.b            $1
+SRC_MODE                ds.b            $1
+SRC_REGISTER            ds.b            $1
+
+*REGISTER                ds.b            $1
+*COUNT_REGISTER          ds.b            $1
+
+* Long data saving place for src and dst
+SRC_NUMBER_DATA         ds.l            $1
+DST_NUMBER_DATA         ds.l            $1
+
+** 2 bit instructoin savin place
+*** 01 -- BYTE operation
+*** 11 -- word operation
+*** 10 -- long operation
+SIZE                    ds.b            $1
+
+
+* Local variable invoked
+* Local variable which will be invoked
+INITIAL_INSTRUCTION     ds.w            $1      Initial instruction variable
+MAIN_LOOP_COUNT         ds.b            $1      Loop count variable for main function
+
+* Variables - Alphabetical
+END_HEX                 ds.l        $1
+FLAG                    ds.b        $1
+START_HEX               ds.l        $1
+STRING                  ds.b        $8
+SWAP_HEX                ds.l        $1
+STR_LENGTH              ds.w        $1
+
+**************************************************************************************************
+
 
 
     END    START        ; last line of source
-
-
-
-
-
-
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
