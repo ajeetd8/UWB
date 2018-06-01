@@ -1754,11 +1754,11 @@ ADDRESS_OUT
         move.l          #16,d6
 
         move.l          a6,d7
-        ror.l           d6,d7
+        lsl.l           d6,d7
         move.w          d7,WORD_OUT
         bsr             WORD_OUT_S
 
-        move.l          a6,d7
+        lsr.l           d6,d7
         move.w          d7,WORD_OUT
         bsr             WORD_OUT_S
 
@@ -1773,7 +1773,7 @@ ADDRESS_OUT
 * Read 4 character from the address.
 * for(int i =0; i<4; i++), and i = d0
 WORD_OUT_S
-        movem.w         d6-d7,-(sp)
+        movem.l         d6-d7,-(sp)
         clr             d7
 WOS_LOOP
         move.w          WORD_OUT,d6
@@ -1786,7 +1786,7 @@ WOS_LOOP
         
 
 WOS_FINAL
-        movem.w         (sp)+,d6-d7
+        movem.l         (sp)+,d6-d7
         rts
 * > word size out end
 * -------------------------------------------------------------------
@@ -1798,7 +1798,7 @@ WOS_FINAL
 * Read 2 character from the address.
 * for(int i =0; i<2; i++), and i = d0
 BYTE_OUT_S
-        movem.w     d0-d7/a0-a5,-(sp)
+        movem.l     d0-d7/a0-a5,-(sp)
         clr         d7
         move.b     BYTE_OUT,d5
 BO_LOOP_GET_TWO
@@ -1847,7 +1847,7 @@ BOP_PRINT
         bra             BO_PRINT_LOOP
 
 BO_FINAL
-        movem.w     (sp)+,d0-d7/a0-a5           Move back the stack
+        movem.l     (sp)+,d0-d7/a0-a5           Move back to the stack
         rts
         
 * > Byte size out instructoin
