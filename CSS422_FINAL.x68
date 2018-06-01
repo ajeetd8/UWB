@@ -271,17 +271,6 @@ STH_SKIP_SHIFT
         move.l          d3,swap_hex                  
         rts
 
-
-
-
-
-
-
-
-
-
-
-
 * Instruction for terminating the program
 DONE
         * Reprompt for another reading or end program
@@ -299,24 +288,6 @@ DONE
         * If flag detected branch to done
         cmp.b           #$01,d5
         beq             done
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 * From here, he need to write our disassembly code
 *****************************************************************************************
@@ -342,7 +313,6 @@ MAIN_LOOP
         addi.b          #1,d7
         move.b          d7,MAIN_LOOP_COUNT
 
-        *TODO: DELETE THIS LATER
         * Show current pc
         bsr             ADDRESS_OUT
 
@@ -1778,55 +1748,22 @@ STS_INVALID_SIZE
 * Address out instruction
 *********************************************
 * Read 8 character from the address.
-* for(int i =0; i<8; i++), and i = d0
 ADDRESS_OUT
-    clr         d0
-    move.l      a6,d5
-ADDRESS_OUT_LOOP_1
-    cmp.b       #$08,d0                 i=8 Break statement
-    bge         ADDRESS_OUT_EXIT_1
-    addi.b      #$01,d0                 i++
-    
-    * Getting only one character
-    move.b      d5,d4
-    bclr        #4,d4
-    bclr        #5,d4
-    bclr        #6,d4
-    bclr        #7,d4
-    
-    * Getting next character
-    ror.l       #4,d5
-    
-    * Save the Character at stack
-    movem.w     d4,-(sp)
-    
-    bra         ADDRESS_OUT_LOOP_1
-*********************************************
-ADDRESS_OUT_EXIT_1  
-    
-    clr         d7
-ADDRESS_OUT_LOOP_2
-    cmp.b       #$08,d7
-    bge         ADDRESS_OUT_EXIT_2
-    addi.b      #$01,d7
-    clr.l       d0
-    movem.w     (sp)+,d4
-    move.b      d4,d1
-    addi.b      #$30,d1
-    
-    cmp.b       #$3a,d1
-    blo         ADDRESS_OUT_OUT
-    addi.b      #7,d1
-    
-ADDRESS_OUT_OUT    
-    move.b      #6,d0
-    trap        #15
+        movem.l         d6-d7,-(sp)
+        
+        move.l          #16,d6
 
-    
-    bra         ADDRESS_OUT_LOOP_2
-    
-ADDRESS_OUT_EXIT_2
-    rts
+        move.l          a6,d7
+        ror.l           d6,d7
+        move.w          d7,WORD_OUT
+        bsr             WORD_OUT_S
+
+        move.l          a6,d7
+        move.w          d7,WORD_OUT
+        bsr             WORD_OUT_S
+
+        movem.l         (sp)+,d6-d7
+        rts
 
 * Address out instruction end
 
