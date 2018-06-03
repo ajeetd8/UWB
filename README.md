@@ -1,37 +1,3 @@
-# Todo
-[Final Submission](https://canvas.uw.edu/courses/1212491/assignments/4107441#submit)
-Due Sunday
-
-# Function with usage
-## Current PC of input code Out (a6)
-```
-bsr     ADDRESS_OUT
-```
-
-## Show word data
-```
-move.w      #<data>.w, WORD_OUT
-bsr         WORD_OUT_S
-```
-
-## Size Converting Table
-```
-Default size instrauction
-#$01 - BYTE
-#$11 - WORD
-#$10 - LONG
-
-Size Convertor type 1
-#0 - BYTE
-#1 - WORD
-#2 - LONG
-
-Size convertor type 2
-$000, %100 -> BYTE
-$001, %101 -> WORD
-$010, %110 -> LONG
-```
-
 # 68K instruction list
 ```
 ADDI         
