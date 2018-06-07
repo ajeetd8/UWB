@@ -8,7 +8,7 @@ Three people worked as a group, and there were three roles.
 - Effective Address: Resposible for memory management, and printout out operands
 
 ## My role
-Opcode, and Effective Address.
+My role in the team was Opcode, and Effective Address.
 - My Code start after user put the input into the console, and press enter.
 
 # What this repository includes
@@ -54,3 +54,9 @@ ROL
 ```
 
 # How to use
+- load the program with easy 68k
+- Go to file->opendata
+- Open(load) demo_test.s68
+- Run
+# Example output
+![Alt text](./Picture/Example_output.png "Example Output")
