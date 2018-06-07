@@ -16,4 +16,41 @@ Opcode, and Effective Address.
 - Encrypted Source Code
 - Test Code.
 
+# List of Instruction decode
+```
+ADDI         
+SUBI          
+MOVE.B
+MOVE.L
+MOVEA.L
+MOVE.W
+MOVEA.W
+CLR
+NOP
+RTS
+JSR
+MOVEM
+LEA
+ADDQ
+BCC
+BGT
+BLE
+MOVEQ
+OR
+DIVU
+SUB
+CMP
+AND
+MULS
+MULU
+ADD
+ADDA
+ASR
+ASL
+LSR
+LSL
+ROR
+ROL
+```
+
 # How to use
