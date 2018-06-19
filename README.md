@@ -8,13 +8,14 @@ Three people worked as a group, and there were three roles.
 - Effective Address: Resposible for memory management, and printout out operands
 
 ## My role
-My role in the team was Opcode, and Effective Address.
+My role in the team was <b><u>Opcode</b></u>, and <b><u>Effective Address</b></u>.
 - My Code start after user put the input into the console, and press enter.
+- Disassemble.x68 (Line# 292 ~ 3254) <b>(100% disassemble Logic)</b>
 
 # What this repository includes
 - Executable File
-- Encrypted Source Code
-- Test Code.
+- Source code for the file ('Disassemble.x68')
+- Test Code ('Test_Code.x68', 'demo_test.X68').
 
 # List of Instruction decode
 ```
@@ -60,3 +61,21 @@ ROL
 - Run
 # Example output
 ![Alt text](./Picture/Example_output.png "Example Output")
+
+# Feed Bback from Our instructor (Wooyoung Kim)
+```
+- Your program is almost perfect except the following error: -1
+==============================
+From the data,
+ED2F   
+
+Your program print as
+LSR.B	D6,D7
+
+Which should be printed as LSL.B D6, D7
+===============================
+```
+## Minor fix
+```
+I fix the issue and now the code is working perfectly.
+```
