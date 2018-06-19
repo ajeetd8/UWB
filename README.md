@@ -1,3 +1,5 @@
+
+
 # Intro
 This is done as course work in University of Washington Bothell CSS422. (Architecture and Hardware)
 
@@ -11,6 +13,9 @@ Three people worked as a group, and there were three roles.
 My role in the team was <b><u>Opcode</b></u>, and <b><u>Effective Address</b></u>.
 - My Code start after user put the input into the console, and press enter.
 - Disassemble.x68 (Line# 292 ~ 3254) <b>(100% disassemble Logic)</b>
+
+![Alt text](./Picture/Disassembly_Project_Contribution.png "Example Output")
+
 
 # What this repository includes
 - Executable File
