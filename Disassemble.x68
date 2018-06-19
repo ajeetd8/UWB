@@ -1397,7 +1397,7 @@ MTR_DXDY_LSR
 MTR_DXDY_LSL
         bsr             IS_VALID
         bsr             TAB
-        bsr             LSR_S
+        bsr             LSL_S
         bsr             SIZE_TAG_S
         bsr             TAB
 
