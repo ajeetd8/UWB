@@ -26,11 +26,8 @@ My role in the team was <b><u>Opcode</b></u>, and <b><u>Effective Address</b></u
 ```
 ADDI         
 SUBI          
-MOVE.B
-MOVE.L
-MOVEA.L
-MOVE.W
-MOVEA.W
+MOVE
+MOVEA
 CLR
 NOP
 RTS
