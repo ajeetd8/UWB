@@ -1,2 +1,3 @@
 # DataStructure
-Store all data structure I've implemented
+Store DATA Structures.
+Camouflaged some information.
