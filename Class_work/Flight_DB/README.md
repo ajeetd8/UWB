@@ -1,1 +1,1 @@
-Camousflaged some info
+Camousflaged some info, and I delete some personal info, so in order to run it, you need to set up your own azure server.
