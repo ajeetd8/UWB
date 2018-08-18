@@ -58,13 +58,18 @@ All the other methods are functionally identical to those of the FIFO queues.
 # Statement of Work
 
 Implement [only] the following four methods:
-```
-template <class Object>void Deque<Object>::addFront( const Object &obj ) {// add a new node to front//implement the function body.}
-template <class Object>void Deque<Object>::addBack( const Object &obj ) { // add a new node to tail
+``` C++
+template <class Object>void Deque<Object>::addFront( const Object &obj ) {
+  // add a new node to front
+  //implement the function body.}
+template <class Object>void Deque<Object>::addBack( const Object &obj ) {
+  // add a new node to tail
 //implement the function body.}
-template <class Object>Object Deque<Object>::removeFront( ) { // remove the front node
-//implement the function body.}template <class Object>Object Deque<Object>::removeBack( ) { 
-
+template <class Object>Object Deque<Object>::removeFront( ) { 
+  // remove the front node
+//implement the function body
+}
+template <class Object>Object Deque<Object>::removeBack( ) { 
 //implement the function body.
 } 
 ```
