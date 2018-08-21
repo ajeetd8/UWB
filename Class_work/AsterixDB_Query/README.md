@@ -7,7 +7,6 @@ To be able to manipulate semistructured data in JSON and practice using a NoSQL 
 
 A single file for each question, i.e., `hw5-q1.sqlp`, `hw5-q2.sqlp` etc in the `submission` directory.   It should contain commands executable by SQL++, and should contain comments for text answers (delimited by `--` as in SQL).
 
-
 **Resources**
 
 - `starter-code` directory: which contains `monidal.adm` (the entire dataset), `country`, `mountain`, and `sea` (three subsets)
