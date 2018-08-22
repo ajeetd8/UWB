@@ -1,0 +1,8 @@
+USE hw5;
+select (r.`#text`) as religion, count(r.`#text`) as num_countries
+FROM world x, x.mondial.country y,
+        CASE WHEN y.religions is missing THEN []
+                WHEN is_array(y.religions) THEN y.religions
+                ELSE [y.religions] END r
+GROUP BY r.`#text`
+ORDER BY num_countries;
