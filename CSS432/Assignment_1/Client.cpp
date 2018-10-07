@@ -103,8 +103,8 @@ int main(int argc, char *argv[]) {
     gettimeofday(&lapTime, NULL);
 
     // Getting the read count from the server
-    int receivedCount;
-    int str_len = read(serverD, &receivedCount, sizeof(receivedCount));
+    int count;
+    int str_len = read(serverD, &count, sizeof(count));
     if (str_len == -1)
         error_handling("read() error!");
 
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
     // Printing out statistics.
     std::cout << "Test 1" << ": data-sending time = "
     << dataSend << " usec, " << "round-trip time = " << dataRound
-    << " usec, #reads = " << receivedCount << std::endl;
+    << " usec, #reads = " << count << std::endl;
 
     close(serverD);
     return 0;
