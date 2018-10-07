@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 }
 
 void *your_function(void *sock) {
-    int count = 1;
+    int count = 0;
     int sd = *((int *)sock);
     __suseconds_t duration;
 
