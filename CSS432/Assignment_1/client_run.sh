@@ -11,6 +11,6 @@ do
     
     for TYPE in 1 2 3
     do
-        ./client $PORT $REPETITION $NBUF $BUFSIZE $SERVER $TYPE
+        ./Client.out $PORT $REPETITION $NBUF $BUFSIZE $SERVER $TYPE
     done
 done
