@@ -4,130 +4,144 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <netdb.h>
 #include <unistd.h>
-#include <strings.h>
+#include <string.h>
+#include <netdb.h>
 #include <netinet/tcp.h>
 #include <sys/uio.h>
-#include <stdlib.h>
 #include <sys/time.h>
-#include <cstdio>
-#include <string>
+#include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 
-// Error handling function.
-void error_handling(const std::string &message);
+const int BUFFSIZE = 1500;
 
-// Setting the client and server variable.
-int nbufs;
-int bufsize;
-
-int main(int argc, char *argv[]) {
-    // Checking the number of argument
+int main(int argc, char *argv[])
+{
+    // Checking the number of the argument
     if (argc != 7) {
-        printf("Usage : %s <port> <repetition> <nbufs> ", argv[0]);
+        printf("Usage : %s <server_port> <repetition> <nbufs> ", argv[0]);
         printf("<bufsize> <serverIp> <type> \n");
-        exit(1);
+        return -1;
     }
-
-    // Checking the precondition nbufs*bufsize <= 1500
-    if (nbufs * bufsize > 1500)
-        error_handling("nbufs*bufsize should be less than 1500");
-
-    // Setting the client and server variable.
+    
+    // Checking valid ports
+    if (atoi(argv[1]) < 1023 || atoi(argv[1]) > 65536) {
+        std::cerr << "valid server_port range is 1024 to 65536." << std::endl;
+        return -1;
+    }
+    
+    // Checkig valid repetition(s)
+    if(atoi(argv[2]) < 0)
+    {
+        std::cerr << "repetitions must be a positive integer." << std::endl;
+        return -1;
+    }
+    
+    // checking buf size
+    if (atoi(argv[3]) * atoi(argv[4]) != BUFFSIZE)
+    {
+        std::cerr << "nbufs * bufsize must equal 1500." << std::endl;
+        return -1;
+    }
+    
+    // checking server_port number
+    if (atoi(argv[6]) > 3 || atoi(argv[6]) < 1)
+    {
+        std::cerr << "valid types are 1, 2, or 3." << std::endl;
+        return -1;
+    }
+    
+    // Saving argument to variable
     const int server_port = atoi(argv[1]);
     const int repetition = atoi(argv[2]);
-    int nbufs = atoi(argv[3]);
-    int bufsize = atoi(argv[4]);
-    char *server_name = argv[5];
-    int type = atoi(argv[6]);
-
-    // Type restriction (type is 1, 2, or 3)
-    if (1 > type || type > 3)
-        error_handling("type should be 1, 2, or 3");
-
-    struct hostent* host = gethostbyname( server_name );
-    if(host == NULL) {
-        error_handling("could not find hostname");
-    }
-
-    // Build the sending socket address of client
-    struct sockaddr_in sendSockAddr;
-    // Setting the server setting
-    bzero(reinterpret_cast<char *>(&sendSockAddr), sizeof(sendSockAddr));
-    sendSockAddr.sin_family = AF_INET;  // IPv4
-    sendSockAddr.sin_addr.s_addr = inet_addr(server_name);
-    sendSockAddr.sin_addr.s_addr =
-        inet_addr(inet_ntoa(*(struct in_addr *)*host->h_addr_list));
-    sendSockAddr.sin_port = htons(server_port);
-
-    // Setting the server decreptor
-    int serverD = socket(PF_INET, SOCK_STREAM, 0);
-    if (serverD == -1)
-        error_handling("socket() error");
-
-    // Connect to the server
-    if (connect(serverD, (struct sockaddr *)&sendSockAddr,
-    sizeof(sendSockAddr)) == -1)
-        error_handling("connect() error!");
+    const int nbufs = atoi(argv[3]);
+    const int bufsize = atoi(argv[4]);
+    char * server = argv[5];
+    const int type = atoi(argv[6]);
     
-    // Allocating databuf.
+    //Get Hostent structure to communicate to server.
+    struct hostent *host = gethostbyname(server);
+    if (host == NULL) {
+        std::cerr << "Error:  Could not find hostname." << std::endl;
+        return -1;
+    }
+    
+    // Build the sending socket address of client
+    // Setting the server setting
+    sockaddr_in sendSocketAddress;
+    bzero((char *)&sendSocketAddress, sizeof(sendSocketAddress));
+    sendSocketAddress.sin_family = AF_INET;     // Address Family:  Internet
+    sendSocketAddress.sin_addr.s_addr = inet_addr(inet_ntoa(*(struct in_addr*) (*host->h_addr_list)));
+    sendSocketAddress.sin_port = htons(server_port);
+    
+    // Setting the server decreptor from client
+    int clientSD = socket(AF_INET, SOCK_STREAM, 0);
+    if (clientSD < 0) {
+        std::cerr << "socket() error" << std::endl;
+        close(clientSD);
+        return -1;
+    }
+    
+    //Connect this TCP socket with the server
+    int connetStat = connect(clientSD, (sockaddr *)&sendSocketAddress, sizeof(sendSocketAddress));
+    if (connetStat < 0) {
+        //negative connetStat indicates failure
+        std::cerr << "connect() error!" << std::endl;
+        close(clientSD);
+        return -1;
+    }
+    
+    //Allocate the databuffer. 
     char databuf[nbufs][bufsize];
+    
+    //Use timeval structs for gettimeofday to track total usage time.
+    struct timeval start, lap, stop;
 
-    // Time variable for statistics
-    timeval startTime, endTime, lapTime;
-
-    // start to measure time.
-    gettimeofday(&startTime, NULL);
-
+    //Record start time.
+    gettimeofday(&start, NULL);
+    
+    // With different case, send different form of data
     for (int i = 0; i < repetition; i++) {
         // Based on the type, do some task.
         if (type == 1) {
             for (int j = 0; j < nbufs; j++)
-                write(serverD, databuf[j], bufsize);  // sd: socket descriptor
+                write(clientSD, databuf[j], bufsize);  // sd: socket descriptor
         } else if (type == 2) {
             struct iovec vector[nbufs];
             for (int j = 0; j < nbufs; j++) {
                 vector[j].iov_base = databuf[j];
                 vector[j].iov_len = bufsize;
             }
-            writev(serverD, vector, nbufs);  // sd: socket descriptor
-        } else if (type == 3) {
-            write(serverD, databuf, nbufs * bufsize);  // sd: socket descriptor
+            writev(clientSD, vector, nbufs);  // sd: socket descriptor
         } else {
-            // Error handling for wrong type
-            error_handling("Type Error");
+            write(clientSD, databuf, nbufs * bufsize);  // sd: socket descriptor
         }
     }
-
-    gettimeofday(&lapTime, NULL);
-
-    // Getting the count from the server
-    int count = 0;      //read from the server.
-    read(serverD, &count, sizeof(count));
-    // if (str_len == -1)
-    //     error_handling("read() error!");
-
-    // Getting the round-trip time
-    gettimeofday(&endTime, NULL);
-
+    
+    //Record write end time.
+    gettimeofday(&lap, NULL);
+    
+    //Receive from the server an integer acknowledgment that shows how many
+    //times the server called read().
+    int count;      //read from the server.
+    read(clientSD, &count, sizeof(count));
+    
+    //Record total round-trip end time.
+    gettimeofday(&stop, NULL);
+    
     // Commulating time
-    __suseconds_t dataSend = (lapTime.tv_sec-startTime.tv_sec)*1000*1000
-        +(lapTime.tv_usec-startTime.tv_usec);
-    __suseconds_t dataRound = (endTime.tv_sec-startTime.tv_sec)*1000*1000
-        +(endTime.tv_usec-startTime.tv_usec);
+    long lapTime = (lap.tv_sec-start.tv_sec)*1000000
+        +(stop.tv_usec-start.tv_usec);
+    long endTime = (stop.tv_sec-start.tv_sec)*1000000
+        +(stop.tv_usec-start.tv_usec);
 
     // Printing out statistics.
     std::cout << "Test 1" << ": data-sending time = "
-    << dataSend << " usec, " << "round-trip time = " << dataRound
+    << lapTime << " usec, " << "round-trip time = " << endTime
     << " usec, #reads = " << count << std::endl;
-
-    close(serverD);
+    
+    //End this session.
+    close(clientSD);
     return 0;
-}
-
-// Error handling function.
-void error_handling(const std::string &message) {
-    std::cerr << message << std::endl;
-    exit(1);
 }

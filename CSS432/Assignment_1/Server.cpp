@@ -13,8 +13,7 @@
 
 #define BUFSIZE 1500
 
-void *your_function(void *sock);
-void error_handling(const std::string &message);
+void * handler(void *sock);
 
 // Locking global variable
 pthread_mutex_t mutex;
@@ -26,20 +25,21 @@ int main(int argc, char *argv[]) {
     // Checking the number of argument
     if (argc != 3) {
         printf("Usage : %s <port> <repetition>\n", argv[0]);
-        exit(1);
+        return -1;
     }
 
     int serv_sock, clnt_sock;
     struct sockaddr_in serv_adr, clnt_adr;
-    socklen_t clnt_adr_sz;
+    socklen_t clnt_adr_sz = sizeof(clnt_adr);
     pthread_t t_id;
     ::repetition = atoi(argv[2]);
 
     serv_sock = socket(PF_INET, SOCK_STREAM, 0);
-    if (serv_sock == -1)
-        error_handling("socket() error");
-
-    memset(&serv_adr, 0, sizeof(serv_adr));
+    if (serv_sock == -1) {
+        std::cerr<<"socket() error"<<std::endl;
+        return -1;
+    }
+    bzero((char*)&serv_adr, sizeof(serv_adr));
     serv_adr.sin_family = AF_INET;
     serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
     serv_adr.sin_port = htons(atoi(argv[1]));
@@ -48,12 +48,13 @@ int main(int argc, char *argv[]) {
     const int on = 1;
     setsockopt(serv_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(int));
 
-    if (bind(serv_sock, (struct sockaddr *)&serv_adr, sizeof(serv_adr)) == -1)
-        error_handling("bind() error");
-    if (listen(serv_sock, 5) == -1)
-        error_handling("listen() error");
-    
-    clnt_adr_sz = sizeof(clnt_adr);
+    if (bind(serv_sock, (struct sockaddr *)&serv_adr, sizeof(serv_adr)) == -1) {
+        std::cerr<<"bind() error"<<std::endl;
+        return -1;
+    }
+    if (listen(serv_sock, 5) == -1) {
+        std::cerr<<"listen() error"<<std::endl;
+    }
 
     // Server never turned off
     while (true) {
@@ -64,7 +65,7 @@ int main(int argc, char *argv[]) {
         if (clnt_sock == -1)
             continue;
         else  // no accept error, make new thread
-            pthread_create(&t_id, NULL, your_function,
+            pthread_create(&t_id, NULL, handler,
             reinterpret_cast<void *>(&clnt_sock));
             pthread_detach(t_id);
     }
@@ -73,7 +74,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void *your_function(void *sock) {
+void * handler(void *sock) {
     // Begin to measur the time
     timeval startTime, endTime;
     gettimeofday(&startTime, NULL);
@@ -104,10 +105,4 @@ void *your_function(void *sock) {
     write(sd, &count, count);
 
     close(sd);
-}
-
-// Error Handling function.
-void error_handling(const std::string &message) {
-    std::cerr << message << std::endl;
-    exit(1);
 }
