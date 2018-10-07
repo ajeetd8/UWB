@@ -9,9 +9,7 @@ PORT=5511
 REPETITION=20000
 
 echo "Running the server"
-
-echo "Running the Server"
-./Server.out $PORT $REPETITION
+./Server.out $PORT $REPETITION &
 
 for NBUF in 15 30 60
 do
