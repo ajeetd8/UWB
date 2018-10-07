@@ -30,6 +30,10 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
+    // Checking the precondition nbufs*bufsize <= 1500
+    if (nbufs * bufsize > 1500)
+        error_handling("nbufs*bufsize should be less than 1500");
+
     // Setting the client and server variable.
     const int server_port = atoi(argv[1]);
     const int repetition = atoi(argv[2]);
@@ -38,21 +42,17 @@ int main(int argc, char *argv[]) {
     char *server_name = argv[5];
     const int type = atoi(argv[6]);
 
-    // Allocating databuf.
-    char databuf[nbufs][bufsize];
-
-    // Checking the precondition nbufs*bufsize <= 1500
-    if (nbufs * bufsize > 1500)
-        error_handling("nbufs*bufsize should be less than 1500");
-
     // Type restriction (type is 1, 2, or 3)
     if (1 > type || type > 3)
         error_handling("type should be 1, 2, or 3");
 
-    int serverD;
-    struct sockaddr_in sendSockAddr;
-    struct hostent *host = gethostbyname(server_name);
+    struct hostent* host = gethostbyname( server_name );
+    if(host == NULL) {
+        error_handling("could not find hostname");
+    }
 
+    // Build the sending socket address of client
+    struct sockaddr_in sendSockAddr;
     // Setting the server setting
     bzero(reinterpret_cast<char *>(&sendSockAddr), sizeof(sendSockAddr));
     sendSockAddr.sin_family = AF_INET;  // IPv4
@@ -61,25 +61,24 @@ int main(int argc, char *argv[]) {
         inet_addr(inet_ntoa(*(struct in_addr *)*host->h_addr_list));
     sendSockAddr.sin_port = htons(server_port);
 
-    // Time variable for statistics
-    timeval startTime, endTime, lapTime;
-    // counting start.
-    gettimeofday(&startTime, NULL);
-
     // Setting the server decreptor
-    serverD = socket(PF_INET, SOCK_STREAM, 0);
+    int serverD = socket(PF_INET, SOCK_STREAM, 0);
     if (serverD == -1)
         error_handling("socket() error");
-    
-    // make it so that we can keep reusing this socket without waiting
-    // for the OS to clean up
-    const int on = 1;
-    setsockopt(serverD, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(int));
 
     // Connect to the server
     if (connect(serverD, (struct sockaddr *)&sendSockAddr,
     sizeof(sendSockAddr)) == -1)
         error_handling("connect() error!");
+    
+    // Allocating databuf.
+    char databuf[nbufs][bufsize];
+
+    // Time variable for statistics
+    timeval startTime, endTime, lapTime;
+
+    // start to measure time.
+    gettimeofday(&startTime, NULL);
 
     for (int i = 0; i < repetition; i++) {
         // Based on the type, do some task.
@@ -125,8 +124,6 @@ int main(int argc, char *argv[]) {
     std::cout << "Test 1" << ": data-sending time = "
     << dataSend << " usec, " << "round-trip time = " << dataRound
     << " usec, #reads = " << receivedCount << std::endl;
-
-    close(serverD);
 
     close(serverD);
     return 0;
