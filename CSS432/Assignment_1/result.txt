@@ -1,0 +1,18 @@
+case 1: 20000 15*100 type:1
+Test 1: data-sending time = 319220 usec, round-trip time = 319290 usec, #reads = 39261
+case 2 20000 15*100 type:2
+Test 1: data-sending time = 220342 usec, round-trip time = 220418 usec, #reads = 37594
+case 3 20000 15*100 type:3
+Test 1: data-sending time = 216936 usec, round-trip time = 217011 usec, #reads = 36944
+case 4 20000 30*50 type:1
+Test 1: data-sending time = 518357 usec, round-trip time = 518434 usec, #reads = 109973
+case 5 20000 30*50 type 2
+Test 1: data-sending time = 464349 usec, round-trip time = 464409 usec, #reads = 105486
+case 6 20000 30*50 type 3
+Test 1: data-sending time = 557181 usec, round-trip time = 557240 usec, #reads = 106946
+case 7 20000 60*25 type 1
+Test 1: data-sending time = 1056420 usec, round-trip time = 1056496 usec, #reads = 243608
+case 8 20000 60*25 type 2
+Test 1: data-sending time = 940058 usec, round-trip time = 940136 usec, #reads = 230100
+case 9 20000 60*25 type 3
+Test 1: data-sending time = 1115366 usec, round-trip time = 1115443 usec, #reads = 242915
