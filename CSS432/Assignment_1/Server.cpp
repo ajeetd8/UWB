@@ -13,7 +13,7 @@
 
 #define BUFSIZE 1500
 
-void *your_function(void *dummyPtr);
+void *your_function(void *sock);
 void error_handling(const std::string &message);
 
 // Locking global variable
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in serv_adr, clnt_adr;
     socklen_t clnt_adr_sz;
     const int nThread = atoi(argv[2]);
-    pthread_t t_id[nThread];
+    pthread_t t_id;
 
     serv_sock = socket(PF_INET, SOCK_STREAM, 0);
     if (serv_sock == -1)
@@ -49,9 +49,11 @@ int main(int argc, char *argv[]) {
         error_handling("bind() error");
     if (listen(serv_sock, 5) == -1)
         error_handling("listen() error");
+    
+    clnt_adr_sz = sizeof(clnt_adr);
 
-    for (int i = 0; i < atoi(argv[2]); i++) {
-        clnt_adr_sz = sizeof(clnt_adr);
+    // Server never turned off
+    for (unsigned int i=0; true; i++ ) {
         clnt_sock = accept(serv_sock,
         (struct sockaddr *)&clnt_adr, &clnt_adr_sz);
 
@@ -59,13 +61,10 @@ int main(int argc, char *argv[]) {
         if (clnt_sock == -1)
             continue;
         else  // no accept error, make new thread
-            pthread_create(&t_id[i], NULL, your_function,
+            pthread_create(&t_id, NULL, your_function,
             reinterpret_cast<void *>(&clnt_sock));
+            pthread_detach(t_id);
     }
-
-    // Check and wait for all thread to be finished
-    for (int i = 0; i < nThread; i++)
-        pthread_join(t_id[i], NULL);
 
     close(serv_sock);
     return 0;
@@ -82,10 +81,12 @@ void *your_function(void *sock) {
     timeval startTime, endTime;
     gettimeofday(&startTime, NULL);
 
-    // Reading everything.
-    for (int nRead = 0;
-         ((nRead += read(sd, buf, BUFSIZE - nRead))) < BUFSIZE;
-         ++count) {}
+    for(int i=0; i<20000; i++) {
+        // Read everything.
+        for (int nRead = 0;
+            ((nRead += read(sd, buf, BUFSIZE - nRead))) < BUFSIZE;
+            ++count) {}
+    }
 
     // Stop measuring time
     gettimeofday(&endTime, NULL);

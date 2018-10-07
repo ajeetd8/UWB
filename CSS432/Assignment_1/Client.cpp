@@ -63,26 +63,25 @@ int main(int argc, char *argv[]) {
 
     // Time variable for statistics
     timeval startTime, endTime, lapTime;
+    // counting start.
+    gettimeofday(&startTime, NULL);
+
+    // Setting the server decreptor
+    serverD = socket(PF_INET, SOCK_STREAM, 0);
+    if (serverD == -1)
+        error_handling("socket() error");
+    
+    // make it so that we can keep reusing this socket without waiting
+    // for the OS to clean up
+    const int on = 1;
+    setsockopt(serverD, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(int));
+
+    // Connect to the server
+    if (connect(serverD, (struct sockaddr *)&sendSockAddr,
+    sizeof(sendSockAddr)) == -1)
+        error_handling("connect() error!");
 
     for (int i = 0; i < repetition; i++) {
-        // counting start.
-        gettimeofday(&startTime, NULL);
-
-        // Setting the server decreptor
-        serverD = socket(PF_INET, SOCK_STREAM, 0);
-        if (serverD == -1)
-            error_handling("socket() error");
-
-        // make it so that we can keep reusing this socket without waiting
-        // for the OS to clean up
-        const int on = 1;
-        setsockopt(serverD, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(int));
-
-        // Connect to the server
-        if (connect(serverD, (struct sockaddr *)&sendSockAddr,
-        sizeof(sendSockAddr)) == -1)
-            error_handling("connect() error!");
-
         // Based on the type, do some task.
         if (type == 1) {
             for (int j = 0; j < nbufs; j++)
@@ -100,32 +99,32 @@ int main(int argc, char *argv[]) {
             // Error handling for wrong type
             error_handling("Type Error");
         }
-
-        gettimeofday(&lapTime, NULL);
-
-        // Getting the read count from the server
-        int receivedCount;
-        int str_len = read(serverD, &receivedCount, sizeof(receivedCount));
-        if (str_len == -1)
-            error_handling("read() error!");
-
-        // Getting the round-trip time
-        gettimeofday(&endTime, NULL);
-
-        // Converting Big-endian to little-endian
-        receivedCount = ntohl(receivedCount);
-
-        // Commulating time
-        __suseconds_t dataSend = lapTime.tv_usec - startTime.tv_usec;
-        __suseconds_t dataRound = endTime.tv_usec - startTime.tv_usec;
-
-        // Printing out statistics.
-        std::cout << "Test " << i + 1 << ": data-sending time = "
-        << dataSend << " usec, " << "round-trip time = " << dataRound
-        << " usec, #reads = " << receivedCount << std::endl;
-
-        close(serverD);
     }
+
+    gettimeofday(&lapTime, NULL);
+
+    // Getting the read count from the server
+    int receivedCount;
+    int str_len = read(serverD, &receivedCount, sizeof(receivedCount));
+    if (str_len == -1)
+        error_handling("read() error!");
+
+    // Getting the round-trip time
+    gettimeofday(&endTime, NULL);
+
+    // Converting Big-endian to little-endian
+    receivedCount = ntohl(receivedCount);
+
+    // Commulating time
+    __suseconds_t dataSend = lapTime.tv_usec - startTime.tv_usec;
+    __suseconds_t dataRound = endTime.tv_usec - startTime.tv_usec;
+
+    // Printing out statistics.
+    std::cout << "Test 1" << ": data-sending time = "
+    << dataSend << " usec, " << "round-trip time = " << dataRound
+    << " usec, #reads = " << receivedCount << std::endl;
+
+    close(serverD);
 
     close(serverD);
     return 0;
