@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     int nbufs = atoi(argv[3]);
     int bufsize = atoi(argv[4]);
     char *server_name = argv[5];
-    const int type = atoi(argv[6]);
+    int type = atoi(argv[6]);
 
     // Type restriction (type is 1, 2, or 3)
     if (1 > type || type > 3)
