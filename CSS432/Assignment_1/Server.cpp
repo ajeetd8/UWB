@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     clnt_adr_sz = sizeof(clnt_adr);
 
     // Server never turned off
-    for (unsigned int i=0; true; i++ ) {
+    while (true) {
         clnt_sock = accept(serv_sock,
         (struct sockaddr *)&clnt_adr, &clnt_adr_sz);
 
