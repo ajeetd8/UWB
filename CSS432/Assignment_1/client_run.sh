@@ -11,6 +11,7 @@ do
     
     for TYPE in 1 2 3
     do
+        echo "./Client.out" $PORT $REPETITION $NBUF $BUFSIZE $SERVER $TYPE
         ./Client.out $PORT $REPETITION $NBUF $BUFSIZE $SERVER $TYPE
     done
 done
