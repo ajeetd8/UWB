@@ -102,11 +102,11 @@ int main(int argc, char *argv[]) {
 
     gettimeofday(&lapTime, NULL);
 
-    // Getting the read count from the server
-    int count;
-    int str_len = read(serverD, &count, sizeof(count));
-    if (str_len == -1)
-        error_handling("read() error!");
+    // Getting the count from the server
+    int count;      //read from the server.
+    read(clientSD, &count, sizeof(count));
+    // if (str_len == -1)
+    //     error_handling("read() error!");
 
     // Getting the round-trip time
     gettimeofday(&endTime, NULL);
