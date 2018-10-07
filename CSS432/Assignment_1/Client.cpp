@@ -116,8 +116,10 @@ int main(int argc, char *argv[]) {
     receivedCount = ntohl(receivedCount);
 
     // Commulating time
-    __suseconds_t dataSend = lapTime.tv_usec - startTime.tv_usec;
-    __suseconds_t dataRound = endTime.tv_usec - startTime.tv_usec;
+    __suseconds_t dataSend = (lapTime.tv_sec-startTime.tv_sec)*1000*1000
+        +(lapTime.tv_usec-startTime.tv_usec);
+    __suseconds_t dataRound = (endTime.tv_sec-startTime.tv_sec)*1000*1000
+        +(endTime.tv_usec-startTime.tv_usec);
 
     // Printing out statistics.
     std::cout << "Test 1" << ": data-sending time = "
