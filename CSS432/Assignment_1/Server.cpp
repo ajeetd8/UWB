@@ -19,6 +19,9 @@ void error_handling(const std::string &message);
 // Locking global variable
 pthread_mutex_t mutex;
 
+// Global variable to share
+int repetition;
+
 int main(int argc, char *argv[]) {
     // Checking the number of argument
     if (argc != 3) {
@@ -29,8 +32,8 @@ int main(int argc, char *argv[]) {
     int serv_sock, clnt_sock;
     struct sockaddr_in serv_adr, clnt_adr;
     socklen_t clnt_adr_sz;
-    const int nThread = atoi(argv[2]);
     pthread_t t_id;
+    ::repetition = atoi(argv[2]);
 
     serv_sock = socket(PF_INET, SOCK_STREAM, 0);
     if (serv_sock == -1)
@@ -81,7 +84,7 @@ void *your_function(void *sock) {
     timeval startTime, endTime;
     gettimeofday(&startTime, NULL);
 
-    for(int i=0; i<20000; i++) {
+    for(int i=0; i<(::repetition); i++) {
         // Read everything.
         for (int nRead = 0;
             ((nRead += read(sd, buf, BUFSIZE - nRead))) < BUFSIZE;
@@ -90,7 +93,8 @@ void *your_function(void *sock) {
 
     // Stop measuring time
     gettimeofday(&endTime, NULL);
-    duration = endTime.tv_usec - startTime.tv_usec;
+    duration = (endTime.tv_sec-startTime.tv_sec)*1000*1000
+        +(endTime.tv_usec-startTime.tv_usec);
 
     // Convert the number to Big-Endian
     int convertedNumber = htonl(count);
