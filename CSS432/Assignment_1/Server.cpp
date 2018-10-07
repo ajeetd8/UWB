@@ -96,6 +96,8 @@ void *your_function(void *sock) {
     duration = (endTime.tv_sec-startTime.tv_sec)*1000*1000
         +(endTime.tv_usec-startTime.tv_usec);
 
+    std::cout<<count<<std::endl;
+
     // Convert the number to Big-Endian
     int convertedNumber = htonl(count);
     write(sd, &convertedNumber, sizeof(convertedNumber));
