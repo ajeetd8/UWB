@@ -74,15 +74,16 @@ int main(int argc, char *argv[]) {
 }
 
 void *your_function(void *sock) {
-    int count = 0;
-    int sd = *((int *)sock);
-    __suseconds_t duration;
-
-    char buf[BUFSIZ];
-
     // Begin to measur the time
     timeval startTime, endTime;
     gettimeofday(&startTime, NULL);
+    
+    // Allocate databuffer
+    char buf[BUFSIZ];
+
+    int count = 0;
+    int sd = *((int *)sock);
+    __suseconds_t duration;
 
     for(int i=0; i<(::repetition); i++) {
         // Read everything.
@@ -93,19 +94,14 @@ void *your_function(void *sock) {
 
     // Stop measuring time
     gettimeofday(&endTime, NULL);
-    duration = (endTime.tv_sec-startTime.tv_sec)*1000*1000
+    duration = (endTime.tv_sec-startTime.tv_sec)*1000000
         +(endTime.tv_usec-startTime.tv_usec);
-
-    std::cout<<count<<std::endl;
+    
+    std::cout << "data-receiving time = " << duration << " usec" << std::endl;
 
     // Convert the number to Big-Endian
     int convertedNumber = htonl(count);
-    write(sd, &convertedNumber, sizeof(convertedNumber));
-
-    // Lock in order to printout completely
-    pthread_mutex_lock(&mutex);
-    std::cout << "data-receiving time = " << duration << " usec" << std::endl;
-    pthread_mutex_unlock(&mutex);
+    write(sd, &count, count);
 
     close(sd);
 }
