@@ -6,3 +6,4 @@ data-receiving time = 60425 usec
 data-receiving time = 19585 usec
 data-receiving time = 968074 usec
 data-receiving time = 81408 usec
+data-receiving time = 20424 usec

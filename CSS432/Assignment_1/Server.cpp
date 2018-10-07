@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Server never turned off
-    for (int i=0; i<9; i++) {
+    while (true) {
         clnt_sock = accept(serv_sock,
         (struct sockaddr *)&clnt_adr, &clnt_adr_sz);
 
