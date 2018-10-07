@@ -1,21 +1,18 @@
-Running the 9 different cases ...
-Compiling...
-client output
 ./Client.out 5511 20000 15 100 localhost 1
-Test 1: data-sending time = 290990 usec, round-trip time = 290990 usec, #reads = 32550
+Test 1: data-sending time = 306785 usec, round-trip time = 306785 usec, #reads = 37619
 ./Client.out 5511 20000 15 100 localhost 2
-Test 1: data-sending time = 35408 usec, round-trip time = 35408 usec, #reads = 32644
+Test 1: data-sending time = 20364 usec, round-trip time = 20364 usec, #reads = 32522
 ./Client.out 5511 20000 15 100 localhost 3
-Test 1: data-sending time = 20443 usec, round-trip time = 20443 usec, #reads = 32696
+Test 1: data-sending time = 13421 usec, round-trip time = 13421 usec, #reads = 32649
 ./Client.out 5511 20000 30 50 localhost 1
-Test 1: data-sending time = 469199 usec, round-trip time = 469199 usec, #reads = 105310
+Test 1: data-sending time = 446175 usec, round-trip time = 446175 usec, #reads = 104300
 ./Client.out 5511 20000 30 50 localhost 2
-Test 1: data-sending time = 60508 usec, round-trip time = 60508 usec, #reads = 32569
+Test 1: data-sending time = 39780 usec, round-trip time = 39780 usec, #reads = 32721
 ./Client.out 5511 20000 30 50 localhost 3
-Test 1: data-sending time = 19705 usec, round-trip time = 19705 usec, #reads = 32567
+Test 1: data-sending time = 17543 usec, round-trip time = 17543 usec, #reads = 32630
 ./Client.out 5511 20000 60 25 localhost 1
-Test 1: data-sending time = 968197 usec, round-trip time = 968197 usec, #reads = 234727
+Test 1: data-sending time = 1007513 usec, round-trip time = 1007513 usec, #reads = 229758
 ./Client.out 5511 20000 60 25 localhost 2
-Test 1: data-sending time = 81532 usec, round-trip time = 81532 usec, #reads = 32683
+Test 1: data-sending time = 66158 usec, round-trip time = 66158 usec, #reads = 32530
 ./Client.out 5511 20000 60 25 localhost 3
-Test 1: data-sending time = 19656 usec, round-trip time = 19656 usec, #reads = 32620
+Test 1: data-sending time = 21272 usec, round-trip time = 21272 usec, #reads = 32546

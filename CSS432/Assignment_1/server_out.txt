@@ -1,9 +1,10 @@
-data-receiving time = 288901 usec
-data-receiving time = 35321 usec
-data-receiving time = 20314 usec
-data-receiving time = 469059 usec
-data-receiving time = 60425 usec
-data-receiving time = 19585 usec
-data-receiving time = 968074 usec
-data-receiving time = 81408 usec
-data-receiving time = 20424 usec
+data-receiving time = 306541 usec
+data-receiving time = 20261 usec
+data-receiving time = 13357 usec
+data-receiving time = 446031 usec
+data-receiving time = 39649 usec
+data-receiving time = 17431 usec
+data-receiving time = 1007396 usec
+data-receiving time = 65977 usec
+data-receiving time = 21180 usec
+
