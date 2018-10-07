@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
     gettimeofday(&lapTime, NULL);
 
     // Getting the count from the server
-    int count;      //read from the server.
+    int count = 0;      //read from the server.
     read(serverD, &count, sizeof(count));
     // if (str_len == -1)
     //     error_handling("read() error!");
