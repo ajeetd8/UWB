@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
     
     // Commulating time
     long lapTime = (lap.tv_sec-start.tv_sec)*1000000
-        +(stop.tv_usec-start.tv_usec);
+        +(lap.tv_usec-start.tv_usec);
     long endTime = (stop.tv_sec-start.tv_sec)*1000000
         +(stop.tv_usec-start.tv_usec);
 
