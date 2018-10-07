@@ -111,9 +111,6 @@ int main(int argc, char *argv[]) {
     // Getting the round-trip time
     gettimeofday(&endTime, NULL);
 
-    // Converting Big-endian to little-endian
-    receivedCount = ntohl(receivedCount);
-
     // Commulating time
     __suseconds_t dataSend = (lapTime.tv_sec-startTime.tv_sec)*1000*1000
         +(lapTime.tv_usec-startTime.tv_usec);
