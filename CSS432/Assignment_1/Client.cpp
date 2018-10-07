@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
 
     // Getting the count from the server
     int count;      //read from the server.
-    read(clientSD, &count, sizeof(count));
+    read(serverD, &count, sizeof(count));
     // if (str_len == -1)
     //     error_handling("read() error!");
 
