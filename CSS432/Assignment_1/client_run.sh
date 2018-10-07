@@ -1,9 +1,17 @@
 #! /bin/bash
 echo "Running the 9 different cases ..."
 
-PORT=9190
+echo "Compiling..."
+g++ -o Server.out Server.cpp -lpthread -D_REENTRANT && g++ -o Client.out Client.cpp -lpthread -D_REENTRANT
+
+# Setting the port number my S_ID=1775511
+PORT=5511
 REPETITION=20000
-SERVER=$1
+
+echo "Running the server"
+
+echo "Running the Server"
+./Server.out $PORT $REPETITION
 
 for NBUF in 15 30 60
 do
@@ -11,7 +19,7 @@ do
     
     for TYPE in 1 2 3
     do
-        echo "./Client.out" $PORT $REPETITION $NBUF $BUFSIZE $SERVER $TYPE
-        ./Client.out $PORT $REPETITION $NBUF $BUFSIZE $SERVER $TYPE
+        echo "./Client.out" $PORT $REPETITION $NBUF $BUFSIZE "localhost" $TYPE
+        ./Client.out $PORT $REPETITION $NBUF $BUFSIZE localhost $TYPE
     done
 done
