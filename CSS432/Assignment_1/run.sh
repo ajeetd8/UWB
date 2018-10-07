@@ -9,8 +9,9 @@ PORT=5511
 REPETITION=20000
 
 echo "Running the server"
-./Server.out $PORT $REPETITION &
+./Server.out $PORT $REPETITION > serverout.txt &
 
+echo "client output"
 for NBUF in 15 30 60
 do
     BUFSIZE=$((1500 / $NBUF))
@@ -21,3 +22,8 @@ do
         ./Client.out $PORT $REPETITION $NBUF $BUFSIZE localhost $TYPE
     done
 done
+
+echo "server output"
+serverout.txt > 1
+
+rm serverout.txt
