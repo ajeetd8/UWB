@@ -12,7 +12,7 @@ do
     
     for TYPE in 1 2 3
     do
-        echo "./Client.out" $PORT $REPETITION $NBUF $BUFSIZE "localhost" $TYPE
+        echo "./Client.out" $PORT $REPETITION $NBUF $BUFSIZE "128.95.242.208" $TYPE
         ./Client.out $PORT $REPETITION $NBUF $BUFSIZE localhost $TYPE
     done
 done

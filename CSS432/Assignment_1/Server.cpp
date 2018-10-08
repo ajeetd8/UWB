@@ -1,5 +1,15 @@
 // Copyright 2018 Haram Kwon
 
+/**
+ * This is server program designed to communicate with client side program.
+ * 
+ * how to run
+ * Usage : ./Server.out <port> <repetition>
+ * 
+ * The server will read data from the packet from client, and cound how many
+ * read invoked, and return to the client
+ */ 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,6 +21,7 @@
 #include <iostream>
 #include <string>
 
+// Defining the bufsize
 #define BUFSIZE 1500
 
 void * handler(void *sock);

@@ -1,5 +1,20 @@
 // Copyright 2018 Haram Kwon
 
+/**
+ * This is clinet program designed to communicate with server. This program
+ * invokes the socket programming and will try to sned different size of data
+ * to the server multiple times.
+ * 
+ * how to run
+ * Usage : ./Client.out <server_port> <repetition> <nbufs> <bufsize> <serverIp> <type>
+ * 
+ * The program will connect to the server, and will send <nbufs>*<bufsize> size
+ * data to the server for <repetition> times. As a feedback, the server will
+ * return the number of read call from the socket to the client. It will
+ * measur ethe total microsecond takes for communicatoin between server and
+ * client.
+ */
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -14,7 +29,7 @@
 #include <stdlib.h>
 #include <iostream>
 
-const int BUFFSIZE = 1500;
+#define BUFFSIZE 1500
 
 int main(int argc, char *argv[])
 {
@@ -91,6 +106,12 @@ int main(int argc, char *argv[])
         close(clientSD);
         return -1;
     }
+
+    if(connect(clientSD, (sockaddr *)&sendSocketAddress, sizeof(sendSocketAddress)) == -1)
+    {
+        // Error handling
+    }
+
     
     //Allocate the databuffer. 
     char databuf[nbufs][bufsize];
