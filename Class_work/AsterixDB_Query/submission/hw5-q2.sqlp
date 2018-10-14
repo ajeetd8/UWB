@@ -1,0 +1,7 @@
+USE hw5;
+SELECT ARRAY_COUNT(CASE WHEN y.religions is missing THEN []
+                WHEN is_array(y.religions) THEN y.religions
+                ELSE [y.religions] END) as num_religions,
+                y.name as country, y.population as population
+FROM world x, x.mondial.country y
+ORDER BY y.name;

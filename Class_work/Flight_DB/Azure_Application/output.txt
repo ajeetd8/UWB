@@ -1,0 +1,38 @@
+compiling from  .
+added manifest
+adding: FlightService.class(in = 4551) (out= 2455)(deflated 46%)
+adding: Grader.class(in = 7639) (out= 3916)(deflated 48%)
+adding: Grader$User.class(in = 1727) (out= 896)(deflated 48%)
+adding: Query.class(in = 14840) (out= 6631)(deflated 55%)
+adding: Query$Flight.class(in = 1049) (out= 608)(deflated 42%)
+adding: Query$Itinerary.class(in = 513) (out= 344)(deflated 32%)
+/mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code
+JUnit version 4.12
+running cases from: cases
+
+running setup
+.running test: /mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code/cases/book_2UsersSameFlight.txt
+passed
+.running test: /mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code/cases/book_basic.txt
+passed
+.running test: /mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code/cases/cancel_twice.txt
+passed
+.running test: /mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code/cases/create_concurrent.txt
+passed
+.running test: /mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code/cases/login_already.txt
+passed
+.running test: /mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code/cases/login_single.txt
+passed
+.running test: /mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code/cases/pay_already.txt
+passed
+.running test: /mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code/cases/pay_basic.txt
+passed
+.running test: /mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code/cases/reservations_basic.txt
+passed
+.running test: /mnt/c/Users/khara/Documents/cse344-18su-public/hw8/starter-code/cases/search_basic.txt
+passed
+
+Time: 30.167
+
+OK (10 tests)
+
