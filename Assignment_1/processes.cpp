@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
         close(pipe1[FD_WRITE]);
         close(pipe1[FD_READ]);
         dup2(pipe2[FD_READ], 0);
-        execlp("/usr/bin/wc", "wc", "-l", 0);
+        execlp("/usr/bin/wc", "wc", "-l", NULL);
     }
     else {
         // make child to handle 'grep `argv[1]`' command.
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
             close(pipe1[FD_WRITE]);
             dup2(pipe1[FD_READ], 0);
             dup2(pipe2[FD_WRITE], 1);
-            execlp("/bin/grep", "grep", argv[1], 0);
+            execlp("/bin/grep", "grep", argv[1], NULL);
         }
         else {
             // make child to handle 'ps -A' command.
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
                 close(pipe2[FD_WRITE]);
                 close(pipe1[FD_READ]);
                 dup2(pipe1[FD_WRITE], 1);     // stdout to pipe_read
-                execlp("/bin/ps", "ps", "-A", 0);
+                execlp("/bin/ps", "ps", "-A", NULL);
             }
             else {
                 wait(&status);
