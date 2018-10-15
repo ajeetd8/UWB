@@ -11,6 +11,12 @@ enum {FD_READ, FD_WRITE};
 // Main function to handle
 int main(int argc, char* argv[])
 {
+    // Error Check for more than 2 arguement passed
+    if (argc >= 3) {
+        std::cerr<<"more than 2 arguement is not allowed"<<std::endl;
+        return -1;
+    }
+    
     // craete wc, grep, and ps pid.
     // create two pipes.
     // Make status variable to get return code from child process.
@@ -39,7 +45,7 @@ int main(int argc, char* argv[])
             // grep command with arguement.
             // write string to pipe 2 as if stdout.
             close(pipe1[FD_WRITE]);
-            close(pipe1[FD_WRITE]);
+            close(pipe2[FD_READ]);
             dup2(pipe1[FD_READ], 0);
             dup2(pipe2[FD_WRITE], 1);
             execlp("/bin/grep", "grep", argv[1], NULL);
@@ -50,8 +56,8 @@ int main(int argc, char* argv[])
             if(ps_pid == 0) {
                 // use pipe 1 as if stdin.
                 close(pipe1[FD_READ]);
+                close(pipe2[FD_READ]);
                 close(pipe2[FD_WRITE]);
-                close(pipe1[FD_READ]);
                 dup2(pipe1[FD_WRITE], 1);     // stdout to pipe_read
                 execlp("/bin/ps", "ps", "-A", NULL);
             }
