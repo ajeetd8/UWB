@@ -62,7 +62,7 @@ public class Shell extends Thread {
                 }
                 
                 // Joining the processes (Thread).
-                for (int j = 0; l < amp; j++) {
+                for (int j = 0; j < amp; j++) {
                     SysLib.join();
                 }
             }
