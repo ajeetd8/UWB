@@ -48,13 +48,13 @@ public class Shell extends Thread {
                 break;
             }
 
-            // Handling & (Amp) and ; (semi)
-            int semi = 0, amp = 0;
-            String[] a = cmdLine.split(";");
-            for (semi = 0; semi < a.length; semi++) {
-                String[] b = a[semi].split("&");
-                for (amp = 0; amp < b.length; amp++) {
-                    String[] c = SysLib.stringToArgs(b[amp]);
+            // Handling & (Amp) and ; (sequential)
+            int sequential = 0, concurrent = 0;
+            String[] semi = cmdLine.split(";");
+            for (sequential = 0; sequential < semi.length; sequential++) {
+                String[] amp = semi[sequential].split("&");
+                for (concurrent = 0; concurrent < amp.length; concurrent++) {
+                    String[] c = SysLib.stringToArgs(amp[concurrent]);
                     SysLib.cout(c[0] + '\n');
                     if ( SysLib.exec(c) == ERROR ) {
 		                break;
@@ -62,7 +62,7 @@ public class Shell extends Thread {
                 }
                 
                 // Joining the processes (Thread).
-                for (int j = 0; j < amp; j++) {
+                for (int j = 0; j < concurrent; j++) {
                     SysLib.join();
                 }
             }
