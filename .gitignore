@@ -6,3 +6,6 @@
 
 # Exclude executable file
 *.out
+
+# Exclude zip file
+*.zip
