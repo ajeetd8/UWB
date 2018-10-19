@@ -124,7 +124,7 @@ public class Scheduler extends Thread {
 	// A modified run of p161
 	public void run() {
 		Thread current = null;
-
+		// setPriority(6);
 
 		while (true) {
 			try {
@@ -145,7 +145,7 @@ public class Scheduler extends Thread {
 						// Spawn must be controlled by Scheduler
 						// Scheduler must start a new thread
 						current.start();
-						current.setPriority(4);
+						// current.setPriority(4);
 					}
 				}
 
