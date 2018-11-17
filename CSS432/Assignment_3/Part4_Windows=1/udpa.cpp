@@ -10,6 +10,8 @@
 
 #include "UdpSocket.h"
 #include "Timer.h"
+#include <stdlib.h>
+#include <time.h>
 #include <vector>
 
 // client stop wait protocal.
