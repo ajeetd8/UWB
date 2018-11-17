@@ -71,8 +71,7 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
             // udp message receive
             sock.recvFrom(reinterpret_cast<char *>(message), MSGSIZE);
             if (message[0] >= i) {
-                i = message[0]+1;
-                ack = i;
+                ack = i++;
                 sock.ackTo(reinterpret_cast<char*> (&ack), sizeof(ack));
             } else {
                 sock.ackTo(reinterpret_cast<char*> (&ack), sizeof(ack));
