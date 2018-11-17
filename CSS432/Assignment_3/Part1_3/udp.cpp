@@ -41,7 +41,7 @@ int clientStopWait(UdpSocket &sock, const int max, int message[]) {
         }
 
         // if there is a message to get (ACK).
-        if (sock.pollRecvFrom() > 0) {
+        while (sock.pollRecvFrom() > 0) {
             // Getting the message from the server.
             sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
             if (i <= ack) {
@@ -70,12 +70,14 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
         while (sock.pollRecvFrom() > 0) {
             // udp message receive
             sock.recvFrom(reinterpret_cast<char *>(message), MSGSIZE);
-            sock.ackTo(reinterpret_cast<char*> (&ack), sizeof(ack));
             if (message[0] == i) {
-                ack = i++;  
+                ack = i++;
+                sock.ackTo(reinterpret_cast<char*> (&ack), sizeof(ack));
             } else {
+                sock.ackTo(reinterpret_cast<char*> (&ack), sizeof(ack));
                 continue;
             }
+
             // Print out the message
             cerr << "Message #" << message[0] << " received." << endl;
         }
