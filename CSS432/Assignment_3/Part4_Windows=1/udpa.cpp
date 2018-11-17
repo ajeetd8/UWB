@@ -183,7 +183,7 @@ void serverEarlyRetrans(UdpSocket &sock,
                 while (array[lastAcknowledgedFrame]) {
                     ack = lastAcknowledgedFrame;
                     ++lastAcknowledgedFrame;
-                    cerr << "received: " << ack << endl;
+                    cerr << "Message #" << ack << "received: " << endl;
                 }
             } else {
                 // Acknowledge the last frame received.
