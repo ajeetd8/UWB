@@ -70,7 +70,7 @@ int main( int argc, char *argv[] ) {
       retransmits = clientStopWait( sock, MAX, message );      // actual test
       cerr << "Elasped time = ";                               // lap timer
       cout << timer.lap( ) << endl;
-      cerr << "retransmits = " << retransmits << endl;
+      cout << "retransmits = " << retransmits << endl;
       break;
     case 3:
       for ( int windowSize = 1; windowSize <= MAXWIN; windowSize++ ) {

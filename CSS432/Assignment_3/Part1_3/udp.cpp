@@ -103,7 +103,7 @@ int clientSlidingWindow(UdpSocket &sock,
     cerr << "server window test:" << endl;
 
     // Loop until all frames are sent and acknowledged.
-    while ( ackSequence < max) {
+    while ( (ack+1) < max) {
         if ( ((ackSequence + windowSize) > sequence) && (sequence < max) ) {
             message[0] = sequence;
             sock.sendTo(reinterpret_cast<char*>(message), MSGSIZE);
