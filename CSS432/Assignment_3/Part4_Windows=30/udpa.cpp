@@ -11,8 +11,8 @@
 #include "UdpSocket.h"
 #include "Timer.h"
 #include <vector>
-#include <stdlib.h>
 #include <time.h>
+#include <stdlib.h>
 
 // client stop wait protocal.
 //
@@ -22,48 +22,36 @@
 int clientStopWait(UdpSocket &sock, const int max, int message[]) {
     Timer timer;            // define a timer
     int retransmits = 0;    // # retransmissions
-    int ack = -1;           // current ack received
-    int ackSequence = 0;    // next expected sequence
-    int sequence = 0;       // Sending sequence
+    int ack = -1;           // currentack
 
     cerr << "client: stop and wait test:" << endl;
 
-    // Running this until next expected sequence is the max
-    while( ackSequence < max ) {
+    // transfer message[] max times
+    for (int i = 0; i < max;) {
+        // message[0] has a sequence #
+        // udp message send
+        message[0] = i;
+        sock.sendTo(reinterpret_cast<char *>(message), MSGSIZE);
 
-        // Sending until sequence is max, and sending sequence 1 by 1
-        if ( (ackSequence+1 > sequence) && (sequence < max) ) {
-            message[0] = sequence;
-             sock.sendTo(reinterpret_cast<char*>(message), MSGSIZE);
-            ++sequence;
-            cerr << "Message #" << message[0] << " sent." << endl;
+        // Waiting ACK
+        timer.start();
+        while (sock.pollRecvFrom() <= 0) {
+            if (timer.lap() >= 1500) {
+                ++retransmits;  // Time to retransmit
+                break;
+            }
         }
 
-        // If there is message to get, get the message.
-        if(sock.pollRecvFrom() > 0) {
+        // if there is a message to get (ACK).
+        while (sock.pollRecvFrom() > 0) {
+            // Getting the message from the server.
             sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
-
-            if (ack == ackSequence) {
-                ++ackSequence;
-            }
-        } else {
-            // If there is no message to get start timer
-            timer.start();
-            while(sock.pollRecvFrom() < 1) {
-                if(timer.lap() > 1500) {
-                    // When timed out
-                    ++retransmits;
-
-                    // If ackSequence is wrong, adjust it
-                    if (ack >= ackSequence && ack <= sequence) {
-                        ackSequence = ack+1;
-                    } else {
-                        sequence = ackSequence;
-                    }
-                    break;
-                }
+            if (i <= ack) {
+                i = (++ack);
             }
         }
+
+        cerr << "Message #" << message[0] << " sent." << endl;
     }
 
     // Return the number of retransmit.
@@ -79,21 +67,41 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
     int ack;
     cerr << "server reliable test:" << endl;
 
-    // receive message[] max times
-    for ( int i=0; i< max; ) {
-        // udp message receive
-        sock.recvFrom(reinterpret_cast<char *>(message), MSGSIZE);
-        if (message[0] == i) {
-            ack = i++;
-            sock.ackTo(reinterpret_cast<char*>(&ack), sizeof(ack));
-        } else {
-            sock.ackTo(reinterpret_cast<char*>(&ack), sizeof(ack));
-            continue;
-        }
+    // // receive message[] max times
+    // for ( int i=0; i< max; ) {
+    //     // udp message receive
+    //     sock.recvFrom(reinterpret_cast<char *>(message), MSGSIZE);
+    //     if (message[0] == i) {
+    //         ack = i++;
+    //         sock.ackTo(reinterpret_cast<char*>(&ack), sizeof(ack));
+    //     } else {
+    //         sock.ackTo(reinterpret_cast<char*>(&ack), sizeof(ack));
+    //         continue;
+    //     }
 
-        // Print out the message
-        cerr << "Message #" << message[0] << " received." << endl;
-    }
+    //     // Print out the message
+    //     cerr << "Message #" << message[0] << " received." << endl;
+    // }
+
+
+    int lastAcknowledged = 0;
+    int lastReceived = 0;
+
+    do {
+        if (sock.pollRecvFrom() > 0) {
+            sock.recvFrom(reinterpret_cast<char*>(message), MSGSIZE);
+            lastReceived = message[0];
+
+           if (lastReceived > lastAcknowledged) {
+            ack = lastReceived;
+            lastAcknowledged = lastReceived;
+            // ack to the client.
+            cerr << "Message #" << message[0] << " received." << endl;
+        }
+        sock.ackTo(reinterpret_cast<char *>(&ack),
+                       sizeof(ack));
+        }
+    } while ((lastAcknowledged+1) < max);
 }
 
 // the client reliable with commulative approach.
@@ -204,6 +212,7 @@ void serverEarlyRetrans(UdpSocket &sock,
 // @param max   : the total number of sending
 // @message[]   : the message to send message[0] would be empty for sequence #
 // @windowSize  : the window size for the commulative message.
+// @N_DROP_RATE : the random drop rate.
 void serverEarlyRetrans(UdpSocket &sock,
                         const int max, int message[], int windowSize, const int N_DROP_RATE) {
     
@@ -212,6 +221,7 @@ void serverEarlyRetrans(UdpSocket &sock,
         cerr<<"Windows size out of range"<<endl;
         exit(0);
     }
+
     srand(time(NULL));
     vector<bool> array(max, false);
     int lastFrameReceived = 0;
@@ -248,10 +258,4 @@ void serverEarlyRetrans(UdpSocket &sock,
             }
         }
     } while (lastAcknowledgedFrame < max);
-
-    // // Retransmit for safety
-    // for(int i =0; i<10; i++) {
-    //     sock.ackTo(reinterpret_cast<char *>(&ack),
-    //                     sizeof(ack));
-    // }
 }
