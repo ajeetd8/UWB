@@ -88,6 +88,7 @@ int main(int argc, char *argv[])
     for (int j=0; j<2; j++) {
       cout << "Windows Size = " << WINDOW[j] << endl;
       for (int drop_rate = 0; drop_rate <= MAXDROP; drop_rate++) {
+        cout<<WINDOW[j]<<endl;
         timer.start(); // start timer
         retransmits =
             clientSlidingWindow(sock, MAX, message, WINDOW[j]); // actual test
