@@ -182,4 +182,10 @@ void serverEarlyRetrans(UdpSocket &sock,
                        sizeof(ack));
         }
     } while (lastAcknowledgedFrame < max);
+    
+    // To make sure last ack reached to the client
+    for(int i=0; i<3; i++) {
+        sock.ackTo(reinterpret_cast<char *>(&ack),
+                       sizeof(ack));
+    }
 }
