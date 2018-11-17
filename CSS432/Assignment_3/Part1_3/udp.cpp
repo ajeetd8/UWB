@@ -99,9 +99,7 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
         sock.ackTo(reinterpret_cast<char *>(&ack),
                        sizeof(ack));
         }
-    } while (lastAcknowledged < max);
-
-    cout<<"stop stop stop"<<endl;
+    } while ((lastAcknowledged+1) < max);
 }
 
 // the client reliable with commulative approach.
