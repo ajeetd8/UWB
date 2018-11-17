@@ -8,7 +8,7 @@ using namespace std;
 #define MAX 20000  // times of message transfer
 #define MAXWIN 30  // the maximum window size
 #define LOOP 10    // loop in test 4 and 5
-#define WINDOW 1
+#define WINDOW 30
 #define MAXDROP 10
 
 // client packet sending functions
