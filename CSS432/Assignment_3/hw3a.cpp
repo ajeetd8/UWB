@@ -8,7 +8,8 @@ using namespace std;
 #define MAX 20000  // times of message transfer
 #define MAXWIN 30  // the maximum window size
 #define LOOP 10    // loop in test 4 and 5
-# define WINDOW 1
+#define WINDOW 1
+#define MAXDROP 10
 
 // client packet sending functions
 void clientUnreliable(UdpSocket &sock, const int max, int message[]);
@@ -84,7 +85,7 @@ int main(int argc, char *argv[])
       cerr << "retransmits = " << retransmits << endl;
       break;
     case 3:
-      for (int drop_rate = 0; drop_rate <= MAXWIN; drop_rate++)
+      for (int drop_rate = 0; drop_rate <= MAXDROP; drop_rate++)
       {
         timer.start(); // start timer
         retransmits =
@@ -114,7 +115,7 @@ int main(int argc, char *argv[])
       serverReliable(sock, MAX, message);
       break;
     case 3:
-      for (int drop_rate = 0; drop_rate <= 10; drop_rate++)
+      for (int drop_rate = 0; drop_rate <= MAXDROP; drop_rate++)
         serverEarlyRetrans(sock, MAX, message, WINDOW, drop_rate);
       break;
     default:
