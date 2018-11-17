@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
       break;
     case 3:
     for (int j=0; j<2; j++) {
+      cout << "Windows Size = " << WINDOW[j] << endl;
       for (int drop_rate = 0; drop_rate <= MAXDROP; drop_rate++) {
         timer.start(); // start timer
         retransmits =
@@ -119,8 +120,8 @@ int main(int argc, char *argv[])
     for(int j =0; j<2; j++) {
       for (int drop_rate = 0; drop_rate <= MAXDROP; drop_rate++)
         serverEarlyRetrans(sock, MAX, message, WINDOW[j], drop_rate);
-      break;
     }
+    break;
     default:
       cerr << "no such test case" << endl;
       break;
