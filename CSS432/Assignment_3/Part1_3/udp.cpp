@@ -170,15 +170,16 @@ void serverEarlyRetrans(UdpSocket &sock,
             sock.recvFrom(reinterpret_cast<char*>(message), MSGSIZE);
             lastFrameReceived = message[0];
 
-            if (lastFrameReceived - lastAcknowledgedFrame > windowSize) {
-                continue;   // drop frame
-            } else if (lastFrameReceived > lastAcknowledgedFrame) {
+            // if (lastFrameReceived - lastAcknowledgedFrame > windowSize) {
+            //     continue;   // drop frame
+            // } else 
+            
+            if (lastFrameReceived > lastAcknowledgedFrame) {
                 // case where we need to update received
                 array[lastFrameReceived] = true;
 
                 while (array[lastAcknowledgedFrame]) {
-                    ack = lastAcknowledgedFrame;
-                    ++lastAcknowledgedFrame;
+                    ack = lastAcknowledgedFrame++;
                     cerr << "Message #" << ack << "received: " << endl;
                 }
             } else {
