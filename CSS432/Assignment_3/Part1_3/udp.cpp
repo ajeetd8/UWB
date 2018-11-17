@@ -21,38 +21,78 @@ int clientStopWait(UdpSocket &sock, const int max, int message[]) {
     Timer timer;            // define a timer
     int retransmits = 0;    // # retransmissions
     int ack = -1;           // currentack
-
+    int ackSequence = 0;
+    int sequence = 0;
     cerr << "client: stop and wait test:" << endl;
 
-    // transfer message[] max times
-    for (int i = 0; i < max;) {
-        // message[0] has a sequence #
-        // udp message send
-        message[0] = i;
-        sock.sendTo(reinterpret_cast<char *>(message), MSGSIZE);
+    while( ackSequence < max ) {
+        if ( sequence < max ) {
+            message[0] = sequence;
+             sock.sendTo(reinterpret_cast<char*>(message), MSGSIZE);
+            ++sequence;
+            cerr << "Message #" << message[0] << " sent." << endl;
+        }
 
-        // Waiting ACK
-        timer.start();
-        while (true) {
-            if (timer.lap() <= 1500) {
-                ++retransmits;  // Time to retransmit
-                break;
+        if(sock.pollRecvFrom() > 0) {
+            sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
+
+            if (ack == ackSequence) {
+                ++ackSequence;
             }
-        
+        } else {
+            timer.start();
 
-            // if there is a message to get (ACK).
-            while (sock.pollRecvFrom() > 0) {
-                // Getting the message from the server.
-                sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
-                if (i <= ack) {
-                    i = (++ack);
+            while(sock.pollRecvFrom() < 1) {
+                if(timer.lap() > 1500) {
+                    ++retransmits;
+
+                    if (ack >= ackSequence && ack <= sequence) {
+                        ackSequence = ack+1;
+                    } else {
+                        sequence = ackSequence;
+                    }
                     break;
                 }
             }
         }
-
-        cerr << "Message #" << message[0] << " sent." << endl;
     }
+
+
+
+
+
+
+
+
+    // // transfer message[] max times
+    // for (int i = 0; i < max;) {
+    //     // message[0] has a sequence #
+    //     // udp message send
+    //     message[0] = i;
+    //     sock.sendTo(reinterpret_cast<char *>(message), MSGSIZE);
+
+    //     // Waiting ACK
+    //     timer.start();
+    //     while (true) {
+    //         if (timer.lap() <= 1500) {
+    //             ++retransmits;  // Time to retransmit
+    //             break;
+    //         }
+        
+
+    //         // if there is a message to get (ACK).
+    //         while (sock.pollRecvFrom() > 0) {
+    //             // Getting the message from the server.
+    //             sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
+    //             if (i <= ack) {
+    //                 i = (++ack);
+    //                 break;
+    //             }
+    //         }
+    //     }
+
+    //     cerr << "Message #" << message[0] << " sent." << endl;
+    // }
 
     // Return the number of retransmit.
     return retransmits;
