@@ -96,6 +96,7 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
             ack = lastReceived;
             lastAcknowledged = lastReceived;
             // ack to the client.
+            cerr << "Message #" << message[0] << " received." << endl;
         }
         sock.ackTo(reinterpret_cast<char *>(&ack),
                        sizeof(ack));
