@@ -67,41 +67,41 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
     int ack;
     cerr << "server reliable test:" << endl;
 
-    // receive message[] max times
-    for ( int i=0; i< max; ) {
-        // udp message receive
-        sock.recvFrom(reinterpret_cast<char *>(message), MSGSIZE);
-        if (message[0] == i) {
-            ack = i++;
-            sock.ackTo(reinterpret_cast<char*>(&ack), sizeof(ack));
-        } else {
-            sock.ackTo(reinterpret_cast<char*>(&ack), sizeof(ack));
-            continue;
-        }
+    // // receive message[] max times
+    // for ( int i=0; i< max; ) {
+    //     // udp message receive
+    //     sock.recvFrom(reinterpret_cast<char *>(message), MSGSIZE);
+    //     if (message[0] == i) {
+    //         ack = i++;
+    //         sock.ackTo(reinterpret_cast<char*>(&ack), sizeof(ack));
+    //     } else {
+    //         sock.ackTo(reinterpret_cast<char*>(&ack), sizeof(ack));
+    //         continue;
+    //     }
 
-        // Print out the message
-        cerr << "Message #" << message[0] << " received." << endl;
-    }
+    //     // Print out the message
+    //     cerr << "Message #" << message[0] << " received." << endl;
+    // }
 
 
     int lastAcknowledged = 0;
     int lastReceived = 0;
 
-    // do {
-    //     if (sock.pollRecvFrom() > 0) {
-    //         sock.recvFrom(reinterpret_cast<char*>(message), MSGSIZE);
-    //         lastReceived = message[0];
+    do {
+        if (sock.pollRecvFrom() > 0) {
+            sock.recvFrom(reinterpret_cast<char*>(message), MSGSIZE);
+            lastReceived = message[0];
 
-    //        if (lastReceived > lastAcknowledged) {
-    //         ack = lastReceived;
-    //         lastAcknowledged = lastReceived;
-    //         // ack to the client.
-    //         cerr << "Message #" << message[0] << " received." << endl;
-    //     }
-    //     sock.ackTo(reinterpret_cast<char *>(&ack),
-    //                    sizeof(ack));
-    //     }
-    // } while (lastAcknowledged < max);
+           if (lastReceived > lastAcknowledged) {
+            ack = lastReceived;
+            lastAcknowledged = lastReceived;
+            // ack to the client.
+            cerr << "Message #" << message[0] << " received." << endl;
+        }
+        sock.ackTo(reinterpret_cast<char *>(&ack),
+                       sizeof(ack));
+        }
+    } while (lastAcknowledged < max);
 }
 
 // the client reliable with commulative approach.
