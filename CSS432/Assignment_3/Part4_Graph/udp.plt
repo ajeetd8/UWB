@@ -1,6 +1,6 @@
 set terminal postscript landscape
 set nolabel
-set xlabel "Error_Rate"
+set xlabel "Error Rate"
 set xrange [0:10]
 set ylabel "usec"
 set yrange [0:10000000]
