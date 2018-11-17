@@ -30,26 +30,57 @@ int clientStopWait(UdpSocket &sock, const int max, int message[]) {
         // udp message send
         message[0] = i;
         sock.sendTo(reinterpret_cast<char *>(message), MSGSIZE);
-
-        // Waiting ACK
-        timer.start();
-        while (sock.pollRecvFrom() <= 0) {
-            if (timer.lap() >= 1500) {
-                ++retransmits;  // Time to retransmit
-                break;
-            }
-        }
-
-        // if there is a message to get (ACK).
-        if (sock.pollRecvFrom() > 0) {
-            // Getting the message from the server.
-            sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
-            if (i <= ack) {
-                i = (++ack);
-            }
-        }
-
         cerr << "Message #" << message[0] << " sent." << endl;
+
+        if(sock.pollRecvFrom() > 0) {
+            sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
+
+            if (ack == i) {
+                ++i;
+            }
+        } else {
+            timer.start();
+
+            while (sock.pollRecvFrom() < 1) {
+                if(timer.lap() > 1500) {
+                    ++retransmits;
+                    break;
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // // Waiting ACK
+        // timer.start();
+        // while (sock.pollRecvFrom() == 0) {
+        //     if (timer.lap() >= 1500) {
+        //         ++retransmits;  // Time to retransmit
+        //         break;
+        //     }
+        // }
+
+        // // if there is a message to get (ACK).
+        // if (sock.pollRecvFrom() > 0) {
+        //     // Getting the message from the server.
+        //     sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
+        //     if (i <= ack) {
+        //         i = (++ack);
+        //     }
+        // }
+
+        // cerr << "Message #" << message[0] << " sent." << endl;
     }
 
     // Return the number of retransmit.
