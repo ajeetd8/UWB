@@ -100,6 +100,8 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
                        sizeof(ack));
         }
     } while (lastAcknowledged < max);
+
+    cout<<"stop stop stop"<<endl;
 }
 
 // the client reliable with commulative approach.
