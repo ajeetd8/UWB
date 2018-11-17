@@ -74,6 +74,7 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
                 ack = i++;
                 sock.ackTo(reinterpret_cast<char*> (&ack), sizeof(ack));
             } else {
+                ack = i++;
                 sock.ackTo(reinterpret_cast<char*> (&ack), sizeof(ack));
                 continue;
             }
