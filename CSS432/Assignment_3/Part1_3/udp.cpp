@@ -110,7 +110,7 @@ int clientSlidingWindow(UdpSocket &sock,
     cerr << "server window test:" << endl;
 
     // Loop until all frames are sent and acknowledged.
-    while (sequence < max || ackSequence < max) {
+    while (sequence < max && ackSequence < max) {
         if ( ((ackSequence + windowSize) > sequence) && (sequence < max) ) {
             message[0] = sequence;
             sock.sendTo(reinterpret_cast<char*>(message), MSGSIZE);
@@ -169,10 +169,6 @@ void serverEarlyRetrans(UdpSocket &sock,
         if (sock.pollRecvFrom() > 0) {
             sock.recvFrom(reinterpret_cast<char*>(message), MSGSIZE);
             lastFrameReceived = message[0];
-
-            // if (lastFrameReceived - lastAcknowledgedFrame > windowSize) {
-            //     continue;   // drop frame
-            // } else 
             
             if (lastFrameReceived > lastAcknowledgedFrame) {
                 // case where we need to update received
