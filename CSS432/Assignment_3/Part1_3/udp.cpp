@@ -26,7 +26,7 @@ int clientStopWait(UdpSocket &sock, const int max, int message[]) {
     cerr << "client: stop and wait test:" << endl;
 
     while( ackSequence < max ) {
-        if ( sequence < max ) {
+        if ( (ackSequence+1 > sequence) && (sequence < max) ) {
             message[0] = sequence;
              sock.sendTo(reinterpret_cast<char*>(message), MSGSIZE);
             ++sequence;
