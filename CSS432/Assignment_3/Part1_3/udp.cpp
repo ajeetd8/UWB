@@ -138,7 +138,7 @@ int clientSlidingWindow(UdpSocket &sock,
                     retransmits = retransmits + (sequence - ackSequence);
 
                     if (ack >= ackSequence && ack <= sequence) {
-                        ackSequence = ack+1;
+                        ackSequence = ack;
                     } else {
                         sequence = ackSequence;
                     }
