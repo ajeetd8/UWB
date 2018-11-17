@@ -101,50 +101,42 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
 // @windowSize  : the window size for the commulative message.
 int clientSlidingWindow(UdpSocket &sock,
                         const int max, int message[], int windowSize) {
-    Timer timer;
-    int retransmits = 0;
-    int sequence = 0;
-    int ackSequence = 0;
-    int ack = -1;
+                            {
+    Timer timer;         // define a timer
+    int retransmits = 0; // # retransmissions
+    int ack;
 
-    cerr << "server window test:" << endl;
+    cerr << "client: sliding window:" << endl;
 
-    // Loop until all frames are sent and acknowledged.
-    while (sequence < max || ackSequence < max) {
-        if ( ((ackSequence + windowSize) > sequence) && (sequence < max) ) {
-            message[0] = sequence;
-            sock.sendTo(reinterpret_cast<char*>(message), MSGSIZE);
-            ++sequence;
-            cerr << "Message #" << message[0] << " sent." << endl;
+    int unacknowledged=0;
+
+    // transfer message[] max times
+    for ( int i = 0; i < max; ) {
+
+        // Sending window chunk.
+        for( ;unacknowledged<windowSize && i < max; ) {
+            message[0] = i++;                           // message[0] has a sequence #
+            sock.sendTo( ( char * )message, MSGSIZE );  // udp message send
+            ++unacknowledged;
         }
 
-        if (sock.pollRecvFrom() > 0) {
-            // If there is data to read
-
-            sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
-
-            if (ack == ackSequence) {
-                ++ackSequence;
-            }
+        // If there is a message to get (ACK).
+        if(sock.pollRecvFrom() > 0) {
+            // exhaust them. (we are not interested value)
+            sock.recvFrom((char*)&ack, sizeof(ack));
+            --unacknowledged;
         } else {
-            // If there is no data to read
-
-            // Start the timer
-            timer.start();
-
-            while (sock.pollRecvFrom() < 1) {
-                if (timer.lap() > 1500) {
-                    // Calculating retransmit number.
-                    retransmits = retransmits + (sequence - ackSequence);
-
-                    if (ack >= ackSequence && ack <= sequence) {
-                        ackSequence = ack;
-                    } else {
-                        sequence = ackSequence;
-                    }
+            // windowSize is full witl unacknowledged.
+            timer.start();          // Start the timer.
+            while(sock.pollRecvFrom() <= 0) {
+                if(timer.lap() >= 1500) {
+                    // Time up without ack.
                     break;
                 }
             }
+             // No ack, so go minimum sequence number
+            retransmits += (i-ack);
+            i = ack;
         }
     }
 
