@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
         // cerr << "Window size = ";                                // lap timer
         // cout << windowSize << " ";
         cerr << "Drop rate = ";
-        cout << 
+        cout << drop_rate << " ";
         cerr << "Elasped time = ";
         cout << timer.lap() << endl;
         cerr << "retransmits = " << retransmits << endl;
