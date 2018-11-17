@@ -1,13 +1,14 @@
 #include "UdpSocket.h"
 #include "Timer.h"
-#include <vector>
+#include <deque>
 #include <algorithm>
+#include <vector>
 
 int clientStopWait(UdpSocket &sock, const int max, int message[])
 {
     Timer timer;         // define a timer
     int retransmits = 0; // # retransmissions
-    int ack;
+    int ack = 0;
 
     cerr << "client: stop and wait test:" << endl;
 
@@ -31,8 +32,9 @@ int clientStopWait(UdpSocket &sock, const int max, int message[])
         if(sock.pollRecvFrom() > 0) {
             // Getting the message from the server.
             sock.recvFrom((char*)&ack, sizeof(ack));
-            if(i == ack)
-                ++i;
+            if(i <= ack) {
+                i=(++ack);
+            }
         }
 
         cerr << "message = " << message[0] << endl;
@@ -50,76 +52,9 @@ void serverReliable(UdpSocket &sock, const int max, int message[])
         sock.recvFrom((char *)message, MSGSIZE);    // udp message receive
         if(message[0] == i) {
             ack = i++;
-            sock.ackTo((char*)&ack, sizeof(i));
+            sock.ackTo((char*)&ack, sizeof(ack));
         } else {
-            sock.ackTo((char*)&ack, sizeof(i));
-            continue;
-        }
-
-        cerr << message[0] << endl;                 // print out message
-    }
-}
-
-int clientSlidingWindow(UdpSocket &sock, const int max, int message[], int windowSize)
-{
-    Timer timer;         // define a timer
-    int retransmits = 0; // # retransmissions
-    int ack;
-
-    cerr << "client: sliding window:" << endl;
-
-    int unacknowledged=0;
-
-    // transfer message[] max times
-    for ( int i = 0; i < max; ) {
-
-        // Sending window chunk.
-        for( ;unacknowledged<windowSize && i < max; ) {
-            message[0] = i++;                           // message[0] has a sequence #
-            sock.sendTo( ( char * )message, MSGSIZE );  // udp message send
-            ++unacknowledged;
-        }
-
-        // If there is a message to get (ACK).
-        if(sock.pollRecvFrom() > 0) {
-            // exhaust them. (we are not interested value)
-            sock.recvFrom((char*)&ack, sizeof(ack));
-            --unacknowledged;
-        } else {
-            // windowSize is full witl unacknowledged.
-            timer.start();          // Start the timer.
-            while(sock.pollRecvFrom() <= 0) {
-                if(timer.lap() >= 1500) {
-                    // Time up without ack.
-                    break;
-                }
-            }
-
-            // No ack, so go minimum sequence number
-            retransmits += (i-ack);
-            i = ack;
-        }
-    }
-
-    return retransmits;
-}
-void serverEarlyRetrans(UdpSocket &sock, const int max, int message[], int windowSize)
-{
-    int ack = -1;
-    std:vector<bool> buffer();
-
-    cerr << "server sliding window:" << endl;
-
-    // receive message[] max times
-    for ( int i=0; i< max; ) {
-        sock.recvFrom((char *)message, MSGSIZE);    // udp message receive
-        (ack+1) <= message ? 
-
-        if(message[0] == i) {
-            ack = i++;
-            sock.ackTo((char*)&ack, sizeof(i));
-        } else {
-            sock.ackTo((char*)&ack, sizeof(i));
+            sock.ackTo((char*)&ack, sizeof(ack));
             continue;
         }
 
@@ -127,4 +62,92 @@ void serverEarlyRetrans(UdpSocket &sock, const int max, int message[], int windo
         cerr << i << endl;
     }
 }
+
+int clientSlidingWindow(UdpSocket &sock, const int max, int message[], int windowSize) {
+    Timer timer;
+    int retransmits = 0;
+    int sequence = 0;
+    int ackSequence = 0;
+    int ack = -1;
+
+    cerr << "server window test:" << endl;
+
+    // Loop until all frames are sent and acknowledged.
+    while(sequence < max || ackSequence < max) {
+        if( (ackSequence + windowSize) > sequence && sequence < max) {
+            message[0] = sequence;
+            sock.sendTo((char*)message, MSGSIZE);
+            ++sequence;
+            cout << "Message #" << message[0] << " sent." << endl;
+        }
+    }
+
+    if(sock.pollRecvFrom() > 0) {
+        // If there is data to read
+
+        sock.recvFrom((char*)&ack, sizeof(ack));
+
+        if(ack == ackSequence) {
+            ++ackSequence;
+        }
+    } else {
+        // If there is no data to read
+
+        // Start the timer
+        timer.start();
+
+        while(sock.pollRecvFrom() < 1) {
+            if(timer.lap() < 1500) {
+                // Calculating retransmit number.
+                retransmits = retransmits + (sequence - ackSequence);
+
+                if(ack >= ackSequence && ack <= sequence) {
+                    ackSequence = ack+1;
+                } else {
+                    sequence = ackSequence;
+                }
+                break;
+            }
+        }
+
+
+    }
+
+    return retransmits;
+}
+void serverEarlyRetrans(UdpSocket &sock, const int max, int message[], int windowSize)
+{
+    int lastFrameReceived = 0;
+    int lastAcknowledgedFrame = 0;
+    int lastSequence = -1;
+
+    vector<bool> array(max, false);
+
+    do {
+        // Wait until the first data arrives (from client)
+        if(sock.pollRecvFrom() > 0) {
+            sock.recvFrom((char*)message, MSGSIZE);
+            lastFrameReceived = message[0];
+
+            if(lastFrameReceived - lastAcknowledgedFrame > windowSize) {
+                continue;   // drop frame
+            } else if (lastFrameReceived > lastAcknowledgedFrame) {
+                // case where we need to update received
+                array[lastFrameReceived] = true;
+
+                while(array[lastAcknowledgedFrame]) {
+                    lastSequence = lastAcknowledgedFrame;
+                    lastAcknowledgedFrame++;
+                }
+            } else {
+                // Acknowledge the last frame received.
+                array[lastFrameReceived] = true;
+                lastSequence = lastAcknowledgedFrame;
+            }
+            cout<<lastAcknowledgedFrame<<endl;
+            sock.ackTo((char*)&lastSequence, sizeof(lastSequence));
+        }
+    } while (lastAcknowledgedFrame < max);
+}
+
 
