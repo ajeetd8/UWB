@@ -8,7 +8,6 @@ using namespace std;
 #define MAX 20000  // times of message transfer
 #define MAXWIN 30  // the maximum window size
 #define LOOP 10    // loop in test 4 and 5
-#define WINDOW 1
 #define MAXDROP 10
 
 // client packet sending functions
@@ -39,6 +38,7 @@ int main(int argc, char *argv[])
 
   int message[MSGSIZE / 4]; // prepare a 1460-byte message: 1460/4 = 365 ints;
   UdpSocket sock(PORT);     // define a UDP socket
+  int WINDOW[2] = {1, 30};
 
   myPart = (argc == 1) ? SERVER : CLIENT;
 
@@ -85,19 +85,20 @@ int main(int argc, char *argv[])
       cerr << "retransmits = " << retransmits << endl;
       break;
     case 3:
-      for (int drop_rate = 0; drop_rate <= MAXDROP; drop_rate++)
-      {
+    for (int j=0; j<2; j++) {
+      for (int drop_rate = 0; drop_rate <= MAXDROP; drop_rate++) {
         timer.start(); // start timer
         retransmits =
-            clientSlidingWindow(sock, MAX, message, WINDOW); // actual test
+            clientSlidingWindow(sock, MAX, message, WINDOW[j]); // actual test
         // cerr << "Window size = ";                                // lap timer
         // cout << windowSize << " ";
         cerr << "Drop rate = ";
         cout << drop_rate << " ";
         cerr << "Elasped time = ";
         cout << timer.lap() << endl;
-        cerr << "retransmits = " << retransmits << endl;
+        cout << "retransmits = " << retransmits << endl;
       }
+    }
       break;
     default:
       cerr << "no such test case" << endl;
@@ -115,9 +116,11 @@ int main(int argc, char *argv[])
       serverReliable(sock, MAX, message);
       break;
     case 3:
+    for(int j =0; j<2; j++) {
       for (int drop_rate = 0; drop_rate <= MAXDROP; drop_rate++)
-        serverEarlyRetrans(sock, MAX, message, WINDOW, drop_rate);
+        serverEarlyRetrans(sock, MAX, message, WINDOW[j], drop_rate);
       break;
+    }
     default:
       cerr << "no such test case" << endl;
       break;
