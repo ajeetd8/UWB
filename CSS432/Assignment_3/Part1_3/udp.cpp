@@ -73,6 +73,8 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
             sock.ackTo(reinterpret_cast<char*> (&ack), sizeof(ack));
             if (message[0] == i) {
                 ack = i++;  
+            } else {
+                continue;
             }
             // Print out the message
             cerr << "Message #" << message[0] << " received." << endl;
