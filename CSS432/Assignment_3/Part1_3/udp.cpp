@@ -33,21 +33,19 @@ int clientStopWait(UdpSocket &sock, const int max, int message[]) {
 
         // Waiting ACK
         timer.start();
-        while (true) {
-            if (timer.lap() <= 1500) {
+        while (sock.pollRecvFrom() <= 0) {
+            if (timer.lap() >= 1500) {
                 ++retransmits;  // Time to retransmit
                 break;
             }
-        
+        }
 
-            // if there is a message to get (ACK).
-            while (sock.pollRecvFrom() > 0) {
-                // Getting the message from the server.
-                sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
-                if (i <= ack) {
-                    i = (++ack);
-                    break;
-                }
+        // if there is a message to get (ACK).
+        while (sock.pollRecvFrom() > 0) {
+            // Getting the message from the server.
+            sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
+            if (i <= ack) {
+                i = (++ack);
             }
         }
 
