@@ -248,10 +248,4 @@ void serverEarlyRetrans(UdpSocket &sock,
             }
         }
     } while (lastAcknowledgedFrame < max);
-
-    // // Retransmit for safety
-    // for(int i =0; i<10; i++) {
-    //     sock.ackTo(reinterpret_cast<char *>(&ack),
-    //                     sizeof(ack));
-    // }
 }
