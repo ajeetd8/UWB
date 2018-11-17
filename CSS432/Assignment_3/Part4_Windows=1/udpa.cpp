@@ -183,7 +183,7 @@ void serverEarlyRetrans(UdpSocket &sock,
                 while (array[lastAcknowledgedFrame]) {
                     ack = lastAcknowledgedFrame;
                     ++lastAcknowledgedFrame;
-                    cerr << "Message #" << ack << " received: " << endl;
+                    cerr << "received: " << ack << endl;
                 }
             } else {
                 // Acknowledge the last frame received.
@@ -198,4 +198,10 @@ void serverEarlyRetrans(UdpSocket &sock,
             }
         }
     } while (lastAcknowledgedFrame < max);
+
+    // Retransmit for safety
+    for(int i =0; i<10; i++) {
+        sock.ackTo(reinterpret_cast<char *>(&ack),
+                        sizeof(ack));
+    }
 }
