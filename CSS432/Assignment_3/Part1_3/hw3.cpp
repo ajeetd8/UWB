@@ -81,7 +81,7 @@ int main( int argc, char *argv[] ) {
 	cout << windowSize << " ";
 	cerr << "Elasped time = "; 
 	cout << timer.lap( ) << endl;
-	cerr << "retransmits = " << retransmits << endl;
+	cout << "retransmits = " << retransmits << endl;
       }
       break;
     default:
