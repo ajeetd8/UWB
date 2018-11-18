@@ -187,5 +187,5 @@ void serverEarlyRetrans(UdpSocket &sock,
             sock.ackTo(reinterpret_cast<char *>(&ack),
                        sizeof(ack));
         }
-    } while (lastAcknowledgedFrame < max);
+    } while ((ack+1) < max);
 }
