@@ -262,4 +262,5 @@ void serverEarlyRetrans(UdpSocket &sock,
             }
         }
     } while ((ack+1) < max);
+    cout<<"finish"<<endl;
 }
