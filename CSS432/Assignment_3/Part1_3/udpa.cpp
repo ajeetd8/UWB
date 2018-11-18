@@ -251,8 +251,8 @@ void serverEarlyRetrans(UdpSocket &sock,
                 }
             } else {
                 // Acknowledge the last frame received.
-                // array[lastFrameReceived] = true;
-                // ack = lastAcknowledgedFrame;
+                array[lastFrameReceived] = true;
+                ack = lastFrameReceived;
             }
 
             // ack to the client, with N_Drop_rate
