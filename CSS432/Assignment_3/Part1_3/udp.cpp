@@ -180,7 +180,7 @@ void serverEarlyRetrans(UdpSocket &sock,
             } else {
                 // Acknowledge the last frame received.
                 array[lastFrameReceived] = true;
-                ack = lastAcknowledgedFrame;
+                ack = lastFrameReceived;
             }
 
             // ack to the client.
