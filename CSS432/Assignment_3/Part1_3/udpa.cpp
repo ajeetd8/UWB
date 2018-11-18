@@ -217,7 +217,7 @@ void serverEarlyRetrans(UdpSocket &sock,
                         const int max, int message[], int windowSize, const int N_DROP_RATE) {
     
     // Edge case, windows size should be 1 <= windows <=30
-    if(!(1 <= windowSize && windowSize <= 30)) {
+    if(!(1 == windowSize && windowSize == 30)) {
         cerr<<"Windows size out of range"<<endl;
         exit(0);
     }
@@ -232,9 +232,11 @@ void serverEarlyRetrans(UdpSocket &sock,
         // Wait until the first data arrives (from client)
         if (sock.pollRecvFrom() > 0) {
             sock.recvFrom(reinterpret_cast<char*>(message), MSGSIZE);
+            
             lastFrameReceived = message[0];
 
             if (lastFrameReceived - lastAcknowledgedFrame > windowSize) {
+                // Drop if server send more than client window size
                 continue;   // drop frame
             } else if (lastFrameReceived > lastAcknowledgedFrame) {
                 // case where we need to update received
@@ -257,5 +259,5 @@ void serverEarlyRetrans(UdpSocket &sock,
                         sizeof(ack));
             }
         }
-    } while (lastAcknowledgedFrame < max);
+    } while ((ack+1) < max);
 }
