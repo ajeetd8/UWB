@@ -130,7 +130,7 @@ int clientSlidingWindow(UdpSocket &sock,
             while (sock.pollRecvFrom() < 1) {
                 if (timer.lap() > TIME_OUT) {
                     // Calculating retransmit number.
-                    retransmits = retransmits + (sequence - ack);
+                    retransmits = retransmits + (sequence - ackSequence);
 
                     if (ack >= ackSequence && ack <= sequence) {
                         ackSequence = ack+1;

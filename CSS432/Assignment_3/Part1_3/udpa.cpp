@@ -148,7 +148,7 @@ int clientSlidingWindow(UdpSocket &sock,
             while (sock.pollRecvFrom() < 1) {
                 if (timer.lap() > TIME_OUT) {
                     // Calculating retransmit number.
-                    retransmits = retransmits + (sequence - ack);
+                    retransmits = retransmits + (sequence - ackSequence);
 
                     if (ack >= ackSequence && ack <= sequence) {
                         ackSequence = ack+1;
@@ -219,7 +219,7 @@ void serverEarlyRetrans(UdpSocket &sock,
                         const int max, int message[], int windowSize, const int N_DROP_RATE) {
     
     // Edge case, windows size should be 1 <= windows <=30
-    if(!(1 == windowSize && windowSize == 30)) {
+    if(!(1 == windowSize || windowSize == 30)) {
         cerr<<"Windows size out of range"<<endl;
         exit(0);
     }
