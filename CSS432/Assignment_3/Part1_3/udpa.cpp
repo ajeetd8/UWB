@@ -69,23 +69,6 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
     int ack;
     cerr << "server reliable test:" << endl;
 
-    // // receive message[] max times
-    // for ( int i=0; i< max; ) {
-    //     // udp message receive
-    //     sock.recvFrom(reinterpret_cast<char *>(message), MSGSIZE);
-    //     if (message[0] == i) {
-    //         ack = i++;
-    //         sock.ackTo(reinterpret_cast<char*>(&ack), sizeof(ack));
-    //     } else {
-    //         sock.ackTo(reinterpret_cast<char*>(&ack), sizeof(ack));
-    //         continue;
-    //     }
-
-    //     // Print out the message
-    //     cerr << "Message #" << message[0] << " received." << endl;
-    // }
-
-
     int lastAcknowledged = 0;
     int lastReceived = 0;
 
@@ -262,9 +245,4 @@ void serverEarlyRetrans(UdpSocket &sock,
             }
         }
     } while ((ack+1) < max);
-    
-    // In order to make sure lask achknowledge arrives to the receiver
-    for(int i=0; i<5; ++i)
-        sock.ackTo(reinterpret_cast<char *>(&ack),
-                        sizeof(ack));
 }
