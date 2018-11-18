@@ -8,6 +8,8 @@
  * commulative (fast and reliable)
  */
 
+#define TIME_OUT 300
+
 #include "UdpSocket.h"
 #include "Timer.h"
 #include <vector>
@@ -36,7 +38,7 @@ int clientStopWait(UdpSocket &sock, const int max, int message[]) {
         // Waiting ACK
         timer.start();
         while (sock.pollRecvFrom() <= 0) {
-            if (timer.lap() >= 1500) {
+            if (timer.lap() >= TIME_OUT) {
                 ++retransmits;  // Time to retransmit
                 break;
             }
@@ -144,7 +146,7 @@ int clientSlidingWindow(UdpSocket &sock,
             timer.start();
 
             while (sock.pollRecvFrom() < 1) {
-                if (timer.lap() > 1500) {
+                if (timer.lap() > TIME_OUT) {
                     // Calculating retransmit number.
                     retransmits = retransmits + (sequence - ackSequence);
 
