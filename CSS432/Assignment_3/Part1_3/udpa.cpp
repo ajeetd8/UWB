@@ -244,15 +244,15 @@ void serverEarlyRetrans(UdpSocket &sock,
                 // case where we need to update received
                 array[lastFrameReceived] = true;
 
+                // moving buffer
                 while (array[lastAcknowledgedFrame]) {
-                    ack = lastAcknowledgedFrame;
-                    ++lastAcknowledgedFrame;
+                    ack = lastAcknowledgedFrame++;
                     cerr << "received: " << ack << endl;
                 }
             } else {
                 // Acknowledge the last frame received.
-                array[lastFrameReceived] = true;
-                ack = lastAcknowledgedFrame;
+                // array[lastFrameReceived] = true;
+                // ack = lastAcknowledgedFrame;
             }
 
             // ack to the client, with N_Drop_rate
