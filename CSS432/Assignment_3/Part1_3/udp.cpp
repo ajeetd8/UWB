@@ -46,7 +46,7 @@ int clientStopWait(UdpSocket &sock, const int max, int message[]) {
         while (sock.pollRecvFrom() > 0) {
             // Getting the message from the server.
             sock.recvFrom(reinterpret_cast<char*>(&ack), sizeof(ack));
-            if (i <= ack) {
+            if (i == ack) {
                 i = (++ack);
             }
         }
