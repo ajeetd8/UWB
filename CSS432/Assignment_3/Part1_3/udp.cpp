@@ -188,4 +188,9 @@ void serverEarlyRetrans(UdpSocket &sock,
                        sizeof(ack));
         }
     } while ((ack+1) < max);
+
+    // In order to make sure lask achknowledge arrives to the receiver
+    for(int i=0; i<5; ++i)
+        sock.ackTo(reinterpret_cast<char *>(&ack),
+                        sizeof(ack));
 }
