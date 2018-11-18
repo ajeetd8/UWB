@@ -8,7 +8,7 @@
  * commulative (fast and reliable)
  */
 
-#define TIME_OUT 300
+#define TIME_OUT 100
 
 #include "UdpSocket.h"
 #include "Timer.h"
