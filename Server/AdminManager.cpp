@@ -44,6 +44,9 @@ bool AdminManager::deregisterUser(string &id) {
 }
 
 string AdminManager::getRoomList() {
+    if (this->roomList.size() == 0) {
+        return "No room is available.";
+    }
     string result = "";
 
     for (auto userPair: this->roomList) {
@@ -60,6 +63,9 @@ string AdminManager::getRoomList() {
 
 // update rank everytime called
 string AdminManager::getRank() {
+    if (this->users.size() == 0) {
+        return "No users in the system. ";
+    }
     string result = "";
     priority_queue<User *, vector<User *>, CmpUserPtrs> pq;
     for (auto userPair: this->users) {

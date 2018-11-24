@@ -2,6 +2,7 @@
 #define TCP_SERVER_SOCKET_H
 
 #include <iostream>
+#include <string>
 
 extern "C" {
     #include <sys/types.h>  // for sockets
@@ -25,7 +26,7 @@ public:
 
     bool setDestAddress(char *ipName);      // set the IP addr given an IP name
     int acceptFrom();                           // accept and return socket number
-    int sendTo(int sd, char *message, int size);    // send a message of size
+    int sendTo(int sd, std::string message);    // send a message of size
     int recvFrom(int sd, char *message, int size);  // receive a message of size
 
 private:

@@ -19,8 +19,8 @@ public:
     bool isRegistered(std::string &id);
     bool registerUser(std::string &id);
     bool deregisterUser(std::string &id);
-    string getRoomList();
-    string getRank();
+    std::string getRoomList();
+    std::string getRank();
 
 
 private:
@@ -41,8 +41,6 @@ private:
 
     std::map<std::string, User*> users;
     std::map<std::string, int> roomList;
-    std::priority_queue<User*, vector<User*>, CmpUserPtrs> rank;
-
 };
 
 #endif

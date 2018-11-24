@@ -12,6 +12,11 @@ void interpretMessage(TcpServerSocket *server, AdminManager *admin,
 void parseMessage(vector<string> &result, string input);
 void sendRegisterACK(TcpServerSocket *server, int sd, string id);
 void sendRegisterNAK(TcpServerSocket *server, int sd, string id);
+void sendListACK(TcpServerSocket *server, int sd, string id, string answer);
+void sendDeregisterACK(TcpServerSocket *server, int sd, string id);
+void sendDeregisterNAK(TcpServerSocket *server, int sd, string id);
+void sendRankReq(TcpServerSocket *server, int sd, string id, string answer);
+
 
 int main() {
     // Load Server, Admin, and Game Manager
@@ -25,7 +30,7 @@ int main() {
         server->recvFrom(newSd, message, 10);
         string answer(message);
         cout << answer << endl;
-        server->sendTo(newSd, message, 10);
+        server->sendTo(newSd, message);
         // close(newSd);
     }
 
@@ -43,17 +48,16 @@ void interpretMessage(TcpServerSocket *server, AdminManager *admin,
     }
 
     string request = message[0];
-
+    string id = message[1];
     if (request == "REGISTER") {
-        string id = message[1];
-        if (admin->isRegistered(id)) {
-            sendRegisterNAK(server, sd, id);
-        } else {
-            admin->registerUser(id);
+        if (admin->registerUser(id)) {
             sendRegisterACK(server, sd, id);
+        } else {
+            sendRegisterNAK(server, sd, id);
         }
     } else if (request == "LIST") {
-        
+        string answer = admin->getRoomList();
+        sendListACK(server, sd, id, answer);
     } else if (request == "CREATE") {
 
     } else if (request == "JOIN") {
@@ -61,9 +65,14 @@ void interpretMessage(TcpServerSocket *server, AdminManager *admin,
     } else if (request == "EXIT") {
 
     } else if (request == "DEREGISTER") {
-
+        if (admin->deregisterUser(id)) {
+            sendDeregisterACK(server, sd, id);
+        } else {
+            sendDeregisterNAK(server, sd, id);
+        }
     } else if (request == "RANKREQ") {
-
+        string answer = admin->getRank();
+        sendRankReq(server, sd, id, answer);
     }
 }
 
@@ -85,12 +94,7 @@ void parseMessage(vector<string> &result, string input) {
 void sendRegisterACK(TcpServerSocket *server, int sd, string id) {
     // form ack message
     string ackForm = "REGISTER ACK " + id + " \r\n";
-
-    // convert ack message into char[]
-    int size = ackForm.size();
-    char ackMessage[size + 1];
-    strcpy(ackMessage, ackForm.c_str());
-    server->sendTo(sd, ackMessage, size + 1);
+    server->sendTo(sd, ackForm);
 
     // close socket
     close(sd);
@@ -98,14 +102,37 @@ void sendRegisterACK(TcpServerSocket *server, int sd, string id) {
 
 void sendRegisterNAK(TcpServerSocket *server, int sd, string id) {
     // form ack message
-    string ackForm = "REGISTER NAK " + id + " \r\n";
-
-    // convert ack message into char[]
-    int size = ackForm.size();
-    char ackMessage[size + 1];
-    strcpy(ackMessage, ackForm.c_str());
-    server->sendTo(sd, ackMessage, size + 1);
+    string nakForm = "REGISTER NAK " + id + " \r\n";
+    server->sendTo(sd, nakForm);
 
     // close socket
+    close(sd);
+}
+
+void sendListACK(TcpServerSocket *server, int sd, string id, string answer) {
+    string ackForm = "LIST ACK " + id + "\r\n";
+    ackForm += answer;
+
+    server->sendTo(sd, ackForm);
+
+    close(sd);
+}
+
+void sendDeregisterACK(TcpServerSocket *server, int sd, string id) {
+    string ackForm = "DEREGISTER ACK " + id + "\r\n";
+    server->sendTo(sd, ackForm);
+    close(sd);
+}
+
+void sendDeregisterNAK(TcpServerSocket *server, int sd, string id) {
+    string nakForm = "DEREGISTER NAK " + id + "\r\n";
+    server->sendTo(sd, nakForm);
+    close(sd);
+}
+
+void sendRankReq(TcpServerSocket *server, int sd, string id, string answer) {
+    string ackForm = "RANKREQ ACK " + id + "\r\n";
+    ackForm += answer;
+    server->sendTo(sd, ackForm);
     close(sd);
 }

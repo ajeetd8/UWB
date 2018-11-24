@@ -34,8 +34,13 @@ int TcpServerSocket::acceptFrom() {
     return newSd;
 }
 
-int TcpServerSocket::sendTo(int sd, char *message, int size) {
-    return write(sd, message, size);
+int TcpServerSocket::sendTo(int sd, string message) {
+    // convert input string into char[]
+    int size = message.size();
+    char sendingMessage[size + 1];
+    strcpy(sendingMessage, message.c_str());
+
+    return write(sd, sendingMessage, size + 1);
 }
 
 int TcpServerSocket::recvFrom(int sd, char *message, int size) {
