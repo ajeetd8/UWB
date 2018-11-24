@@ -53,7 +53,7 @@ void interpretMessage(TcpServerSocket *server, AdminManager *admin,
             sendRegisterACK(server, sd, id);
         }
     } else if (request == "LIST") {
-
+        
     } else if (request == "CREATE") {
 
     } else if (request == "JOIN") {
