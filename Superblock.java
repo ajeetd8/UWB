@@ -5,7 +5,7 @@ class Superblock {
 
     // Boo!
     public Superblock( int diskSize ) {
-        this.totalBlocks = diskSize;
+        this.totalInodes = diskSize;
     }
 
 
