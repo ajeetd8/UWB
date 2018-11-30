@@ -25,13 +25,6 @@ public class FileSystem {
         return 0;
     }
 
-    public FileSystem ( ) {
-
-    }
-    
-    public int format( int files );  {
-    }
-
     public int open( String fileName, String mode ) {
 
     }
