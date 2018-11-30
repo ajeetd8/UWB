@@ -357,7 +357,7 @@ import java.io. *;
                                         case SEEK:    // to be implemented in project
                                             return OK;
                                         case FORMAT:  // to be implemented in project
-                                            fs.asfasdfsadfsadfasdfafds
+                                            return fs.format(param);
                                             return OK;
                                         case DELETE:  // to be implemented in project
                                             return OK;

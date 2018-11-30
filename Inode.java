@@ -19,6 +19,8 @@ public class Inode {
 
     Inode( short iNumber ) {                       // retrieving inode from disk
         // design it by yourself.
+       int block = iNumber / 16 + 1;
+       int section =  iNumber % 16;
     }
 
     int toDisk( short iNumber ) {                  // save to disk as the i-th inode
