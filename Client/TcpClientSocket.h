@@ -2,6 +2,8 @@
 #define TCP_CLIENT_SOCKET_H
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 extern "C" {
     #include <sys/types.h>  // for sockets
@@ -23,16 +25,18 @@ public:
     TcpClientSocket(int port);
     ~TcpClientSocket();
 
-    int connectTo(char *ipName);                        // connect to the server
-    int sendTo(char *message, int size);    // send a message of size
-    int recvFrom(char *message, int size);  // receive a message of size
+    int connectTo(char *ipName);            // connect to the server
+    int sendTo(std::string message);             // send a messsage
+    std::vector<std::string> recvFrom();  // receive a message of size
 
 private:
-    // int srcPort;                       // this TCP port
+    // int srcPort;                         // this TCP port
     int destPort;
     int sd;                         // this TCP socket descriptor
     struct sockaddr_in myAddr;      // my socket address for internet
     struct sockaddr_in destAddr;    // a destination socket address for internet
+
+    void parseMessage(std::vector<std::string> &result, std::string input);
 };
 
 

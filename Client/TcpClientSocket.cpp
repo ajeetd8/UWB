@@ -12,8 +12,17 @@ TcpClientSocket::~TcpClientSocket() {
     }
 }
 
-int TcpClientSocket::recvFrom(char *message, int size) {
-    return read(this->sd, message, size);
+vector<string> TcpClientSocket::recvFrom() {
+    char message[50];
+    int size = 50;
+    int nRead = read(this->sd, message, size);
+    string input(message);
+    vector<string> messageBuffer;
+    this->parseMessage(messageBuffer, input);
+    if (messageBuffer.size() == 0) {
+        cerr << "Empty message" << endl;
+    }
+    return messageBuffer;
 }
 
 
@@ -33,6 +42,26 @@ int TcpClientSocket::connectTo(char *ipName) {
     return connect(this->sd, (sockaddr *) &this->destAddr, sizeof(this->destAddr));
 }
 
-int TcpClientSocket::sendTo(char *message, int size) {
-    return write(this->sd, message, size);
+int TcpClientSocket::sendTo(string message) {
+    // convert input string into char[]
+    int size = message.size();
+    char sendingMessage[size + 1];
+    strcpy(sendingMessage, message.c_str());
+
+    return write(this->sd, sendingMessage, size + 1);
+}
+
+void TcpClientSocket::parseMessage(vector<string> &result, string input) {
+    string temp = "";
+    int size = input.size();
+    for (int i = 0; i < size; i++) {
+        char current = input[i];
+        if (current != ' ') {
+            temp += current;
+        } else {
+            result.push_back(temp);
+            temp = "";
+        }
+    }
+    result.push_back(temp);
 }

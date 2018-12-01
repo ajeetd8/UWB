@@ -20,9 +20,9 @@ bool AdminManager::isRegistered(string &id) {
     return user != nullptr;
 }
 
-bool AdminManager::registerUser(string &id) {
+bool AdminManager::registerUser(string &id, string &message) {
     if (this->isRegistered(id)) {
-        cerr << "given id already registered" << endl;
+        message = "Already registered";
         return false;
     }
 
@@ -32,9 +32,9 @@ bool AdminManager::registerUser(string &id) {
     return true;
 }
 
-bool AdminManager::deregisterUser(string &id) {
+bool AdminManager::deregisterUser(string &id, string &message) {
     if (!this->isRegistered(id)) {
-        cerr << "given id is not registered" << endl;
+        message = "Not registered";
         return false;
     }
     User *user = this->users[id];
@@ -84,3 +84,17 @@ string AdminManager::getRank() {
     return result;
 }
 
+
+bool AdminManager::login(string &id, string &message) {
+    if(this->currentUsers[id]) {
+        message = "Already logged in";
+        return false;
+    }
+    if (this->users[id] == nullptr) {
+        message = "Not registered";
+        return false;
+    }
+
+    this->currentUsers[id] = true;
+    return true;
+}

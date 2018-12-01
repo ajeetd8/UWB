@@ -17,10 +17,11 @@ public:
     ~AdminManager();
 
     bool isRegistered(std::string &id);
-    bool registerUser(std::string &id);
-    bool deregisterUser(std::string &id);
+    bool registerUser(std::string &id, std::string &message);
+    bool deregisterUser(std::string &id, std::string &message);
     std::string getRoomList();
     std::string getRank();
+    bool login(std::string &id, std::string &message);
 
 
 private:
@@ -41,6 +42,7 @@ private:
 
     std::map<std::string, User*> users;
     std::map<std::string, int> roomList;
+    std::map<std::string, bool> currentUsers;
 };
 
 #endif
