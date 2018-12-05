@@ -4,6 +4,9 @@ import java.io.*;
 
 public class Kernel
 {
+   // File System
+	private static FileSystem fileSystem;
+
    // Interrupt requests
    public final static int INTERRUPT_SOFTWARE = 1;  // System calls
    public final static int INTERRUPT_DISK     = 2;  // Disk interrupts
@@ -185,7 +188,8 @@ public class Kernel
                case SEEK:    // to be implemented in project
                   return ERROR;
                case FORMAT:  // to be implemented in project
-                  return ERROR;
+                  return (fileSystem.format(param) == 0) ? OK : ERROR;
+                  // return ERROR;
                case DELETE:  // to be implemented in project
                   return ERROR;
             }
