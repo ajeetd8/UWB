@@ -3,8 +3,11 @@ import java.io.*;
 public class Disk extends Thread {
 	public static final int blockSize = 512;
 	private final int trackSize = 10;
-	private final int transferTime = 20;
-	private final int delayPerTrack = 1;
+	// private final int transferTime = 20;
+	// private final int delayPerTrack = 1;
+	// For the fast test, changed the value.
+	private final int transferTime = 0;
+	private final int delayPerTrack = 0;
 	private int diskSize;
 
 	private byte data[];
