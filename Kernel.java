@@ -170,24 +170,24 @@ public class Kernel
                   return cache.read( param, ( byte[] )args ) ? OK : ERROR;
                case CWRITE:  // to be implemented in assignment 4
                   return cache.write( param, ( byte[] )args ) ? OK : ERROR;
-               case CSYNC:   // to be implemented in assignment 4
+               case CSYNC:   // to be implemented in assignment 4 (not for final)
                   cache.sync( );
                   return OK;
-               case CFLUSH:  // to be implemented in assignment 4
+               case CFLUSH:  // to be implemented in assignment 4 (not for final)
                   cache.flush( );
                   return OK;
                case OPEN:    // to be implemented in project
-                  return OK;
+                  return ERROR;
                case CLOSE:   // to be implemented in project
-                  return OK;
+                  return ERROR;
                case SIZE:    // to be implemented in project
-                  return OK;
+                  return ERROR;
                case SEEK:    // to be implemented in project
-                  return OK;
+                  return ERROR;
                case FORMAT:  // to be implemented in project
-                  return OK;
+                  return ERROR;
                case DELETE:  // to be implemented in project
-                  return OK;
+                  return ERROR;
             }
             return ERROR;
          case INTERRUPT_DISK: // Disk interrupts
