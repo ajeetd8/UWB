@@ -42,7 +42,7 @@ public class FileSystem {
     FileTableEntry open(String filename, String mode) {
         // filetable entry is allocated
         FileTableEntry ftEnt = filetable.falloc(filename, mode);
-        if (mode == "w")             // all blocks belonging to this file is
+        if (mode == "w") // all blocks belonging to this file is
             if (deallocAllBlocks(ftEnt) == false) // released
                 return null;
         return ftEnt;
@@ -70,18 +70,18 @@ public class FileSystem {
         if (ftEnt.mode == "w" || ftEnt.mode == "a")
             return -1;
 
-        int offset = 0;              // buffer offset
-        int left = buffer.length;  // the remaining data of this buffer
+        int offset = 0; // buffer offset
+        int left = buffer.length; // the remaining data of this buffer
 
         synchronized (ftEnt) {
             while (left > 0 && ftEnt.seekPtr < fsize(ftEnt)) {
-                // repeat reading until no more data  or reaching EOF
+                // repeat reading until no more data or reaching EOF
 
                 // get the block pointed to by the seekPtr
                 int targetBlock = ftEnt.inode.findTargetBlock(ftEnt.seekPtr);
                 if (targetBlock == -1)
                     break;
-                //System.out.println( "read( ) targetBlock=" + targetBlock );
+                // System.out.println( "read( ) targetBlock=" + targetBlock );
                 byte[] data = new byte[Disk.blockSize];
                 SysLib.rawread(targetBlock, data);
 
@@ -110,40 +110,37 @@ public class FileSystem {
             return -1;
 
         synchronized (ftEnt) {
-            int offset = 0;              // buffer offset
-            int left = buffer.length;  // the remaining data of this buffer
+            int offset = 0; // buffer offset
+            int left = buffer.length; // the remaining data of this buffer
 
             while (left > 0) {
-                //System.out.println( "write( ): left = " + left );
+                // System.out.println( "write( ): left = " + left );
                 int targetBlock = ftEnt.inode.findTargetBlock(ftEnt.seekPtr);
                 if (targetBlock == -1) { // block not assigned
                     short newBlock = (short) superblock.getFreeBlock();
                     switch (ftEnt.inode.registerTargetBlock(ftEnt.seekPtr, newBlock)) {
-                        case Inode.NoError:
-                            break;
-                        case Inode.ErrorBlockRegistered:
-                        case Inode.ErrorPreBlockUnused:
-                            SysLib.cerr("ThreadOS: filesystem panic on write\n");
+                    case Inode.NoError:
+                        break;
+                    case Inode.ErrorBlockRegistered:
+                    case Inode.ErrorPreBlockUnused:
+                        SysLib.cerr("ThreadOS: filesystem panic on write\n");
+                        return -1;
+                    case Inode.ErrorIndirectNull:
+                        short indirectBlock = (short) superblock.getFreeBlock();
+                        if (ftEnt.inode.registerIndexBlock(indirectBlock) == false) {
+                            SysLib.cerr("ThreadOS: panic on write\n");
                             return -1;
-                        case Inode.ErrorIndirectNull:
-                            short indirectBlock = (short) superblock.getFreeBlock();
-                            if (ftEnt.inode.registerIndexBlock(indirectBlock)
-                                    == false) {
-                                SysLib.cerr("ThreadOS: panic on write\n");
-                                return -1;
-                            }
-                            if (ftEnt.inode.registerTargetBlock(ftEnt.seekPtr,
-                                    newBlock)
-                                    != Inode.NoError) {
-                                SysLib.cerr("ThreadOS: panic on write\n");
-                                return -1;
-                            }
+                        }
+                        if (ftEnt.inode.registerTargetBlock(ftEnt.seekPtr, newBlock) != Inode.NoError) {
+                            SysLib.cerr("ThreadOS: panic on write\n");
+                            return -1;
+                        }
                     }
                     targetBlock = newBlock;
                 }
 
                 byte[] data = new byte[Disk.blockSize];
-                //System.out.println("write() read from targetBlock" +
+                // System.out.println("write() read from targetBlock" +
                 // targetBlock );
                 if (SysLib.rawread(targetBlock, data) == -1)
                     System.exit(2);
@@ -165,7 +162,7 @@ public class FileSystem {
                 if (ftEnt.seekPtr > ftEnt.inode.length)
                     ftEnt.inode.length = ftEnt.seekPtr;
             }
-            ftEnt.inode.toDisk(ftEnt.iNumber); //write back the inode to disk
+            ftEnt.inode.toDisk(ftEnt.iNumber); // write back the inode to disk
             return offset;
         }
     }
@@ -201,39 +198,37 @@ public class FileSystem {
     int seek(FileTableEntry ftEnt, int offset, int whence) {
         synchronized (ftEnt) {
             switch (whence) {
-                case SEEK_SET:
-                    if (offset >= 0 && offset <= fsize(ftEnt))
-                        ftEnt.seekPtr = offset;
-                    else
-                        return -1;
-                    break;
-                case SEEK_CUR:
-                    if (ftEnt.seekPtr + offset >= 0 &&
-                            ftEnt.seekPtr + offset <= fsize(ftEnt))
-                        ftEnt.seekPtr += offset;
-                    else
-                        return -1;
-                    break;
-                case SEEK_END:
-                    if (fsize(ftEnt) + offset >= 0 &&
-                            fsize(ftEnt) + offset <= fsize(ftEnt))
-                        ftEnt.seekPtr = fsize(ftEnt) + offset;
-                    else
-                        return -1;
-                    break;
+            case SEEK_SET:
+                if (offset >= 0 && offset <= fsize(ftEnt))
+                    ftEnt.seekPtr = offset;
+                else
+                    return -1;
+                break;
+            case SEEK_CUR:
+                if (ftEnt.seekPtr + offset >= 0 && ftEnt.seekPtr + offset <= fsize(ftEnt))
+                    ftEnt.seekPtr += offset;
+                else
+                    return -1;
+                break;
+            case SEEK_END:
+                if (fsize(ftEnt) + offset >= 0 && fsize(ftEnt) + offset <= fsize(ftEnt))
+                    ftEnt.seekPtr = fsize(ftEnt) + offset;
+                else
+                    return -1;
+                break;
             }
             return ftEnt.seekPtr;
         }
     }
 
-    void sync( ) {
+    void sync() {
         // directory synchronizatioin
-        FileTableEntry dirEntery = open( "/", "w" );
-        byte[] dirData = directory.directory2bytes( );
-        write( dirEntery, dirData );
-        close( dirEntery );
-    
+        FileTableEntry dirEntery = open("/", "w");
+        byte[] dirData = directory.directory2bytes();
+        write(dirEntery, dirData);
+        close(dirEntery);
+
         // superblock synchronization
-        superblock.sync( );
+        superblock.sync();
     }
 }

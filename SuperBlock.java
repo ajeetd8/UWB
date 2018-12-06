@@ -9,7 +9,7 @@ public class SuperBlock {
         byte[] superBlock = new byte[Disk.blockSize];
         SysLib.rawread(0, superBlock);
         totalBlocks = SysLib.bytes2int(superBlock, 0);
-        inodeBlocks = SysLib.bytes2int(superBlock,  4);
+        inodeBlocks = SysLib.bytes2int(superBlock, 4);
         freeList = SysLib.bytes2int(superBlock, 8);
 
         // Test printout
@@ -26,7 +26,7 @@ public class SuperBlock {
             System.out.println("the file size is invalid or not intialized");
             totalBlocks = diskSize;
             SysLib.cerr("default format( " + defaultInodeBlocks + " )\n");
-            format( defaultInodeBlocks );
+            format(defaultInodeBlocks);
         }
     }
 
@@ -51,17 +51,17 @@ public class SuperBlock {
         }
 
         // superblock: starts from #0
-        // inode:      starts from #1
-        // freelist:   starts from at least #2
+        // inode: starts from #1
+        // freelist: starts from at least #2
         freeList = 2 + (inodeBlocks * Inode.iNodeSize) / Disk.blockSize;
 
         // initialize each free block
         for (int i = freeList; i < totalBlocks; i++) {
             byte[] data = new byte[Disk.blockSize];
             for (int j = 0; j < Disk.blockSize; j++)
-                data[j] = 0;                     // zero initialization
-            SysLib.int2bytes(i + 1, data, 0);  // let it point to the next blk
-            SysLib.rawwrite(i, data);          // write it back to disk
+                data[j] = 0; // zero initialization
+            SysLib.int2bytes(i + 1, data, 0); // let it point to the next blk
+            SysLib.rawwrite(i, data); // write it back to disk
         }
         sync();
     }
