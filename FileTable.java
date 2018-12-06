@@ -1,16 +1,28 @@
 import java.util.Vector;
 
+/**
+ *
+ */
 public class FileTable {
 
     private Vector table;         // the actual entity of this file table
     private Directory dir;        // the root directory
 
-    public FileTable( Directory directory ) { // constructor
+    /**
+     *
+     * @param directory
+     */
+    public FileTable( Directory directory ) {
         table = new Vector( );     // instantiate a file (structure) table
         dir = directory;           // receive a reference to the Director
     }                             // from the file system
 
-    // major public methods
+    /**
+     *
+     * @param filename
+     * @param mode
+     * @return
+     */
     public synchronized FileTableEntry falloc( String filename, String mode ) {
         // allocate a new file (structure) table entry for this file name
         // allocate/retrieve and register the corresponding inode using dir
@@ -60,6 +72,11 @@ public class FileTable {
         return e; // return this new file table entry
     }
 
+    /**
+     *
+     * @param e
+     * @return
+     */
     public synchronized boolean ffree( FileTableEntry e ) {
         // receive a file table entry reference
         // save the corresponding inode to the disk
@@ -88,8 +105,4 @@ public class FileTable {
         } else
             return false;
     }
-
-    public synchronized boolean fempty( ) {
-        return table.isEmpty( );  // return if table is empty
-    }                            // should be called before starting a format
 }

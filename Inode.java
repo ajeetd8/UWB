@@ -56,6 +56,11 @@ public class Inode {
         indirect = SysLib.bytes2short(data, offset);
     }
 
+    /**
+     *
+     * @param iNumber
+     * @return
+     */
     int toDisk(short iNumber) {                 // saving this inode to disk
         byte[] iData = new byte[iNodeSize];
         int offset = 0;
@@ -82,10 +87,6 @@ public class Inode {
         SysLib.rawwrite(blkNumber, blkData);
 
         return 0;
-    }
-
-    int findIndexBlock() { // return the index block number
-        return indirect;
     }
 
     /**

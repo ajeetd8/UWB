@@ -1,12 +1,17 @@
-import java.util.*;
-
+/**
+ *
+ */
 public class Directory {
     private static int maxChars = 30; // the max characters of each file name
 
     private int fsizes[];             // the actual size of each file name
     private char fnames[][];          // file names in characters
 
-    public Directory(int maxInumber) {       // a default constructor
+    /**
+     *
+     * @param maxInumber
+     */
+    public Directory(int maxInumber) {
         fsizes = new int[maxInumber];           // maxInumber = max files
         for (int i = 0; i < maxInumber; i++)  // all file sizes set to 0
             fsizes[i] = 0;

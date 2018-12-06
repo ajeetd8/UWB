@@ -218,6 +218,12 @@ public class SysLib {
         return n;
     }
 
+    /**
+     *
+     * @param fd file decryptor
+     * @param buffer byte buffer
+     * @return Error or OK of the read result.
+     */
     public static int read( int fd, byte[] buffer ) {
         return Kernel.interrupt( Kernel.INTERRUPT_SOFTWARE,
                 Kernel.READ, fd, buffer );
