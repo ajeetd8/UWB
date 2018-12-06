@@ -5,17 +5,17 @@ import java.util.Vector;
  */
 public class FileTable {
 
-    private Vector table;         // the actual entity of this file table
-    private Directory dir;        // the root directory
+    private Vector table; // the actual entity of this file table
+    private Directory dir; // the root directory
 
     /**
      *
      * @param directory
      */
-    public FileTable( Directory directory ) {
-        table = new Vector( );     // instantiate a file (structure) table
-        dir = directory;           // receive a reference to the Director
-    }                             // from the file system
+    public FileTable(Directory directory) {
+        table = new Vector(); // instantiate a file (structure) table
+        dir = directory; // receive a reference to the Director
+    } // from the file system
 
     /**
      *
@@ -23,7 +23,7 @@ public class FileTable {
      * @param mode
      * @return
      */
-    public synchronized FileTableEntry falloc( String filename, String mode ) {
+    public synchronized FileTableEntry falloc(String filename, String mode) {
         // allocate a new file (structure) table entry for this file name
         // allocate/retrieve and register the corresponding inode using dir
         // increment this inode's count
@@ -77,7 +77,7 @@ public class FileTable {
      * @param e
      * @return
      */
-    public synchronized boolean ffree( FileTableEntry e ) {
+    public synchronized boolean ffree(FileTableEntry e) {
         // receive a file table entry reference
         // save the corresponding inode to the disk
         // free this file table entry.
@@ -86,18 +86,18 @@ public class FileTable {
             // find this file table entry
             e.inode.count--; // this entry no longer points to this inode
             switch (e.inode.flag) {
-                case 1:
-                    e.inode.flag = 0;
-                    break;
-                case 2:
-                    e.inode.flag = 0;
-                    break;
-                case 4:
-                    e.inode.flag = 3;
-                    break;
-                case 5:
-                    e.inode.flag = 3;
-                    break;
+            case 1:
+                e.inode.flag = 0;
+                break;
+            case 2:
+                e.inode.flag = 0;
+                break;
+            case 4:
+                e.inode.flag = 3;
+                break;
+            case 5:
+                e.inode.flag = 3;
+                break;
             }
             e.inode.toDisk(e.iNumber); // reflect this inode to disk
             e = null; // this file table entry is erased.

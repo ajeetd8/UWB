@@ -75,8 +75,7 @@ public class SysLib {
      * @return
      */
     public static int format(int files) {
-        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE,
-        Kernel.FORMAT, files, null);
+        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE, Kernel.FORMAT, files, null);
     }
 
     /**
@@ -100,8 +99,7 @@ public class SysLib {
         String[] args = new String[2];
         args[0] = fileName;
         args[1] = mode;
-        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE,
-                Kernel.OPEN, 0, args);
+        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE, Kernel.OPEN, 0, args);
     }
 
     /**
@@ -117,8 +115,7 @@ public class SysLib {
      * @return
      */
     public static int write(int fd, byte buffer[]) {
-        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE,
-                Kernel.WRITE, fd, buffer);
+        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE, Kernel.WRITE, fd, buffer);
     }
 
     /**
@@ -142,8 +139,7 @@ public class SysLib {
         int[] args = new int[2];
         args[0] = offset;
         args[1] = whence;
-        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE,
-                Kernel.SEEK, fd, args);
+        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE, Kernel.SEEK, fd, args);
     }
 
     /**
@@ -155,8 +151,7 @@ public class SysLib {
      * @return
      */
     public static int close(int fd) {
-        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE,
-                Kernel.CLOSE, fd, null);
+        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE, Kernel.CLOSE, fd, null);
     }
 
     /**
@@ -168,8 +163,7 @@ public class SysLib {
      * @return
      */
     public static int delete(String fileName) {
-        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE,
-                Kernel.DELETE, 0, fileName);
+        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE, Kernel.DELETE, 0, fileName);
     }
 
     /**
@@ -179,8 +173,7 @@ public class SysLib {
      * @return
      */
     public static int fsize(int fd) {
-        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE,
-                Kernel.SIZE, fd, null);
+        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE, Kernel.SIZE, fd, null);
     }
 
     public static String[] stringToArgs(String s) {
@@ -220,14 +213,12 @@ public class SysLib {
 
     /**
      *
-     * @param fd file decryptor
+     * @param fd     file decryptor
      * @param buffer byte buffer
      * @return Error or OK of the read result.
      */
-    public static int read( int fd, byte[] buffer ) {
-        return Kernel.interrupt( Kernel.INTERRUPT_SOFTWARE,
-                Kernel.READ, fd, buffer );
+    public static int read(int fd, byte[] buffer) {
+        return Kernel.interrupt(Kernel.INTERRUPT_SOFTWARE, Kernel.READ, fd, buffer);
     }
 
-    
 }

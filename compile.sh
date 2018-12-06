@@ -6,3 +6,4 @@ javac -Xlint:unchecked Inode.java ;
 javac -Xlint:unchecked Directory.java ;
 javac -Xlint:unchecked FileTable.java ;
 javac -Xlint:unchecked TCB.java ;
+javac -Xlint:unchecked SysLib.java
