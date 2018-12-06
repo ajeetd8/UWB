@@ -217,4 +217,11 @@ public class SysLib {
                 + (b[offset + 3] & 0xff);
         return n;
     }
+
+    public static int read( int fd, byte[] buffer ) {
+        return Kernel.interrupt( Kernel.INTERRUPT_SOFTWARE,
+                Kernel.READ, fd, buffer );
+    }
+
+    
 }
