@@ -19,45 +19,45 @@ public class FileTable {
         // return a reference to this file (structure) table entry
 
         short iNumber;
-		Inode inode = null;
-		while (true) {
-			if (filename.equals("/"))
-				iNumber = 0; // the root directory's inode is 0
-			else
-				iNumber = dir.namei(filename);
+        Inode inode = null;
+        while (true) {
+            if (filename.equals("/"))
+                iNumber = 0; // the root directory's inode is 0
+            else
+                iNumber = dir.namei(filename);
 
-			if (iNumber >= 0) { // file exists
-				inode = new Inode(iNumber); // retrieve inode from disk
-				if (mode.compareTo("r") == 0) {
-					if (inode.flag == 0 || inode.flag == 1) {
-						inode.flag = 1;
-						break;
-					}
-				} else {
-					if (inode.flag == 0 || inode.flag == 3) {
-						inode.flag = 2;
-						break;
-					}
-					if (inode.flag == 1 || inode.flag == 2) {
-						inode.flag += 3;
-						inode.toDisk(iNumber);
-					}
-				}
-			} else {
-				if (mode.compareTo("r") != 0) {
-					iNumber = dir.ialloc(filename); // a new file
-					inode = new Inode(); // create a new inode
-					inode.flag = 2;
-				} else
-					return null;
-				break;
-			}
-		}
-		inode.count++; // a new FileTableEntry points to it
-		inode.toDisk(iNumber); // reflect this inode to disk
-		FileTableEntry e = new FileTableEntry(inode, iNumber, mode);
-		table.addElement(e);
-		return e; // return this new file table entry
+            if (iNumber >= 0) { // file exists
+                inode = new Inode(iNumber); // retrieve inode from disk
+                if (mode.compareTo("r") == 0) {
+                    if (inode.flag == 0 || inode.flag == 1) {
+                        inode.flag = 1;
+                        break;
+                    }
+                } else {
+                    if (inode.flag == 0 || inode.flag == 3) {
+                        inode.flag = 2;
+                        break;
+                    }
+                    if (inode.flag == 1 || inode.flag == 2) {
+                        inode.flag += 3;
+                        inode.toDisk(iNumber);
+                    }
+                }
+            } else {
+                if (mode.compareTo("r") != 0) {
+                    iNumber = dir.ialloc(filename); // a new file
+                    inode = new Inode(); // create a new inode
+                    inode.flag = 2;
+                } else
+                    return null;
+                break;
+            }
+        }
+        inode.count++; // a new FileTableEntry points to it
+        inode.toDisk(iNumber); // reflect this inode to disk
+        FileTableEntry e = new FileTableEntry(inode, iNumber, mode);
+        table.addElement(e);
+        return e; // return this new file table entry
     }
 
     public synchronized boolean ffree( FileTableEntry e ) {
@@ -67,27 +67,27 @@ public class FileTable {
         // return true if this file table entry found in my table
         if (table.removeElement(e) == true) {
             // find this file table entry
-			e.inode.count--; // this entry no longer points to this inode
-			switch (e.inode.flag) {
-			case 1:
-				e.inode.flag = 0;
-				break;
-			case 2:
-				e.inode.flag = 0;
-				break;
-			case 4:
-				e.inode.flag = 3;
-				break;
-			case 5:
-				e.inode.flag = 3;
-				break;
-			}
-			e.inode.toDisk(e.iNumber); // reflect this inode to disk
-			e = null; // this file table entry is erased.
-			return true;
-		} else
-			return false;
-	}
+            e.inode.count--; // this entry no longer points to this inode
+            switch (e.inode.flag) {
+                case 1:
+                    e.inode.flag = 0;
+                    break;
+                case 2:
+                    e.inode.flag = 0;
+                    break;
+                case 4:
+                    e.inode.flag = 3;
+                    break;
+                case 5:
+                    e.inode.flag = 3;
+                    break;
+            }
+            e.inode.toDisk(e.iNumber); // reflect this inode to disk
+            e = null; // this file table entry is erased.
+            return true;
+        } else
+            return false;
+    }
 
     public synchronized boolean fempty( ) {
         return table.isEmpty( );  // return if table is empty
