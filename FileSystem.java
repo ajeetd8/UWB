@@ -27,17 +27,6 @@ public class FileSystem {
         close(dirEnt);
     }
 
-    void sync() {
-        // directory synchronizatioin
-        FileTableEntry dirEnt = open("/", "w");
-        byte[] dirData = directory.directory2bytes();
-        write(dirEnt, dirData);
-        close(dirEnt);
-
-        // superblock synchronization
-        superblock.sync();
-    }
-
     int format(int files) {
         if (files <= 0) {
             return -1;
@@ -235,5 +224,16 @@ public class FileSystem {
             }
             return ftEnt.seekPtr;
         }
+    }
+
+    void sync( ) {
+        // directory synchronizatioin
+        FileTableEntry dirEntery = open( "/", "w" );
+        byte[] dirData = directory.directory2bytes( );
+        write( dirEntery, dirData );
+        close( dirEntery );
+    
+        // superblock synchronization
+        superblock.sync( );
     }
 }

@@ -85,6 +85,8 @@ public class Kernel
                   // instantiate synchronized queues
                   ioQueue = new SyncQueue( );
                   waitQueue = new SyncQueue( scheduler.getMaxThreads( ) );
+
+                  fileSystem = new FileSystem(1000);
                   return OK;
                case EXEC:
                   return sysExec( ( String[] )args );
@@ -124,6 +126,7 @@ public class Kernel
                      ioQueue.enqueueAndSleep( COND_DISK_FIN );
                   return OK;
                case SYNC:     // synchronize disk data to a real file
+                  fileSystem.sync();
                   while ( disk.sync( ) == false )
                      ioQueue.enqueueAndSleep( COND_DISK_REQ );
                   while ( disk.testAndResetReady( ) == false )
@@ -180,7 +183,12 @@ public class Kernel
                   cache.flush( );
                   return OK;
                case OPEN:    // to be implemented in project
+               if ( ( myTcb = scheduler.getMyTcb( ) ) != null ) {
+                  String[] s = ( String[] )args;
+                  return myTcb.getFd( fileSystem.open( s[0], s[1] ) );
+               } else {
                   return ERROR;
+               }
                case CLOSE:   // to be implemented in project
                   return ERROR;
                case SIZE:    // to be implemented in project
