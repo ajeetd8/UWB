@@ -4,6 +4,10 @@ public class SuperBlock {
     public int inodeBlocks;
     public int freeList;
 
+    /**
+     *
+     * @param diskSize The amount of inodes that can be stored on this disk.
+     */
     public SuperBlock(int diskSize) {
         // read the superblock from disk
         byte[] superBlock = new byte[Disk.blockSize];
@@ -14,9 +18,9 @@ public class SuperBlock {
 
         // Test printout
         // Todo: Remove this when you are done.
-        System.out.println("total block: " + totalBlocks);
-        System.out.println("inodeblock: " + inodeBlocks);
-        System.out.println("free list: " + freeList);
+//        System.out.println("total block: " + totalBlocks);
+//        System.out.println("inodeblock: " + inodeBlocks);
+//        System.out.println("free list: " + freeList);
 
         if (totalBlocks == diskSize && inodeBlocks > 0 && freeList >= 2) {
             // disk contents are valid
@@ -30,6 +34,9 @@ public class SuperBlock {
         }
     }
 
+    /**
+     * Saves superblock to disk
+     */
     void sync() {
         byte[] superBlock = new byte[Disk.blockSize];
         SysLib.int2bytes(totalBlocks, superBlock, 0);
@@ -39,6 +46,10 @@ public class SuperBlock {
         SysLib.cerr("Superblock synchronized\n");
     }
 
+    /**
+     * Formats disk
+     * @param files Number of inode blocks the disk can support
+     */
     void format(int files) {
         // initialize the superblock
         inodeBlocks = files;
@@ -66,6 +77,10 @@ public class SuperBlock {
         sync();
     }
 
+    /**
+     *
+     * @return The value of the free block
+     */
     public int getFreeBlock() {
         // get a new free block from the freelist
         int freeBlockNumber = freeList;
@@ -83,6 +98,11 @@ public class SuperBlock {
         return freeBlockNumber;
     }
 
+    /**
+     * Deallocates a block
+     * @param oldBlockNumber The block number to be deallocated
+     * @return true if succsesful, false if not
+     */
     public boolean returnBlock(int oldBlockNumber) {
         // return this old block
         if (oldBlockNumber >= 0) {

@@ -1,3 +1,6 @@
+/**
+ * An implementation of a one-level file system to be used for the disk for this operating system.
+ */
 public class FileSystem {
     private final int SEEK_SET = 0;
     private final int SEEK_CUR = 1;
@@ -6,6 +9,10 @@ public class FileSystem {
     private Directory directory;
     private FileTable filetable;
 
+    /**
+     * Intializes the file system.
+     * @param diskBlocks The number of blocks for this disk.
+     */
     public FileSystem(int diskBlocks) {
         // create superblock, and format disk with 64 inodes in default
         superblock = new SuperBlock(diskBlocks);
@@ -27,6 +34,11 @@ public class FileSystem {
         close(dirEnt);
     }
 
+    /**
+     * Formats the disk to support the number of files specified.
+     * @param files The number of files the disk will support.
+     * @return 0 if succsesful, -1 if an error occurs.
+     */
     int format(int files) {
         if (files <= 0) {
             return -1;
@@ -39,6 +51,12 @@ public class FileSystem {
         return 0;
     }
 
+    /**
+     * Opens a file.
+     * @param filename The file to be opened
+     * @param mode Read or write signifier.
+     * @return Null if cannot be done, otherwise returns the FileTableEntry associated with the file.
+     */
     FileTableEntry open(String filename, String mode) {
         // filetable entry is allocated
         FileTableEntry ftEnt = filetable.falloc(filename, mode);
@@ -48,6 +66,11 @@ public class FileSystem {
         return ftEnt;
     }
 
+    /**
+     * Closes a file
+     * @param ftEnt A TableFileEntry to be closed
+     * @return True if file was found and closed.
+     */
     boolean close(FileTableEntry ftEnt) {
         // filetable entry is freed
         synchronized (ftEnt) {
@@ -60,12 +83,23 @@ public class FileSystem {
         return filetable.ffree(ftEnt);
     }
 
+    /**
+     * Gets the size of a file associated with the FileTableEntry in bytes.
+     * @param ftEnt The FileTableEntry the contains the file you want the length of.
+     * @return The length of the file associated with the FileTableEntry.
+     */
     int fsize(FileTableEntry ftEnt) {
         synchronized (ftEnt) {
             return ftEnt.inode.length;
         }
     }
 
+    /**
+     * Reads a file
+     * @param ftEnt The FileTableEntry that references the file
+     * @param buffer Where the data that was read is held
+     * @return -1 if unsuccsesful 0 buffer offset if succsesful
+     */
     int read(FileTableEntry ftEnt, byte[] buffer) {
         if (ftEnt.mode == "w" || ftEnt.mode == "a")
             return -1;
@@ -104,6 +138,12 @@ public class FileSystem {
         }
     }
 
+    /**
+     * Writes to a file
+     * @param ftEnt The FileTableEntry that referes to the file
+     * @param buffer What is to be written
+     * @return -1 if unsucsesful, offset if succsesful
+     */
     int write(FileTableEntry ftEnt, byte[] buffer) {
         // at this point, ftEnt is only the one to modify the inode
         if (ftEnt.mode == "r")
@@ -167,6 +207,11 @@ public class FileSystem {
         }
     }
 
+    /**
+     * Deallocates a block
+     * @param ftEnt The block to be deallocated
+     * @return True if succesful
+     */
     private boolean deallocAllBlocks(FileTableEntry ftEnt) {
         // busy wait until there are no threads accessing this inode
         if (ftEnt.inode.count != 1) // there is only one writer
@@ -189,6 +234,11 @@ public class FileSystem {
         return true;
     }
 
+    /**
+     * Delets a file
+     * @param filename The name of the file to be deleted
+     * @return True succsesfully deleted
+     */
     boolean delete(String filename) {
         FileTableEntry ftEnt = open(filename, "w");
         short iNumber = ftEnt.iNumber;
@@ -221,6 +271,9 @@ public class FileSystem {
         }
     }
 
+    /**
+     * Writes directory data
+     */
     void sync() {
         // directory synchronizatioin
         FileTableEntry dirEntery = open("/", "w");

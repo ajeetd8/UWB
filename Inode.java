@@ -1,3 +1,6 @@
+/**
+ * An inode instance
+ */
 public class Inode {
     public final static int iNodeSize = 32; // fixed to 32 bytes
     public final static int directSize = 11; // # direct pointers
@@ -29,8 +32,8 @@ public class Inode {
     }
 
     /**
-     *
-     * @param iNumber
+     * Loads in Inode
+     * @param iNumber Loads in the inode associated with this number from disk.
      */
     Inode(short iNumber) {
         // Setting number of Inode per block.
@@ -56,9 +59,9 @@ public class Inode {
     }
 
     /**
-     *
-     * @param iNumber
-     * @return
+     * Saves an inode to the disk.
+     * @param iNumber The number of inode to be saved
+     * @return 0 if succsesful
      */
     int toDisk(short iNumber) { // saving this inode to disk
         byte[] iData = new byte[iNodeSize];
@@ -89,9 +92,9 @@ public class Inode {
     }
 
     /**
-     *
-     * @param indexBlockNumber
-     * @return
+     * Sets the indirect block pointer and initializes to disk
+     * @param indexBlockNumber The new indirect pointer
+     * @return False if all direct pointer have a block number if in indirect has not yet had a block number.
      */
     boolean registerIndexBlock(short indexBlockNumber) {
         for (int i = 0; i < directSize; i++) // check if all direct ptrs
@@ -110,8 +113,8 @@ public class Inode {
 
     /**
      *
-     * @param offset
-     * @return
+     * @param offset The number of bytes from start of this file to the point given in a logical way.
+     * @return The block number associated with the offset or -1 if not possible
      */
     int findTargetBlock(int offset) { // find the block# including offset
         int directNumber = offset / Disk.blockSize;
@@ -130,10 +133,10 @@ public class Inode {
     }
 
     /**
-     *
-     * @param offset
-     * @param targetBlockNumber
-     * @return
+     * Associates a block of data as part of the file
+     * @param offset The offset of where the data of this file starts
+     * @param targetBlockNumber The new block
+     * @return 0 if succsesful, -1 if unsucssesful
      */
     int registerTargetBlock(int offset, short targetBlockNumber) {
         int directNumber = offset / Disk.blockSize;
@@ -164,8 +167,8 @@ public class Inode {
     }
 
     /**
-     * 
-     * @return
+     * Unregiesters the indirect block
+     * @return The values of the indirect block in a byte array or null.
      */
     byte[] unregisterIndexBlock() {
         if (indirect >= 0) {

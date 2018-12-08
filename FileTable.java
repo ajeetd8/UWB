@@ -1,7 +1,7 @@
 import java.util.Vector;
 
 /**
- *
+ * A Table of Files and there Inodes
  */
 public class FileTable {
 
@@ -10,7 +10,7 @@ public class FileTable {
 
     /**
      *
-     * @param directory
+     * @param directory The directory object of this File System
      */
     public FileTable(Directory directory) {
         table = new Vector(); // instantiate a file (structure) table
@@ -18,10 +18,10 @@ public class FileTable {
     } // from the file system
 
     /**
-     *
-     * @param filename
-     * @param mode
-     * @return
+     * Get a FileTableEntry
+     * @param filename The filename to be opened
+     * @param mode Read or write
+     * @return The FileTableEntry for that file or null if file not able to be opened.
      */
     public synchronized FileTableEntry falloc(String filename, String mode) {
         // allocate a new file (structure) table entry for this file name
@@ -73,9 +73,9 @@ public class FileTable {
     }
 
     /**
-     *
-     * @param e
-     * @return
+     * Frees a file
+     * @param e The FileTableEntry refering to the file
+     * @return True if file is found and freed
      */
     public synchronized boolean ffree(FileTableEntry e) {
         // receive a file table entry reference

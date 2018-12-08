@@ -1,5 +1,5 @@
 /**
- *
+ * A single entry in the file table
  */
 public class FileTableEntry {
     public final Inode inode; // a reference to an inode
@@ -9,10 +9,10 @@ public class FileTableEntry {
     public int count; // a count to maintain #threads sharing this
 
     /**
-     *
-     * @param i
-     * @param inumber
-     * @param message
+     * Constructor
+     * @param  The inode associated with this file.
+     * @param inumber The inode number assoicated with this file
+     * @param message The mode in which this file is accessed
      */
     FileTableEntry(Inode i, short inumber, String message) {
         seekPtr = 0; // the seek pointer is set to the file top.

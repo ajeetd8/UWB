@@ -9,7 +9,7 @@ public class Directory {
 
     /**
      *
-     * @param maxInumber
+     * @param maxInumber The maximum number of files this system can have.
      */
     public Directory(int maxInumber) {
         fsizes = new int[maxInumber]; // maxInumber = max files
@@ -22,6 +22,10 @@ public class Directory {
         root.getChars(0, fsizes[0], fnames[0], 0);
     }
 
+    /**
+     * Turns byte data into a directory object
+     * @param data The byte data
+     */
     public void bytes2directory(byte data[]) {
         // assumes data[] contains directory information retrieved from disk
         // initialize the directory fsizes[] and fnames[] with this data[]
@@ -35,6 +39,10 @@ public class Directory {
         }
     }
 
+    /**
+     * Turns the directory data in to byte data
+     * @return The directory data as a narray of bytes
+     */
     public byte[] directory2bytes() {
         // converts and return directory information into a plain byte array
         // this byte array will be written back to disk
@@ -51,6 +59,11 @@ public class Directory {
         return data;
     }
 
+    /**
+     * Allocates an new inode for a file.
+     * @param filename The name of th file
+     * @return the inode number for the file, or -1 if unsucsesful
+     */
     public short ialloc(String filename) {
         // filename is the name of a file to be created.
         // allocates a new inode number for this filename.
@@ -66,6 +79,11 @@ public class Directory {
         return -1;
     }
 
+    /**
+     * Dellocated the inode associated with the given numver
+     * @param iNumber The number of the inode
+     * @return True if succsesful
+     */
     public boolean ifree(short iNumber) {
         // deallocates this inumber (inode number).
         // the corresponding file will be deleted.
@@ -77,6 +95,11 @@ public class Directory {
         }
     }
 
+    /**
+     *
+     * @param filename Name of a file
+     * @return The number of the inode that coresponds with the file name.
+     */
     public short namei(String filename) {
         // returns the inumber corresponding to this filename
         short i;
