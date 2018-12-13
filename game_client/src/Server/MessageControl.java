@@ -8,6 +8,7 @@ public interface MessageControl {
     public static int createRoomReq = 3;
     public static int joinRoomReq = 4;
     public static int refreshReq = 5;
+    public static int roomListReq = 6;
 
     public static int signInSuccess = 101;
     public static int signInFail = 102;
