@@ -87,10 +87,10 @@ public class client_main extends Application {
                     GameUser object = (GameUser) socket.fromServerObject.readObject();
                     new AccountManager(object);
                     System.out.println(object.getUserName());
-                    new GameView(socket).start(new Stage());
+                    new GameView(socket).start(primaryStage);
 
                     // Hide sign in page when the login is done.
-                    ((Node)(event.getSource())).getScene().getWindow().hide();
+//                    ((Node)(event.getSource())).getScene().getWindow().hide();
                 } else if (ack == MessageControl.signInFail) {
 
 
@@ -133,6 +133,7 @@ public class client_main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Game Login");
         primaryStage.show();
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
     }
 }
 

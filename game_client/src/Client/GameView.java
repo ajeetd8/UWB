@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -55,9 +56,13 @@ public class GameView extends Application implements MessageControl {
                     int ack = socket.fromServerData.readInt();
 
                     if(ack == MessageControl.createRoomSuccess) {
-                        System.out.println("rom sucess");
+                        System.out.println("room sucess");
+                        Socket sck = new Socket("localhost", 8889);
+
+                        new GamePlay(sck).start(new Stage());
+
                     } else if(ack == MessageControl.createRoomFail) {
-                        System.out.println("rom failed");
+                        System.out.println("room failed");
                     } else {
                         System.out.println("Room create serious error");
                     }
@@ -75,13 +80,24 @@ public class GameView extends Application implements MessageControl {
                 System.out.println(gameRoomListView.getSelectionModel().getSelectedIndex());
                 GameRoom roomSelected = gameRoomListView.getSelectionModel().getSelectedItem();
                 if(null!=roomSelected) {
+                    System.out.println(roomSelected);
                     socket.toServerData.writeInt(joinRoomReq);
                     socket.toServerObject.writeObject(roomSelected);
-//                    socket.toServerObject.writeObject(new GameRoom("test"));
-                    System.out.println("Send selected room to joinp");
+                    System.out.println("getting the ack");
+                    int ack = socket.fromServerData.readInt();
+                    System.out.println("got ack");
+                    if(ack == joinSuccess) {
+                        Socket sck = new Socket("localhost", 8889);
+                        System.out.println(sck);
+
+                        new GamePlay(sck).start(new Stage());
+
+                        // Refresh the list
+                        refresh();
+                    } else {
+                        // todo: join room fail message!
+                    }
                 }
-//
-//            new GamePlay(socket).start(new Stage());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -95,6 +111,7 @@ public class GameView extends Application implements MessageControl {
         Scene scene =new Scene(pane);
         primarStage.setScene(scene);
         primarStage.show();
+
     }
 
     public GameView(SocketManger socket) {

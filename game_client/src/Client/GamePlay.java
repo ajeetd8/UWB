@@ -13,15 +13,30 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.Socket;
 
 public class GamePlay extends Application implements TicTacToeConstants {
     private boolean myTurn = false;
-    private SocketManger socket;
+//    private SocketManger socket;
+    private Socket socket;
+    public DataInputStream fromServerData;
+    public DataOutputStream toServerData;
 
+    private SocketManger sc;
+
+    public GamePlay(Socket socket) {
+        try {
+            this.socket = socket;
+            toServerData = new DataOutputStream(socket.getOutputStream());
+            fromServerData = new DataInputStream(socket.getInputStream());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     public GamePlay(SocketManger socket) {
-        this.socket = socket;
+        this.sc = socket;
     }
 
     // Indicate the token for the player
@@ -80,10 +95,11 @@ public class GamePlay extends Application implements TicTacToeConstants {
         new Thread(() -> {
             try {
                 // Get notification from the server
-                int player = socket.fromServerData.readInt();
+                int player = fromServerData.readInt();
 
                 // Am I player 1 or 2?
                 if (player == TicTacToeConstants.PLAYER1) {
+                    toServerData.writeUTF("PLAYER1");
                     myToken = 'X';
                     otherToken = 'O';
                     Platform.runLater(() -> {
@@ -92,7 +108,7 @@ public class GamePlay extends Application implements TicTacToeConstants {
                     });
 
                     // Receive startup notification from the server
-                    socket.fromServerData.readInt(); // Whatever read is ignored
+                    fromServerData.readInt(); // Whatever read is ignored
 
                     // The other player has joined
                     Platform.runLater(() ->
@@ -101,6 +117,7 @@ public class GamePlay extends Application implements TicTacToeConstants {
                     // It is my turn
                     myTurn = true;
                 } else if (player == TicTacToeConstants.PLAYER2) {
+                    toServerData.writeUTF("PLAYER2");
                     myToken = 'O';
                     otherToken = 'X';
                     Platform.runLater(() -> {
@@ -142,8 +159,8 @@ public class GamePlay extends Application implements TicTacToeConstants {
      * Send this player's move to the server
      */
     private void sendMove() throws IOException {
-        socket.toServerData.writeInt(rowSelected); // Send the selected row
-        socket.toServerData.writeInt(columnSelected); // Send the selected column
+        toServerData.writeInt(rowSelected); // Send the selected row
+        toServerData.writeInt(columnSelected); // Send the selected column
     }
 
     /**
@@ -151,7 +168,7 @@ public class GamePlay extends Application implements TicTacToeConstants {
      */
     private void receiveInfoFromServer() throws IOException {
         // Receive game status
-        int status = socket.fromServerData.readInt();
+        int status = fromServerData.readInt();
 
         if (status == TicTacToeConstants.PLAYER1_WON) {
             // Player 1 won, stop playing
@@ -191,8 +208,8 @@ public class GamePlay extends Application implements TicTacToeConstants {
 
     private void receiveMove() throws IOException {
         // Get the other player's move
-        int row = socket.fromServerData.readInt();
-        int column = socket.fromServerData.readInt();
+        int row = fromServerData.readInt();
+        int column = fromServerData.readInt();
         Platform.runLater(() -> cell[row][column].setToken(otherToken));
     }
 

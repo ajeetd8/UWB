@@ -1,5 +1,6 @@
 package Server;
 
+import Client.TicTacToeConstants;
 import gameroom.GameRoom;
 import gameroom.GameUser;
 import Helper.RoomManager;
@@ -28,18 +29,20 @@ public class game_server extends Application {
         primaryStage.setTitle("Game Server"); // Set the stage title
         primaryStage.setScene(scene); // Place the scene in the stage
         primaryStage.show(); // Display the stage
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
 
         // socket open
         new Thread( () -> {
             try {
-                ServerSocket serverSocket = new ServerSocket(8889);
+                ServerSocket serverSocket = new ServerSocket(8888);
+                ServerSocket sck = new ServerSocket(8889);
                 serverLog.appendText(": Server start at socket 8888 \n");
 
                 while (true) {
                     Socket player = serverSocket.accept();
                     Platform.runLater(() -> {
                         serverLog.appendText("Someone join the server \n");
-                        new Thread(new HandleASession(player)).start();
+                        new Thread(new HandleASession(player, sck)).start();
                     });
                 }
             } catch (IOException e) {
@@ -50,6 +53,7 @@ public class game_server extends Application {
 
     class HandleASession implements Runnable, MessageControl {
         private Socket player;
+        private ServerSocket sck;
         private DataInputStream fromPlayerData;
         private ObjectInputStream fromPlayerObject;
         private DataOutputStream toPlayerData;
@@ -57,10 +61,11 @@ public class game_server extends Application {
         private String username;
 
 
-        HandleASession(Socket player) {
+        HandleASession(Socket player, ServerSocket playBoard) {
             try {
                 // Initialize the socket, and run the program.
                 this.player = player;
+                this.sck = playBoard;
                 this.fromPlayerData = new DataInputStream(this.player.getInputStream());
                 this.fromPlayerObject = new ObjectInputStream(this.player.getInputStream());
                 this.toPlayerData = new DataOutputStream(this.player.getOutputStream());
@@ -74,10 +79,6 @@ public class game_server extends Application {
         public void run() {
             try {
                 boolean nextScene = false;
-//                DataInputStream fromPlayerData = new DataInputStream(player.getInputStream());
-//                ObjectInputStream fromPlayerObject = new ObjectInputStream(player.getInputStream());
-//                DataOutputStream toPlayerData = new DataOutputStream(player.getOutputStream());
-//                ObjectOutputStream toPlayerObject = new ObjectOutputStream(player.getOutputStream());
 
                 while(!nextScene) {
                     int action = fromPlayerData.readInt();
@@ -111,9 +112,34 @@ public class game_server extends Application {
 
                     } else if (action == joinRoomReq) {
                         GameRoom room = (GameRoom)fromPlayerObject.readObject();
-                        System.out.println(room.getRoomName());
-//                        RoomManager.getRoom(room.getRoomName()).enterUser(GameUsers.get(username));
-//                        RoomManager.removeRoom(room);
+
+                        System.out.println(RoomManager.hasRoom(room.getRoomName()));
+
+                        if(RoomManager.hasRoom(room.getRoomName())) {
+                            toPlayerData.writeInt(joinSuccess);
+
+                            System.out.println(room.getRoomName());
+
+                            // Setting the play socket
+                            Socket play_sck = sck.accept();
+
+                            // Assign the first player is player2
+                            new DataOutputStream(play_sck.getOutputStream()).writeInt(TicTacToeConstants.PLAYER2);
+                            new DataInputStream(play_sck.getInputStream());
+
+
+                            Socket player1 = RoomManager.getRoom(room.getRoomName()).getUserList().get(0).getSock();
+                            RoomManager.removeRoom(room.getRoomName());
+
+                            System.out.println(player1 + "\n" + play_sck);
+
+                            String player = new DataInputStream(play_sck.getInputStream()).readUTF();
+                            System.out.println(player + " is ready");
+
+                            new Thread(new HandleGame(player1, play_sck)).start();
+                        } else {
+                            toPlayerData.writeInt(joinFail);
+                        }
 
                     } else if (action == createRoomReq) {
 
@@ -122,21 +148,33 @@ public class game_server extends Application {
                         String roomName = fromPlayerData.readUTF();
                         String username = fromPlayerData.readUTF();
                         if(!RoomManager.hasRoom(roomName)) {
-                            // Making the room, when room does not exist.
-                            RoomManager.createRoom(GameUsers.get(username), roomName);
+
+                            // Setting the play socket
                             toPlayerData.writeInt(createRoomSuccess);
+                            Socket play_sck = sck.accept();
+
+
+                            System.out.println(sck);
+
+                            // Assign the first player is player1
+                            new DataOutputStream(play_sck.getOutputStream()).writeInt(TicTacToeConstants.PLAYER1);
+                            String player = new DataInputStream(play_sck.getInputStream()).readUTF();
+                            System.out.println(player + " is ready");
+
+                            // Making the room, when room does not exist.
+                            GameUsers.get(username).setSock(play_sck);
+                            RoomManager.createRoom(GameUsers.get(username), roomName);
                         } else {
                             // when room exist, do not create room.
                             toPlayerData.writeInt(createRoomFail);
                         }
                     } else if(action == refreshReq) {
-                        ArrayList<GameRoom> userList = new ArrayList<>(RoomManager.getRoomList().values());
-                        toPlayerObject.writeObject(userList);
+                        ArrayList<GameRoom> roomList = new ArrayList<>(RoomManager.getRoomList().values());
+                        System.out.println(roomList);
+                        toPlayerObject.writeObject(roomList);
                     }
                     else {
                         System.out.println(action);
-//                        System.out.println("A Serious error at Sign in detected. Terminating the server");
-//                        System.exit(0);
                     }
                 }
             } catch (IOException e) {

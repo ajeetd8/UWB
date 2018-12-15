@@ -19,5 +19,8 @@ public interface MessageControl {
     public static int createRoomSuccess = 105;
     public static int createRoomFail = 106;
 
+    public static int joinSuccess = 107;
+    public static int joinFail = 108;
+
 
 }
