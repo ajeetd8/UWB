@@ -1,5 +1,6 @@
 package Client;
 
+import AES.AES;
 import Helper.AccountManager;
 import Helper.SocketManger;
 import Server.MessageControl;
@@ -7,14 +8,17 @@ import gameroom.GameUser;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  *
@@ -29,7 +33,6 @@ public class client_main extends Application {
     Text actionTarget;
 
     /**
-     *
      * @param primaryStage
      */
     @Override
@@ -73,6 +76,8 @@ public class client_main extends Application {
         signInButton.setOnAction(event -> {
             String userID = userTextField.getText();
             String userPassword = pwBox.getText();
+            userPassword = AES.convertToString(userPassword);
+            System.out.println(userPassword);
             try {
                 socket.toServerData.writeInt(MessageControl.signInReq);
                 socket.toServerObject.writeObject(new GameUser(userID, userPassword));
@@ -80,13 +85,10 @@ public class client_main extends Application {
                 int ack = socket.fromServerData.readInt();
 
 
-                if(ack == MessageControl.signInSuccess) {
+                if (ack == MessageControl.signInSuccess) {
                     // Signin Success case handle
 
-                    // Login Process started.
-                    GameUser object = (GameUser) socket.fromServerObject.readObject();
-                    new AccountManager(object);
-                    System.out.println(object.getUserName());
+                    new AccountManager(userID, userPassword);
                     new GameView(socket).start(primaryStage);
 
                     // Hide sign in page when the login is done.
@@ -100,9 +102,7 @@ public class client_main extends Application {
                     System.out.println("A serious problem in signin process");
                 }
 
-            } catch(IOException ex) {
-                ex.printStackTrace();
-            } catch(ClassNotFoundException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -114,10 +114,11 @@ public class client_main extends Application {
             try {
                 socket.toServerData.writeInt(MessageControl.signUpReq);
                 socket.toServerData.writeUTF(userID);
+                pass = AES.convertToString(pass);
                 socket.toServerData.writeUTF(pass);
                 int ack = socket.fromServerData.readInt();
 
-                if(ack == MessageControl.signUpSuccess) {
+                if (ack == MessageControl.signUpSuccess) {
 
                 } else if (ack == MessageControl.signUpFail) {
 
@@ -133,7 +134,15 @@ public class client_main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Game Login");
         primaryStage.show();
-        primaryStage.setOnCloseRequest(event -> System.exit(0));
+        primaryStage.setOnCloseRequest(event -> {
+            try {
+                socket.toServerData.writeInt(MessageControl.close);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            SocketManger.close();
+            System.exit(0);
+        });
     }
 }
 

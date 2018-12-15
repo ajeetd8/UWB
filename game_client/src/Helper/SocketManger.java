@@ -21,4 +21,12 @@ public class SocketManger {
             ex.printStackTrace();
         }
     }
+
+    public static void close() {
+        try {
+            socket.close();
+        } catch(IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

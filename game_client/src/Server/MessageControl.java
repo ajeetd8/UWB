@@ -2,6 +2,7 @@ package Server;
 
 public interface MessageControl {
     public static int error = -1;
+    public static int close = 0;
 
     public static int signInReq = 1;
     public static int signUpReq = 2;

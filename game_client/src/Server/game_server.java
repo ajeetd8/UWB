@@ -1,9 +1,9 @@
 package Server;
 
 import Client.TicTacToeConstants;
+import Helper.RoomManager;
 import gameroom.GameRoom;
 import gameroom.GameUser;
-import Helper.RoomManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -14,14 +14,18 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class game_server extends Application {
-//    TreeSet<GameUser> GameUsers = new TreeSet<>();
     Map<String, GameUser> GameUsers = new HashMap<>();
 
     @Override
     public void start(Stage primaryStage) {
+        //Reading data from disk
+        readData();
+        // Server log area
         TextArea serverLog = new TextArea();
 
         // Create a scene and place it in the stage
@@ -32,7 +36,7 @@ public class game_server extends Application {
         primaryStage.setOnCloseRequest(event -> System.exit(0));
 
         // socket open
-        new Thread( () -> {
+        new Thread(() -> {
             try {
                 ServerSocket serverSocket = new ServerSocket(8888);
                 ServerSocket sck = new ServerSocket(8889);
@@ -48,7 +52,7 @@ public class game_server extends Application {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } ).start();
+        }).start();
     }
 
     class HandleASession implements Runnable, MessageControl {
@@ -70,7 +74,7 @@ public class game_server extends Application {
                 this.fromPlayerObject = new ObjectInputStream(this.player.getInputStream());
                 this.toPlayerData = new DataOutputStream(this.player.getOutputStream());
                 this.toPlayerObject = new ObjectOutputStream(this.player.getOutputStream());
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -80,7 +84,7 @@ public class game_server extends Application {
             try {
                 boolean nextScene = false;
 
-                while(!nextScene) {
+                while (!nextScene) {
                     int action = fromPlayerData.readInt();
                     if (action == signInReq) {
                         System.out.println("Sign in Action detected");
@@ -88,34 +92,34 @@ public class game_server extends Application {
                         String username = clientUser.getUserName();
                         GameUser serverUser = GameUsers.get(username);
 
-                        if( (serverUser!=null) && (serverUser.equals(clientUser)) ) {
+                        if ((serverUser != null) && (serverUser.equals(clientUser))) {
                             System.out.println("Success");
                             this.username = username;
                             toPlayerData.writeInt(signInSuccess);
-                            toPlayerObject.writeObject(GameUsers.get(username));
                         } else {
                             toPlayerData.writeInt(signInFail);
                         }
                     } else if (action == signUpReq) {
-                        String username = fromPlayerData.readUTF();
-                        String userpass = fromPlayerData.readUTF();
-                        System.out.println("Sign up Action detected");
+                        String username = fromPlayerData.readUTF();     // Reading username
+                        String userpass = fromPlayerData.readUTF();     // REading password
 
                         //Length check (longer than 3)
-                        if(username.length() < 3) {
+                        if (username.length() < 3) {
                             toPlayerData.writeInt(signUpFail);
-                        } else if(null != GameUsers.put(username, new GameUser(username, userpass))) {
+                        } else if (null != GameUsers.put(username, new GameUser(username, userpass))) {
                             toPlayerData.writeInt(signUpSuccess);
+                            saveData();
                         } else {
                             toPlayerData.writeInt(signUpFail);
                         }
 
+
                     } else if (action == joinRoomReq) {
-                        GameRoom room = (GameRoom)fromPlayerObject.readObject();
+                        GameRoom room = (GameRoom) fromPlayerObject.readObject();
 
                         System.out.println(RoomManager.hasRoom(room.getRoomName()));
 
-                        if(RoomManager.hasRoom(room.getRoomName())) {
+                        if (RoomManager.hasRoom(room.getRoomName())) {
                             toPlayerData.writeInt(joinSuccess);
 
                             System.out.println(room.getRoomName());
@@ -147,7 +151,7 @@ public class game_server extends Application {
 
                         String roomName = fromPlayerData.readUTF();
                         String username = fromPlayerData.readUTF();
-                        if(!RoomManager.hasRoom(roomName)) {
+                        if (!RoomManager.hasRoom(roomName)) {
 
                             // Setting the play socket
                             toPlayerData.writeInt(createRoomSuccess);
@@ -168,12 +172,14 @@ public class game_server extends Application {
                             // when room exist, do not create room.
                             toPlayerData.writeInt(createRoomFail);
                         }
-                    } else if(action == refreshReq) {
+                    } else if (action == refreshReq) {
                         ArrayList<GameRoom> roomList = new ArrayList<>(RoomManager.getRoomList().values());
                         System.out.println(roomList);
                         toPlayerObject.writeObject(roomList);
-                    }
-                    else {
+                    } else if (action == close) {
+                        player.close();
+                        return;
+                    } else {
                         System.out.println(action);
                     }
                 }
@@ -184,4 +190,47 @@ public class game_server extends Application {
             }
         }
     }
+
+    /**
+     * Saving data to hardisk
+     */
+    void saveData() {
+        try { // Create an output stream for file object.dat
+            ObjectOutputStream output =
+                    new ObjectOutputStream(new FileOutputStream("tictactoe.dat"));
+            output.writeObject(GameUsers);
+            output.close();
+
+            System.out.println("saved");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            System.out.println("File not Found");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.println("IOException");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Loading the data from the disk
+     */
+    void readData() {
+        try{
+        ObjectInputStream input =
+                new ObjectInputStream(new FileInputStream("tictactoe.dat"));
+
+        GameUsers = (Map<String, GameUser>) (input.readObject());
+        input.close();
+        System.out.println("load data from file");
+
+    } catch(FileNotFoundException e) {
+        System.out.println("File not Found");
+    } catch(
+    ClassNotFoundException e) {
+        System.out.println("ClassNotfoundException");
+    } catch(IOException e) {
+        System.out.println("IOException");
+    }
+}
 }

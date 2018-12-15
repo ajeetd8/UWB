@@ -8,26 +8,21 @@
       <artifact name="network_server_room:jar" />
     </artifacts-to-build>
   </component>
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/src/Client/client_main.java" line="83" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="b02049ef-38cb-4b66-ad96-eb02c8b85bd7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/AES/AES.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/GameDemoClient_jar/GameDemo.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/GameDemoClient_jar/GameDemo.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/GameDemoServer_jar/GameDemo.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/GameDemoServer_jar/GameDemo.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/network_client_room_jar/network_game.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/network_client_room_jar/network_game.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/network_client_room_jar/network_game.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/artifacts/network_server_room_jar/network_game.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/network_server_room_jar/network_game.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/GameDemo/META-INF/GameDemo.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/network_game/Client/GamePlay$Cell.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/network_game/Client/GamePlay$Cell.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/network_game/Client/GamePlay.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/network_game/Client/GamePlay.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/network_game/Client/GameView.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/network_game/Client/GameView.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/network_game/Server/HandleGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/network_game/Server/HandleGame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/network_game/Server/MessageControl.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/network_game/Server/MessageControl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/network_game/Client/client_main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/network_game/Client/client_main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/network_game/Server/game_server$HandleASession.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/network_game/Server/game_server$HandleASession.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/network_game/Server/game_server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/network_game/Server/game_server.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Client/GamePlay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/GamePlay.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Client/GameView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/GameView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client/client_main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/client_main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Server/HandleGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/HandleGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Helper/AccountManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Helper/AccountManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Helper/SocketManger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Helper/SocketManger.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Server/MessageControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/MessageControl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Server/game_server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/game_server.java" afterDir="false" />
     </list>
@@ -60,8 +55,8 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/Server/game_server.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="197">
-                    <caret line="63" column="50" selection-start-line="63" selection-start-column="50" selection-end-line="63" selection-end-column="50" />
+                  <state relative-caret-position="482">
+                    <caret line="97" column="65" selection-start-line="97" selection-start-column="65" selection-end-line="97" selection-end-column="65" />
                     <folding>
                       <element signature="imports" expanded="true" />
                     </folding>
@@ -72,8 +67,8 @@
             <file pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/Server/HandleGame.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="340">
-                    <caret line="22" column="11" selection-start-line="22" selection-start-column="11" selection-end-line="22" selection-end-column="11" />
+                  <state relative-caret-position="283">
+                    <caret line="56" selection-start-line="56" selection-end-line="56" />
                     <folding>
                       <element signature="imports" expanded="true" />
                     </folding>
@@ -105,8 +100,8 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/Helper/SocketManger.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="323">
-                    <caret line="18" column="78" lean-forward="true" selection-start-line="15" selection-start-column="12" selection-end-line="18" selection-end-column="78" />
+                  <state relative-caret-position="263">
+                    <caret line="24" column="32" lean-forward="true" selection-start-line="24" selection-start-column="32" selection-end-line="24" selection-end-column="32" />
                   </state>
                 </provider>
               </entry>
@@ -134,8 +129,23 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Client/client_main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2109">
-              <caret line="125" column="17" lean-forward="true" selection-start-line="125" selection-start-column="17" selection-end-line="125" selection-end-column="17" />
+            <state relative-caret-position="359">
+              <caret line="106" column="13" selection-start-line="106" selection-start-column="13" selection-end-line="106" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Helper/AccountManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="190">
+              <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+              <folding>
+                <element signature="e#209#210#0" expanded="true" />
+                <element signature="e#249#250#0" expanded="true" />
+                <element signature="e#294#295#0" expanded="true" />
+                <element signature="e#322#323#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -143,8 +153,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server/MessageControl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="22" column="37" selection-start-line="22" selection-start-column="37" selection-end-line="22" selection-end-column="37" />
+            <state relative-caret-position="76">
+              <caret line="4" column="27" lean-forward="true" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -157,6 +167,18 @@
               <folding>
                 <element signature="e#1361#1362#0" expanded="true" />
                 <element signature="e#1397#1398#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gameroom/GameUser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="199">
+              <caret line="12" column="11" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="11" />
+              <folding>
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -175,9 +197,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>SignInPane</find>
-      <find>GameView</find>
-      <find>AccountManager</find>
       <find>AccountMan</find>
       <find>Some</find>
       <find>Sucess</find>
@@ -192,19 +211,22 @@
       <find>joinR</find>
       <find>compareTo</find>
       <find>Join</find>
-      <find>signIn</find>
       <find>gameRoomListView</find>
       <find>port</find>
       <find>8889</find>
       <find>toServerData</find>
       <find>player</find>
       <find>PLAYER2</find>
-      <find>join</find>
       <find>new</find>
       <find>joinRoom</find>
       <find>close</find>
       <find>Close</find>
+      <find>readData</find>
+      <find>save</find>
       <find>start</find>
+      <find>saveData</find>
+      <find>join</find>
+      <find>signIn</find>
     </findStrings>
     <replaceStrings>
       <replace>ObjectOutputStream</replace>
@@ -236,7 +258,6 @@
         <option value="$PROJECT_DIR$/src/GamePlay.java" />
         <option value="$PROJECT_DIR$/src/client_main.java" />
         <option value="$PROJECT_DIR$/src/Client/TicTacToeClient.java" />
-        <option value="$PROJECT_DIR$/src/Helper/AccountManager.java" />
         <option value="$PROJECT_DIR$/src/gameroom/GameRoom.java" />
         <option value="$PROJECT_DIR$/src/gameroom/GameUser.java" />
         <option value="$PROJECT_DIR$/GameDemo/src/TicTacToeServer.java" />
@@ -247,17 +268,21 @@
         <option value="$PROJECT_DIR$/src/Server/HandleGame.java" />
         <option value="$PROJECT_DIR$/src/Client/GamePlay.java" />
         <option value="$PROJECT_DIR$/src/Helper/RoomManager.java" />
-        <option value="$PROJECT_DIR$/src/Server/MessageControl.java" />
         <option value="$PROJECT_DIR$/src/Client/GameView.java" />
-        <option value="$PROJECT_DIR$/src/Client/client_main.java" />
+        <option value="$PROJECT_DIR$/src/AES/AES.java" />
+        <option value="$PROJECT_DIR$/src/Helper/SocketManger.java" />
+        <option value="$PROJECT_DIR$/src/Server/MessageControl.java" />
+        <option value="$PROJECT_DIR$/src/Helper/AccountManager.java" />
         <option value="$PROJECT_DIR$/src/Server/game_server.java" />
+        <option value="$PROJECT_DIR$/src/Client/client_main.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="806" />
-    <option name="width" value="1133" />
-    <option name="height" value="1448" />
+    <option name="x" value="150" />
+    <option name="y" value="66" />
+    <option name="width" value="2333" />
+    <option name="height" value="1240" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -282,25 +307,7 @@
               <item name="game_client" type="b2602c69:ProjectViewProjectNode" />
               <item name="game_client" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Client" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="game_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="game_client" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="gameroom" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="game_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="game_client" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Helper" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="game_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="game_client" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Server" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -316,7 +323,7 @@
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="game_client" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544839784148" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544843727712" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
@@ -340,7 +347,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Server">
+  <component name="RunManager" selected="Application.Client">
     <configuration name="Client" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Client.client_main" />
       <module name="network_game" />
@@ -422,18 +429,18 @@
       <workItem from="1543698935942" duration="14530000" />
       <workItem from="1543713552574" duration="16053000" />
       <workItem from="1543737788184" duration="19605000" />
-      <workItem from="1544826462802" duration="12539000" />
+      <workItem from="1544826462802" duration="16460000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="73112000" />
+    <option name="totallyTimeSpent" value="77033000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="645" y="0" width="906" height="1158" extended-state="0" />
+    <frame x="120" y="53" width="1866" height="992" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.33382788" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15614618" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -442,7 +449,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.20955166" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.114035085" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -465,7 +472,7 @@
       <window_info anchor="right" id="Palette&#9;" order="8" />
     </layout>
     <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1690037" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.33382788" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -474,17 +481,18 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.28186968" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39943343" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.20955166" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.114035085" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.32906976" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.32814023" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.32748538" />
+      <window_info anchor="bottom" id="Duplicate detector" order="13" weight="0.3286119" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -551,13 +559,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/TicTacToeClient.java" />
-    <entry file="file://$PROJECT_DIR$/src/Helper/AccountManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="15" column="23" selection-start-line="15" selection-start-column="23" selection-end-line="15" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GameDemo/GameDemo.iml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -565,24 +566,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
           <caret line="14" column="17" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameroom/GameUser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="8" column="20" selection-start-line="8" selection-start-column="20" selection-end-line="8" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#413#414#0" expanded="true" />
-            <element signature="e#435#436#0" expanded="true" />
-            <element signature="e#853#854#0" expanded="true" />
-            <element signature="e#886#887#0" expanded="true" />
-            <element signature="e#934#935#0" expanded="true" />
-            <element signature="e#963#964#0" expanded="true" />
-            <element signature="e#1091#1092#0" expanded="true" />
-            <element signature="e#1148#1149#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -597,13 +580,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="76">
           <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Helper/SocketManger.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="18" column="78" lean-forward="true" selection-start-line="15" selection-start-column="12" selection-end-line="18" selection-end-column="78" />
         </state>
       </provider>
     </entry>
@@ -641,24 +617,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Client/GamePlay.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="24">
-          <caret line="112" column="48" selection-start-line="112" selection-start-column="44" selection-end-line="112" selection-end-column="48" />
-          <folding>
-            <element signature="e#1361#1362#0" expanded="true" />
-            <element signature="e#1397#1398#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Server/MessageControl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="22" column="37" selection-start-line="22" selection-start-column="37" selection-end-line="22" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Helper/RoomManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="471">
@@ -670,10 +628,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Server/HandleGame.java">
+    <entry file="file://$PROJECT_DIR$/tictactoe.dat">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AES/AES.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="22" column="11" selection-start-line="22" selection-start-column="11" selection-end-line="22" selection-end-column="11" />
+        <state relative-caret-position="513">
+          <caret line="27" column="40" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -691,20 +652,78 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Client/client_main.java">
+    <entry file="file://$PROJECT_DIR$/src/Helper/SocketManger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2109">
-          <caret line="125" column="17" lean-forward="true" selection-start-line="125" selection-start-column="17" selection-end-line="125" selection-end-column="17" />
+        <state relative-caret-position="263">
+          <caret line="24" column="32" lean-forward="true" selection-start-line="24" selection-start-column="32" selection-end-line="24" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Server/HandleGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="283">
+          <caret line="56" selection-start-line="56" selection-end-line="56" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gameroom/GameUser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="12" column="11" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Client/GamePlay.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="24">
+          <caret line="112" column="48" selection-start-line="112" selection-start-column="44" selection-end-line="112" selection-end-column="48" />
+          <folding>
+            <element signature="e#1361#1362#0" expanded="true" />
+            <element signature="e#1397#1398#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Server/MessageControl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="4" column="27" lean-forward="true" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="27" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/game_server.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="63" column="50" selection-start-line="63" selection-start-column="50" selection-end-line="63" selection-end-column="50" />
+        <state relative-caret-position="482">
+          <caret line="97" column="65" selection-start-line="97" selection-start-column="65" selection-end-line="97" selection-end-column="65" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Helper/AccountManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+          <folding>
+            <element signature="e#209#210#0" expanded="true" />
+            <element signature="e#249#250#0" expanded="true" />
+            <element signature="e#294#295#0" expanded="true" />
+            <element signature="e#322#323#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Client/client_main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="359">
+          <caret line="106" column="13" selection-start-line="106" selection-start-column="13" selection-end-line="106" selection-end-column="13" />
         </state>
       </provider>
     </entry>
