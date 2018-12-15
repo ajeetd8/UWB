@@ -98,7 +98,7 @@ public class HandleGame implements Runnable, TicTacToeConstants {
                 }
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
         }
     }
 

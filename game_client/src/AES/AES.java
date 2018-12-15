@@ -4,6 +4,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
+ * Shoreline Community College
  * @author Sahand Milaninia, Haram Kwon, Cory Bakich
  */
 

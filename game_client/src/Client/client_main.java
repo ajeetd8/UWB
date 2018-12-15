@@ -88,7 +88,10 @@ public class client_main extends Application {
                 if (ack == MessageControl.signInSuccess) {
                     // Signin Success case handle
 
-                    new AccountManager(userID, userPassword);
+                    // Login Process started.
+                    GameUser object = (GameUser) socket.fromServerObject.readObject();
+                    new AccountManager(object);
+                    System.out.println(object.getUserName());
                     new GameView(socket).start(primaryStage);
 
                     // Hide sign in page when the login is done.
@@ -103,6 +106,8 @@ public class client_main extends Application {
                 }
 
             } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (ClassNotFoundException ex) {
                 ex.printStackTrace();
             }
         });
@@ -135,11 +140,11 @@ public class client_main extends Application {
         primaryStage.setTitle("Game Login");
         primaryStage.show();
         primaryStage.setOnCloseRequest(event -> {
-            try {
-                socket.toServerData.writeInt(MessageControl.close);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+//            try {
+//                socket.toServerData.writeInt(MessageControl.close);
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
             SocketManger.close();
             System.exit(0);
         });

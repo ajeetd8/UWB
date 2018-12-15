@@ -96,6 +96,7 @@ public class game_server extends Application {
                             System.out.println("Success");
                             this.username = username;
                             toPlayerData.writeInt(signInSuccess);
+                            toPlayerObject.writeObject(GameUsers.get(username));
                         } else {
                             toPlayerData.writeInt(signInFail);
                         }
@@ -140,7 +141,10 @@ public class game_server extends Application {
                             String player = new DataInputStream(play_sck.getInputStream()).readUTF();
                             System.out.println(player + " is ready");
 
-                            new Thread(new HandleGame(player1, play_sck)).start();
+                            // Create the thread and join
+                            Thread t = new Thread(new HandleGame(player1, play_sck));
+                            t.start();
+
                         } else {
                             toPlayerData.writeInt(joinFail);
                         }
@@ -177,8 +181,8 @@ public class game_server extends Application {
                         System.out.println(roomList);
                         toPlayerObject.writeObject(roomList);
                     } else if (action == close) {
-                        player.close();
-                        return;
+//                        player.close();
+//                        return;
                     } else {
                         System.out.println(action);
                     }
@@ -216,21 +220,21 @@ public class game_server extends Application {
      * Loading the data from the disk
      */
     void readData() {
-        try{
-        ObjectInputStream input =
-                new ObjectInputStream(new FileInputStream("tictactoe.dat"));
+        try {
+            ObjectInputStream input =
+                    new ObjectInputStream(new FileInputStream("tictactoe.dat"));
 
-        GameUsers = (Map<String, GameUser>) (input.readObject());
-        input.close();
-        System.out.println("load data from file");
+            GameUsers = (Map<String, GameUser>) (input.readObject());
+            input.close();
+            System.out.println("load data from file");
 
-    } catch(FileNotFoundException e) {
-        System.out.println("File not Found");
-    } catch(
-    ClassNotFoundException e) {
-        System.out.println("ClassNotfoundException");
-    } catch(IOException e) {
-        System.out.println("IOException");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not Found");
+        } catch (
+                ClassNotFoundException e) {
+            System.out.println("ClassNotfoundException");
+        } catch (IOException e) {
+            System.out.println("IOException");
+        }
     }
-}
 }
