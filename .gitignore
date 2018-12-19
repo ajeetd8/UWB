@@ -9,3 +9,6 @@
 
 # Exclude zip file
 *.zip
+DISK
+*.class
+.vscode/launch.json
