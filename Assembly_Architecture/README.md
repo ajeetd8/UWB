@@ -1,5 +1,3 @@
-
-
 # Intro
 This is done as course work in University of Washington Bothell CSS422. (Architecture and Hardware)
 
