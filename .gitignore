@@ -1,6 +1,19 @@
+#Excluded for disassembly project
 .[oa]
 *~*
 *.dat
 *.L68
 *.S68
 .DS_Store
+
+# Hiding hidden files
+.*
+
+# Exclude executable file
+*.out
+
+# Exclude zip file
+*.zip
+DISK
+*.class
+.vscode/launch.json

@@ -1,0 +1,12 @@
+kharam@uw1-320-01:~/OS/Assignment_1$ ./processes kworker
+37
+kharam@uw1-320-01:~/OS/Assignment_1$ ps -A | grep kworker | wc -l
+37
+kharam@uw1-320-01:~/OS/Assignment_1$ ./processes sshd
+7
+kharam@uw1-320-01:~/OS/Assignment_1$ ps -A | grep sshd | wc -l
+7
+kharam@uw1-320-01:~/OS/Assignment_1$ ./processes scsi
+12
+kharam@uw1-320-01:~/OS/Assignment_1$ ps -A | grep scsi | wc -l
+12
