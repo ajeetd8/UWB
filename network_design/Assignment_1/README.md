@@ -1,0 +1,2 @@
+# Multi-threading TCP/IP
+The server will invoke multithread feature of C/C++, it will accept the TCP connection from the server. At the clinet side will send differenct size buffer to the server, and measure the ack (acknowledge) time.
