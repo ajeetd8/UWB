@@ -107,7 +107,7 @@ public class game_server extends Application {
                         //Length check (longer than 3)
                         if (username.length() < 3) {
                             toPlayerData.writeInt(signUpFail);
-                        } else if (null != GameUsers.put(username, new GameUser(username, userpass))) {
+                        } else if (null == GameUsers.put(username, new GameUser(username, userpass))) {
                             toPlayerData.writeInt(signUpSuccess);
                             saveData();
                         } else {
@@ -180,9 +180,28 @@ public class game_server extends Application {
                         ArrayList<GameRoom> roomList = new ArrayList<>(RoomManager.getRoomList().values());
                         System.out.println(roomList);
                         toPlayerObject.writeObject(roomList);
+                    } else if (action == deregisterReq) {
+                        System.out.println("Unregister requested");
+                        GameUser clientUser = (GameUser) fromPlayerObject.readObject();
+                        String username = clientUser.getUserName();
+                        GameUser serverUser = GameUsers.get(username);
+
+                        if ((serverUser != null) && (serverUser.equals(clientUser))) {
+                            System.out.println("Success");
+                            GameUsers.remove(username);
+                            toPlayerData.writeInt(deregisterSuceess);
+                            saveData();
+                        } else {
+                            toPlayerData.writeInt(deregisterFail);
+                        }
+
+
                     } else if (action == close) {
-//                        player.close();
-//                        return;
+                        toPlayerData.writeInt(close);
+                        player.close();
+                        sck.close();
+                        System.out.println("Successful");
+                        return;
                     } else {
                         System.out.println(action);
                     }

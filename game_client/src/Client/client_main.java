@@ -64,11 +64,14 @@ public class client_main extends Application {
         // Setting the signin and signout button.
         Button signInButton = new Button("Sign in");
         Button signUpButton = new Button("Sing up");
+        Button deregisterButton = new Button("Deregister");
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.BOTTOM_RIGHT);
         hBox.getChildren().add(signInButton);
         hBox.getChildren().add(signUpButton);
+        hBox.getChildren().add(deregisterButton);
         pane.add(hBox, 1, 4);
+
         // sign in/up meesage added
         pane.add(actionTarget, 1, 6);
 
@@ -124,9 +127,9 @@ public class client_main extends Application {
                 int ack = socket.fromServerData.readInt();
 
                 if (ack == MessageControl.signUpSuccess) {
-
+                    actionTarget.setText("Signup success");
                 } else if (ack == MessageControl.signUpFail) {
-
+                    actionTarget.setText("Signup failed \n ID exists");
                 } else {
                     System.out.println("A serious problem in signUp process");
                 }
@@ -135,17 +138,44 @@ public class client_main extends Application {
             }
         });
 
-        Scene scene = new Scene(pane, 300, 275);
+        deregisterButton.setOnAction(event -> {
+            String userID = userTextField.getText();
+            String userPassword = pwBox.getText();
+            userPassword = AES.convertToString(userPassword);
+            System.out.println(userPassword);
+            try {
+                socket.toServerData.writeInt(MessageControl.deregisterReq);
+                socket.toServerObject.writeObject(new GameUser(userID, userPassword));
+
+                int ack = socket.fromServerData.readInt();
+
+
+                if (ack == MessageControl.deregisterSuceess) {
+                    actionTarget.setText("Deregister Successful");
+                } else if (ack == MessageControl.deregisterFail) {
+                    actionTarget.setText("Deregister fail \ncheck your id or password");
+                } else {
+                    System.out.println("A serious problem in unregister process");
+                }
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+
+        Scene scene = new Scene(pane, 500, 400);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Game Login");
         primaryStage.show();
         primaryStage.setOnCloseRequest(event -> {
-//            try {
-//                socket.toServerData.writeInt(MessageControl.close);
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
-            SocketManger.close();
+            try {
+                socket.toServerData.writeInt(MessageControl.close);
+                socket.fromServerData.readInt(); // Syncronize the moment
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            socket.close();
             System.exit(0);
         });
     }

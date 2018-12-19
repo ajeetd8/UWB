@@ -22,6 +22,7 @@ import java.util.Optional;
  */
 public class GameView extends Application implements MessageControl {
     private SocketManger socket;
+    private Socket sck;
     BorderPane pane;
     ListView<GameRoom> gameRoomListView;
 
@@ -87,10 +88,10 @@ public class GameView extends Application implements MessageControl {
                     int ack = socket.fromServerData.readInt();
                     System.out.println("got ack");
                     if(ack == joinSuccess) {
-                        Socket sck = new Socket("localhost", 8889);
+                        sck = new Socket("localhost", 8889);
                         System.out.println(sck);
 
-                        new GamePlay(sck).start(new Stage());
+                        new GamePlay(sck).start(primarStage);
 
                         // Refresh the list
                         refresh();
@@ -111,6 +112,17 @@ public class GameView extends Application implements MessageControl {
         Scene scene =new Scene(pane);
         primarStage.setScene(scene);
         primarStage.show();
+        primarStage.setOnCloseRequest(event -> {
+            try {
+                socket.toServerData.writeInt(MessageControl.close);
+                socket.fromServerData.readInt(); // Syncronize the moment
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            socket.close();
+
+            System.exit(0);
+        });
 
     }
 

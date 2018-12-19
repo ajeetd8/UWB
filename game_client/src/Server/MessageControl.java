@@ -10,6 +10,7 @@ public interface MessageControl {
     public static int joinRoomReq = 4;
     public static int refreshReq = 5;
     public static int roomListReq = 6;
+    public static int deregisterReq = 7;
 
     public static int signInSuccess = 101;
     public static int signInFail = 102;
@@ -22,6 +23,9 @@ public interface MessageControl {
 
     public static int joinSuccess = 107;
     public static int joinFail = 108;
+
+    public static int deregisterSuceess = 109;
+    public static int deregisterFail = 110;
 
 
 }

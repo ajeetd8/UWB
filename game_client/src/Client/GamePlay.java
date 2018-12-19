@@ -66,6 +66,7 @@ public class GamePlay extends Application implements TicTacToeConstants {
 
     @Override // Override the start method in the Application class
     public void start(Stage primaryStage) {
+        Stage newStage = new Stage();
         // Pane to hold cell
         GridPane pane = new GridPane();
         for (int i = 0; i < 3; i++)
@@ -79,9 +80,11 @@ public class GamePlay extends Application implements TicTacToeConstants {
 
         // Create a scene and place it in the stage
         Scene scene = new Scene(borderPane, 320, 350);
-        primaryStage.setTitle("TicTacToeClient"); // Set the stage title
-        primaryStage.setScene(scene); // Place the scene in the stage
-        primaryStage.show(); // Display the stage
+        newStage.setTitle("TicTacToeClient"); // Set the stage title
+        newStage.setScene(scene); // Place the scene in the stage
+//        newStage.initOwner();
+//        newStage.initModality(Modality.WINDOW_MODAL);
+        newStage.show(); // Display the stage
 
         // Connect to the server
         GameStart();
